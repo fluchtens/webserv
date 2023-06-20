@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 16:17:26 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/20 19:52:09 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/20 20:03:23 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,11 @@ int main(int ac, char **av)
 	try {
 		std::string cfgFile = av[1];
 		Socket socket;
-		const char *hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
+
+		std::ifstream file("www/html/index.html");
+		std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+		std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " + std::to_string(content.length()) + "\n\n" + content;
+		const char *hello = response.c_str();
 
 		while (1)
 		{
