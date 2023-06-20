@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 10:40:34 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/20 12:43:35 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/20 14:31:40 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,9 @@ Socket::Socket(void)
 	this->_interface = INADDR_ANY;
 	this->_port = 8080;
 
-	this->_createSocket();
-	this->_bindSocket();
+	this->_create();
+	this->_bind();
+	this->_listen();
 }
 
 Socket::~Socket(void)
@@ -37,7 +38,7 @@ Socket::~Socket(void)
 /*                          Private Member functions                          */
 /* ************************************************************************** */
 
-void Socket::_createSocket(void)
+void Socket::_create(void)
 {
 	this->_fd = socket(this->_domain, this->_service, this->_protocol);
 	if (this->_fd == 0) {
@@ -45,7 +46,7 @@ void Socket::_createSocket(void)
 	}
 }
 
-void Socket::_bindSocket(void)
+void Socket::_bind(void)
 {
 	memset((char *)&this->_sockaddr, 0, sizeof(this->_sockaddr));
 
@@ -55,6 +56,13 @@ void Socket::_bindSocket(void)
 
 	if (bind(this->_fd,(struct sockaddr *)&this->_sockaddr,sizeof(this->_sockaddr)) < 0) { 
 		throw (std::runtime_error("bind"));
+	}
+}
+
+void Socket::_listen(void)
+{
+	if (listen(this->_fd, 10) < this->_backlog) {
+		throw (std::runtime_error("listen"));
 	}
 }
 
