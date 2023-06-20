@@ -6,10 +6,13 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 16:17:26 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/20 20:03:23 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/20 20:37:52 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <unistd.h>
+#include <iostream>
+#include <fstream>
 #include "Socket.hpp"
 
 int main(int ac, char **av)

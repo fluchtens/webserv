@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 10:40:37 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/20 20:02:19 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/20 20:38:45 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define SOCKET_HPP
 
 #include <unistd.h>
-#include <fstream>
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
