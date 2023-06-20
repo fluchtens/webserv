@@ -6,12 +6,11 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 16:17:26 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/20 12:42:58 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/20 19:52:09 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
-#include <sys/event.h>
 
 int main(int ac, char **av)
 {
@@ -22,12 +21,15 @@ int main(int ac, char **av)
 
 	try {
 		std::string cfgFile = av[1];
-		std::cout << "cfgFile = " << cfgFile << std::endl;
+		Socket socket;
+		const char *hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
 
-		int kq = kqueue();
-		if (kq < 0) {
-			std::cerr << "kqueue error" << std::endl;
-			exit(1);
+		while (1)
+		{
+			socket.acceptConnection();
+			int newSocket = socket.getNewServerFd();
+			write(newSocket, hello , strlen(hello));
+			close(newSocket);
 		}
 	}
 	catch (std::exception &e) {

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 10:40:34 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/20 14:31:40 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/20 19:29:11 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ Socket::Socket(void)
 	this->_protocol = 0;
 	this->_interface = INADDR_ANY;
 	this->_port = 8080;
-
+	this->_backlog = SOMAXCONN;
 	this->_create();
-	this->_bind();
-	this->_listen();
+	this->_identify();
+	this->_waitingConnection();
 }
 
 Socket::~Socket(void)
@@ -40,32 +40,49 @@ Socket::~Socket(void)
 
 void Socket::_create(void)
 {
-	this->_fd = socket(this->_domain, this->_service, this->_protocol);
-	if (this->_fd == 0) {
+	if ((this->_serverFd = socket(this->_domain, this->_service, this->_protocol)) < 0) {
 		throw (std::runtime_error("socket"));
 	}
 }
 
-void Socket::_bind(void)
+void Socket::_identify(void)
 {
-	memset((char *)&this->_sockaddr, 0, sizeof(this->_sockaddr));
+	memset((char *)&this->_address, 0, sizeof(this->_address));
 
-	this->_sockaddr.sin_family = this->_domain;
-	this->_sockaddr.sin_addr.s_addr = htonl(this->_interface);
-	this->_sockaddr.sin_port = htons(this->_port);
+	this->_address.sin_family = this->_domain;
+	this->_address.sin_addr.s_addr = htonl(this->_interface);
+	this->_address.sin_port = htons(this->_port);
 
-	if (bind(this->_fd,(struct sockaddr *)&this->_sockaddr,sizeof(this->_sockaddr)) < 0) { 
+	if (bind(this->_serverFd,(struct sockaddr *)&this->_address,sizeof(this->_address)) < 0) { 
 		throw (std::runtime_error("bind"));
 	}
 }
 
-void Socket::_listen(void)
+void Socket::_waitingConnection(void)
 {
-	if (listen(this->_fd, 10) < this->_backlog) {
+	if (listen(this->_serverFd, this->_backlog) < 0) {
 		throw (std::runtime_error("listen"));
 	}
 }
 
 /* ************************************************************************** */
+/*                              Getters / Setters                             */
+/* ************************************************************************** */
+
+int Socket::getNewServerFd(void) const
+{
+	return (this->_newSocketFd);
+}
+
+/* ************************************************************************** */
 /*                          Public Member functions                           */
 /* ************************************************************************** */
+
+void Socket::acceptConnection(void)
+{
+	int addrlen = sizeof(this->_address);
+
+	if ((this->_newSocketFd = accept(this->_serverFd, (struct sockaddr *)&this->_address, (socklen_t*)&addrlen))<0) {
+		throw (std::runtime_error("accept"));
+	}
+}
