@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 10:40:37 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/20 20:38:45 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/21 08:34:15 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,12 @@ class Socket
 		int _port;
 		int _backlog;
 
-		void _create(void);
-		void _identify(void);
-		void _waitingConnection(void);
-
 	public:
 		Socket(void);
 		~Socket(void);
 
 		int getNewServerFd(void) const;
+		void launch(void);
 		void acceptConnection(void);
 };
 

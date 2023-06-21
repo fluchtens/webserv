@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 16:17:26 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/20 20:37:52 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/21 08:35:32 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,9 @@ int main(int ac, char **av)
 
 	try {
 		std::string cfgFile = av[1];
+
 		Socket socket;
+		socket.launch();
 
 		std::ifstream file("www/html/index.html");
 		std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
