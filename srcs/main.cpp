@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 16:17:26 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/21 08:35:32 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/21 11:01:10 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <iostream>
 #include <fstream>
 #include "Socket.hpp"
+#include "Parser.hpp"
 
 int main(int ac, char **av)
 {
@@ -24,6 +25,8 @@ int main(int ac, char **av)
 
 	try {
 		std::string cfgFile = av[1];
+
+		Parser parser(cfgFile);
 
 		Socket socket;
 		socket.launch();
@@ -37,7 +40,7 @@ int main(int ac, char **av)
 		{
 			socket.acceptConnection();
 			int newSocket = socket.getNewServerFd();
-			write(newSocket, hello , strlen(hello));
+			write(newSocket, hello, strlen(hello));
 			close(newSocket);
 		}
 	}
