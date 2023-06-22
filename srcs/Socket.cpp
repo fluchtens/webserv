@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 10:40:34 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/21 08:34:40 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/22 16:58:39 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ Socket::Socket(void)
 	this->_service = SOCK_STREAM;
 	this->_protocol = 0;
 	this->_interface = INADDR_ANY;
-	this->_port = 8080;
+	this->_port = 65535;
 	this->_backlog = SOMAXCONN;
 }
 
