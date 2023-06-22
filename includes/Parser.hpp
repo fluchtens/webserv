@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 09:07:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/22 17:08:19 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/22 18:09:57 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <iostream>
 # include <fstream>
 # include <sstream>
+# include "Utils.hpp"
 
 class Parser
 {
@@ -24,7 +25,6 @@ class Parser
 		std::string _fileContent;
 		int _port;
 
-		std::string _trimWhiteSpaces(const std::string &str);
 		bool _checkCfgFileExtension(void);
 		void _openCfgFile(void);
 

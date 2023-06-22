@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 09:09:25 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/22 17:08:03 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/22 18:09:42 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,6 @@ Parser::~Parser(void)
 /* ************************************************************************** */
 /*                          Private Member functions                          */
 /* ************************************************************************** */
-
-std::string Parser::_trimWhiteSpaces(const std::string &str)
-{
-	size_t first = str.find_first_not_of(" \t");
-	if (first == std::string::npos) {
-		return ("");
-	}
-	size_t last = str.find_last_not_of(" \t");
-	return (str.substr(first, last - first + 1));
-}
 
 bool Parser::_checkCfgFileExtension(void)
 {
@@ -71,7 +61,7 @@ void Parser::_openCfgFile(void)
 		if (line.empty())
 			continue ;
 
-		line = this->_trimWhiteSpaces(line);
+		line = strTrimWhiteSpaces(line);
 
 		if (line.find("listen") == 0) {
 			this->_setPort(line.substr(6));
@@ -97,7 +87,7 @@ bool Parser::_checkCfgFileLine(const std::string &str)
 
 void Parser::_setPort(const std::string &str)
 {
-	std::string line = this->_trimWhiteSpaces(str);
+	std::string line = strTrimWhiteSpaces(str);
 	if (!this->_checkCfgFileLine(line)) {
 		throw (std::runtime_error("wrong listen line format"));
 	}
