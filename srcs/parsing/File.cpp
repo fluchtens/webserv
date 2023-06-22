@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/22 18:54:32 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/22 19:01:38 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ void File::_readFile(void)
 			continue ;
 		line = strTrimWhiteSpaces(line);
 		this->_fileContent += line;
-		// this->_fileContent += line;
 
 	}
 	inputFile.close();
