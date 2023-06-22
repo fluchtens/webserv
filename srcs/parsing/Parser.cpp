@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 09:09:25 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/22 18:59:05 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/22 19:37:36 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,16 @@ void Parser::_openCfgFile(void)
 		if (line.empty())
 			continue ;
 		line = strTrimWhiteSpaces(line);
-		if (line.find("listen") == 0) {
+		if (line.find("listen") == 0)
 			this->_setPort(line.substr(6));
-		}
+		else if (line.find("host") == 0)
+			this->_setHost(line.substr(4));
+		else if (line.find("server_name") == 0)
+			this->_setServerName(line.substr(11));
+		else if (line.find("root") == 0)
+			this->_setRoot(line.substr(4));
+		else if (line.find("index") == 0)
+			this->_setIndex(line.substr(5));
 	}
 	inputFile.close();
 }
@@ -85,4 +92,57 @@ void Parser::_setPort(const std::string &str)
 		throw (std::runtime_error("invalid port"));
 	}
 	this->_port = port;
+	std::cout << _port << std::endl;
+}
+
+void Parser::_setHost(const std::string &str)
+{
+	std::string line = strTrimWhiteSpaces(str);
+	if (!this->_checkCfgFileLine(line)) {
+		throw (std::runtime_error("wrong host line format"));
+	}
+
+	line = line.substr(0, line.length() - 1);
+	if (line == "localhost") {
+		this->_host = "127.0.0.1";
+	} else {
+		this->_host = line;
+	}
+	std::cout << _host << std::endl;
+}
+
+void Parser::_setServerName(const std::string &str)
+{
+	std::string line = strTrimWhiteSpaces(str);
+	if (!this->_checkCfgFileLine(line)) {
+		throw (std::runtime_error("wrong server_name line format"));
+	}
+
+	line = line.substr(0, line.length() - 1);
+	this->_serverName = line;
+	std::cout << _serverName << std::endl;
+}
+
+void Parser::_setRoot(const std::string &str)
+{
+	std::string line = strTrimWhiteSpaces(str);
+	if (!this->_checkCfgFileLine(line)) {
+		throw (std::runtime_error("wrong root line format"));
+	}
+
+	line = line.substr(0, line.length() - 1);
+	this->_root = line;
+	std::cout << _root << std::endl;
+}
+
+void Parser::_setIndex(const std::string &str)
+{
+	std::string line = strTrimWhiteSpaces(str);
+	if (!this->_checkCfgFileLine(line)) {
+		throw (std::runtime_error("wrong root line format"));
+	}
+
+	line = line.substr(0, line.length() - 1);
+	this->_index = line;
+	std::cout << _index << std::endl;
 }
