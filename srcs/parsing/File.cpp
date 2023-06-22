@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Parser.cpp                                         :+:      :+:    :+:   */
+/*   File.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/21 09:09:25 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/22 18:59:05 by fluchten         ###   ########.fr       */
+/*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
+/*   Updated: 2023/06/22 18:54:32 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Parser.hpp"
+#include "File.hpp"
 
 /* ************************************************************************** */
 /*                           Constructor Destructor                           */
 /* ************************************************************************** */
 
-Parser::Parser(const std::string &cfgFile) : _cfgFile(cfgFile)
+File::File(const std::string &cfgFile) : _cfgFile(cfgFile)
 {
-	this->_openCfgFile();
+	if (!this->_isValidExtension()) {
+		throw (std::runtime_error("wrong configuration file"));
+	} else {
+		this->_readFile();
+	}
 }
 
-Parser::~Parser(void)
+File::~File(void)
 {
 	return ;
 }
@@ -30,7 +34,23 @@ Parser::~Parser(void)
 /*                          Private Member functions                          */
 /* ************************************************************************** */
 
-void Parser::_openCfgFile(void)
+bool File::_isValidExtension(void)
+{
+	size_t len = this->_cfgFile.length();
+
+	if (len >= 5) {
+		std::string extension = this->_cfgFile.substr(len - 5);
+
+		if (extension == ".conf") {
+			return (true);
+		} else {
+			return (false);
+		}
+	}
+	return (false);
+}
+
+void File::_readFile(void)
 {
 	std::ifstream inputFile(this->_cfgFile);
 	if (!inputFile.is_open()) {
@@ -43,46 +63,41 @@ void Parser::_openCfgFile(void)
 		if (line.empty())
 			continue ;
 		line = strTrimWhiteSpaces(line);
-		if (line.find("listen") == 0) {
-			this->_setPort(line.substr(6));
-		}
+		this->_fileContent += line;
+		// this->_fileContent += line;
+
 	}
 	inputFile.close();
+	this->_checkFile();
 }
 
-bool Parser::_checkCfgFileLine(const std::string &str)
+void File::_checkFile(void)
 {
-	for (size_t i = 0; str[i]; i++) {
-		if (str[i] == ' ') {
-			return (false);
+	if (this->_fileContent.empty()) {
+		throw (std::runtime_error("configuration file is empty"));
+	}
+	else if (!this->_isBracketsClosed()) {
+		throw (std::runtime_error("config file invalid syntax"));
+	}
+}
+
+bool File::_isBracketsClosed(void)
+{
+	int count = 0;
+
+	for (size_t i = 0; i < this->_fileContent.length(); i++) {
+		if (this->_fileContent[i] == '{') {
+			count++;
+		}
+		if (this->_fileContent[i] == '}') {
+			if (!count) {
+				return (false);
+			}
+			count--;
 		}
 	}
-	if (str[str.length() - 1] != ';') {
+	if (count) {
 		return (false);
 	}
 	return (true);
-}
-
-void Parser::_setPort(const std::string &str)
-{
-	std::string line = strTrimWhiteSpaces(str);
-	if (!this->_checkCfgFileLine(line)) {
-		throw (std::runtime_error("wrong listen line format"));
-	}
-
-	line = line.substr(0, line.length() - 1);
-	for (size_t i = 0; line[i]; i++) {
-		if (!std::isdigit(line[i])) {
-			throw (std::runtime_error("invalid port"));
-		}
-	}
-
-	std::istringstream iss(line);
-	int port;
-
-	iss >> port;
-	if (iss.fail() || (port < 1 || port > 65535)) {
-		throw (std::runtime_error("invalid port"));
-	}
-	this->_port = port;
 }

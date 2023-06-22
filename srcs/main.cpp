@@ -6,15 +6,16 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 16:17:26 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/21 11:01:10 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/22 18:55:47 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <iostream>
 #include <fstream>
-#include "Socket.hpp"
+#include "File.hpp"
 #include "Parser.hpp"
+#include "Socket.hpp"
 
 int main(int ac, char **av)
 {
@@ -26,7 +27,8 @@ int main(int ac, char **av)
 	try {
 		std::string cfgFile = av[1];
 
-		Parser parser(cfgFile);
+		File config(static_cast<std::string>(av[1]));
+		Parser parser(static_cast<std::string>(av[1]));
 
 		Socket socket;
 		socket.launch();
