@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 09:09:25 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/22 19:37:36 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/25 14:19:14 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@ void Parser::_setPort(const std::string &str)
 		throw (std::runtime_error("invalid port"));
 	}
 	this->_port = port;
-	std::cout << _port << std::endl;
 }
 
 void Parser::_setHost(const std::string &str)
@@ -108,7 +107,6 @@ void Parser::_setHost(const std::string &str)
 	} else {
 		this->_host = line;
 	}
-	std::cout << _host << std::endl;
 }
 
 void Parser::_setServerName(const std::string &str)
@@ -120,7 +118,6 @@ void Parser::_setServerName(const std::string &str)
 
 	line = line.substr(0, line.length() - 1);
 	this->_serverName = line;
-	std::cout << _serverName << std::endl;
 }
 
 void Parser::_setRoot(const std::string &str)
@@ -132,7 +129,6 @@ void Parser::_setRoot(const std::string &str)
 
 	line = line.substr(0, line.length() - 1);
 	this->_root = line;
-	std::cout << _root << std::endl;
 }
 
 void Parser::_setIndex(const std::string &str)
@@ -144,5 +140,46 @@ void Parser::_setIndex(const std::string &str)
 
 	line = line.substr(0, line.length() - 1);
 	this->_index = line;
-	std::cout << _index << std::endl;
+}
+
+/* ************************************************************************** */
+/*                          Public Member functions                           */
+/* ************************************************************************** */
+
+void Parser::printParser(void) const
+{
+	std::cout << "Port: " << this->_port << std::endl;
+	std::cout << "Host: " << this->_host << std::endl;
+	std::cout << "Servername: " << this->_serverName << std::endl;
+	std::cout << "Root: " << this->_root << std::endl;
+	std::cout << "Index: " << this->_index << std::endl;
+}
+
+/* ************************************************************************** */
+/*                              Getters / Setters                             */
+/* ************************************************************************** */
+
+const int &Parser::getPort(void) const
+{
+	return (this->_port);
+}
+
+const std::string &Parser::getHost(void) const
+{
+	return (this->_host);
+}
+
+const std::string &Parser::getServerName(void) const
+{
+	return (this->_serverName);
+}
+
+const std::string &Parser::getRoot(void) const
+{
+	return (this->_root);
+}
+
+const std::string &Parser::getIndex(void) const
+{
+	return (this->_index);
 }

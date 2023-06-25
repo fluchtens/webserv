@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 09:07:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/22 19:36:54 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/25 14:19:20 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,14 @@ class Parser
 	public:
 		Parser(const std::string &_cfgFile);
 		~Parser(void);
+
+		const int &getPort(void) const;
+		const std::string &getHost(void) const;
+		const std::string &getServerName(void) const;
+		const std::string &getRoot(void) const;
+		const std::string &getIndex(void) const;
+
+		void printParser(void) const;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/20 10:40:34 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/22 16:58:39 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/25 14:41:33 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,63 @@
 /*                           Constructor Destructor                           */
 /* ************************************************************************** */
 
-Socket::Socket(void)
+Socket::Socket(Parser *cfg)
 {
-	this->_domain = AF_INET;
-	this->_service = SOCK_STREAM;
-	this->_protocol = 0;
-	this->_interface = INADDR_ANY;
-	this->_port = 65535;
-	this->_backlog = SOMAXCONN;
+	this->_cfg = cfg;
+	this->_createSocket();
+	this->_bindSocket();
+	this->_listenConnection();
 }
 
 Socket::~Socket(void)
 {
 	close(this->_serverFd);
+}
+
+/* ************************************************************************** */
+/*                          Private Member functions                          */
+/* ************************************************************************** */
+
+void Socket::_createSocket(void)
+{
+	if ((this->_serverFd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		throw (std::runtime_error("socket"));
+	}
+}
+
+void Socket::_bindSocket(void)
+{
+	std::memset(static_cast<void *>(&this->_address), 0, sizeof(this->_address));
+
+	this->_address.sin_family = AF_INET;
+	// this->_address.sin_addr.s_addr = htonl(INADDR_ANY);
+	// this->_address.sin_addr.s_addr = htonl(this->_cfg->getHost());
+	// this->_address.sin_port = htons(80);
+	this->_address.sin_port = htons(this->_cfg->getPort());
+
+	if (bind(this->_serverFd, (struct sockaddr *)&this->_address, sizeof(this->_address)) < 0) { 
+		throw (std::runtime_error("bind"));
+	}
+}
+
+void Socket::_listenConnection(void)
+{
+	if (listen(this->_serverFd, SOMAXCONN) < 0) {
+		throw (std::runtime_error("listen"));
+	}
+}
+
+/* ************************************************************************** */
+/*                          Public Member functions                           */
+/* ************************************************************************** */
+
+void Socket::acceptConnection(void)
+{
+	int addrlen = sizeof(this->_address);
+
+	if ((this->_newSocketFd = accept(this->_serverFd, (struct sockaddr *)&this->_address, (socklen_t*)&addrlen))<0) {
+		throw (std::runtime_error("accept"));
+	}
 }
 
 /* ************************************************************************** */
@@ -38,38 +82,4 @@ Socket::~Socket(void)
 int Socket::getNewServerFd(void) const
 {
 	return (this->_newSocketFd);
-}
-
-/* ************************************************************************** */
-/*                          Public Member functions                           */
-/* ************************************************************************** */
-
-void Socket::launch(void)
-{
-	if ((this->_serverFd = socket(this->_domain, this->_service, this->_protocol)) < 0) {
-		throw (std::runtime_error("socket"));
-	}
-
-	memset((char *)&this->_address, 0, sizeof(this->_address));
-
-	this->_address.sin_family = this->_domain;
-	this->_address.sin_addr.s_addr = htonl(this->_interface);
-	this->_address.sin_port = htons(this->_port);
-
-	if (bind(this->_serverFd, (struct sockaddr *)&this->_address, sizeof(this->_address)) < 0) { 
-		throw (std::runtime_error("bind"));
-	}
-
-	if (listen(this->_serverFd, this->_backlog) < 0) {
-		throw (std::runtime_error("listen"));
-	}
-}
-
-void Socket::acceptConnection(void)
-{
-	int addrlen = sizeof(this->_address);
-
-	if ((this->_newSocketFd = accept(this->_serverFd, (struct sockaddr *)&this->_address, (socklen_t*)&addrlen))<0) {
-		throw (std::runtime_error("accept"));
-	}
 }

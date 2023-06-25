@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 16:17:26 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/22 18:55:47 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/25 14:43:06 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,22 @@ int main(int ac, char **av)
 	}
 
 	try {
-		std::string cfgFile = av[1];
-
 		File config(static_cast<std::string>(av[1]));
-		Parser parser(static_cast<std::string>(av[1]));
+		std::vector<Parser *> cfg;
+		std::vector<Socket *> server;
+		int serverCount = 1;
 
-		Socket socket;
-		socket.launch();
+		for (int i = 0; i < serverCount; i++) {
+			Parser *tmp = new Parser(static_cast<std::string>(av[1]));
+			cfg.push_back(tmp);
+		}
+
+		cfg[0]->printParser();
+
+		for (int i = 0; i < serverCount; i++) {
+			Socket *tmp = new Socket(cfg[i]);
+			server.push_back(tmp);
+		}
 
 		std::ifstream file("www/html/index.html");
 		std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
@@ -40,8 +49,8 @@ int main(int ac, char **av)
 
 		while (1)
 		{
-			socket.acceptConnection();
-			int newSocket = socket.getNewServerFd();
+			server[0]->acceptConnection();
+			int newSocket = server[0]->getNewServerFd();
 			write(newSocket, hello, strlen(hello));
 			close(newSocket);
 		}
