@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Utils.cpp                                          :+:      :+:    :+:   */
+/*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:07:12 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/22 18:17:50 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/27 09:06:56 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,3 +22,11 @@ std::string strTrimWhiteSpaces(const std::string &str)
 
 	return (str.substr(first, last - first + 1));
 }
+
+/* void signal_handler(int signal)
+{
+    if (signal == SIGINT) {
+		std::cout << "Closing the server.." << std::endl;
+		serverStatus = false;
+	}
+} */

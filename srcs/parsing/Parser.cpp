@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/21 09:09:25 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/25 14:19:14 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/27 09:40:24 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,17 @@ void Parser::_openCfgFile(void)
 	}
 
 	std::string line;
+	int serverBlock = 0;
 	while (std::getline(inputFile, line))
 	{
 		if (line.empty())
 			continue ;
 		line = strTrimWhiteSpaces(line);
-		if (line.find("listen") == 0)
+		if (line.find("server") == 0 && strTrimWhiteSpaces(line.substr(6)) == "{")
+			serverBlock++;
+		else if (!serverBlock)
+			throw (std::runtime_error("no server block"));
+		else if (line.find("listen") == 0)
 			this->_setPort(line.substr(6));
 		else if (line.find("host") == 0)
 			this->_setHost(line.substr(4));
@@ -53,6 +58,8 @@ void Parser::_openCfgFile(void)
 			this->_setRoot(line.substr(4));
 		else if (line.find("index") == 0)
 			this->_setIndex(line.substr(5));
+		else if (strTrimWhiteSpaces(line) == "}")
+			break ;
 	}
 	inputFile.close();
 }

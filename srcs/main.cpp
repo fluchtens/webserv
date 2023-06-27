@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/16 16:17:26 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/27 07:35:12 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/27 09:07:16 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include "Parser.hpp"
 #include "Socket.hpp"
 
+// volatile bool serverStatus = true;
+
 int main(int ac, char **av)
 {
 	if (ac != 2) {
@@ -26,6 +28,7 @@ int main(int ac, char **av)
 	}
 
 	try {
+		// signal(SIGINT, signal_handler);
 		File config(static_cast<std::string>(av[1]));
 		std::vector<Parser *> cfg;
 		std::vector<Socket *> server;
@@ -48,7 +51,7 @@ int main(int ac, char **av)
 		std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " + std::to_string(content.length()) + "\n\n" + content;
 		const char *hello = response.c_str();
 
-		while (1)
+		while (true)
 		{
 			server[0]->acceptConnection();
 			int newSocket = server[0]->getNewServerFd();
