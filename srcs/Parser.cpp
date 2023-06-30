@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/30 15:46:49 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/30 16:19:41 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 /*                           Constructor Destructor                           */
 /* ************************************************************************** */
 
-Parser::Parser(std::ifstream &cfgFile) : _port(80), _host(localhost), _serverName("default_name"), _index("index.html"), _nbrLocation(0)
+Parser::Parser(std::ifstream &cfgFile) : _port(80), _host("127.0.0.1"), _serverName("default_name"), _index("index.html"), _nbrLocation(0)
 {	
 	this->parseCfgFile(cfgFile);
 	this->printParsing();
@@ -166,7 +166,7 @@ bool	Parser::getLocationDeny(std::string url) const
 size_t	Parser::getNbrLocation() const
 { return (_nbrLocation); }
 
-std::vector<Parser::Location> &Parser::getLocation()
+std::vector<Location> &Parser::getLocation()
 { return (_location); }
 
 /* ************************************************************************** */
@@ -270,7 +270,7 @@ void Parser::parsePort(const std::string &port)
 
 void Parser::parseHost(const std::string &host)
 {
-	this->_host = (host == "localhost" ? localhost : host);
+	this->_host = (host == "localhost" ? "127.0.0.1" : host);
 }
 
 void Parser::parseServerName(const std::string &serverName)
@@ -347,149 +347,4 @@ void Parser::printParsing(void) const
 		it++;
 	}
 	std::cout << "/********************************/" << std::endl;
-}
-
-/*************************** Class Location ****************************/
-/*************************** Class Location ****************************/
-/*************************** Class Location ****************************/
-/*************************** Class Location ****************************/
-/*************************** Class Location ****************************/
-/*************************** Class Location ****************************/
-/*************************** Class Location ****************************/
-/*************************** Class Location ****************************/
-/*************************** Class Location ****************************/
-/*************************** Class Location ****************************/
-/*************************** Class Location ****************************/
-
-Parser::Location::Location(std::ifstream &cfgFile, const std::string &url) : _url(url), _autoIndex(false), _deny(false)
-{
-	std::string line;
-
-	while (getline(cfgFile, line))
-	{
-		std::stringstream	ss;
-		std::string			key;
-		std::string			value;
-
-		ss << line;
-		if (line.empty())
-			continue;
-		ss >> key;
-		if (key == "}")
-			break;
-		while (ss >> value)
-		{
-			if (key == "allow")
-			{
-				std::string	tmp;
-				if (!ss.eof())
-					tmp = value.substr(0, value.size());
-				else
-					tmp = value.substr(0, value.size() -1);
-				if (tmp != "GET" && tmp != "POST" && tmp != "DELETE")
-				{
-					std::cerr << "Error : file config not valide. " << tmp << " is not valide." << std::endl;
-					exit (-1);
-				}
-				_allow.push_back(tmp);
-			}
-			else if (key == "root")
-				_root = value.substr(0, value.size() - 1);
-			else if (key == "index")
-				_index = value.substr(0, value.size() - 1);
-			else if (key == "path")
-				_path = value.substr(0, value.size() - 1);
-			else if (key == "autoindex")
-			{
-				if(value.substr(0, value.size() - 1) == "on")
-					_autoIndex = true;
-			}
-			else if (key == "return")
-				_return = value.substr(0, value.size() - 1);
-            else if(key == "cgi_path")
-                _cgiPath = value.substr(0, value.size() - 1);
-			else if(key == "cgi_script")
-                _cgiScript = value.substr(0, value.size() - 1);
-			else if(key == "client_max_body_size")
-                _maxSize = std::atoi(value.substr(0, value.size() - 1).c_str());
-			else if (key == "deny")
-			{
-				if(value.substr(0, value.size() - 1) == "on")
-					_deny = true;
-			}
-		}
-		line.clear();
-		ss.clear();
-		key.clear();
-		value.clear();
-	}
-}
-
-Parser::Location::Location(const Location &srcs)
-{ *this = srcs; }
-
-Parser::Location::~Location()
-{}
-
-Parser::Location & Parser::Location::operator=(const Location & srcs)
-{
-	if (this != &srcs)
-	{
-		_url = srcs._url;
-		for (std::vector<std::string>::const_iterator it = srcs._allow.begin(); it < srcs._allow.end(); it++)
-			_allow.push_back(*it);
-		_root = srcs._root;
-		_index = srcs._index;
-		_path = srcs._path;
-		_autoIndex = srcs._autoIndex;
-		_return = srcs._return;
-        _cgiPath = srcs._cgiPath;
-        _cgiScript = srcs._cgiScript;
-		_maxSize = srcs._maxSize;
-		_deny = srcs._deny;
-	}
-	return (*this);
-}
-
-const std::string & Parser::Location::getUrl() const
-{ return (_url); }
-
-const std::vector<std::string> & Parser::Location::getAllow() const
-{ return (_allow); }
-
-const std::string & Parser::Location::getRoot() const
-{ return (_root); }
-
-const std::string & Parser::Location::getIndex() const
-{ return (_index); }
-
-const std::string &	Parser::Location::getPath() const
-{ return (_path); }
-
-const bool & Parser::Location::getAutoIndex() const
-{ return (_autoIndex); }
-
-const std::string & Parser::Location::getReturn() const
-{ return (_return); }
-
-const std::string & Parser::Location::getCgiPath() const
-{ return (_cgiPath); }
-
-const std::string & Parser::Location::getCgiScript() const
-{ return (_cgiScript); }
-
-const int & Parser::Location::getMaxSize() const
-{ return (_maxSize); }
-
-const bool & Parser::Location::getDeny() const
-{ return (_deny); }
-
-bool Parser::Location::isMethodAllowed(std::string method) const
-{
-	for (std::vector<std::string>::const_iterator it = _allow.begin(); it != _allow.end(); it++)
-	{
-		if (*it == method)
-			return (true);
-	}
-	return (false);
 }
