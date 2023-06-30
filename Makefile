@@ -6,7 +6,7 @@
 #    By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/16 16:17:24 by fluchten          #+#    #+#              #
-#    Updated: 2023/06/30 16:14:05 by fluchten         ###   ########.fr        #
+#    Updated: 2023/06/30 16:22:09 by fluchten         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,17 +23,16 @@ OBJS_DIR = objs
 INC_DIRS = $(shell find $(INC_DIR) -type d)
 INC_FLAGS = $(addprefix -I, $(INC_DIRS))
 
-SRCS =	temp/autoindex.cpp \
+SRCS =	parsing/Location.cpp parsing/Parser.cpp \
+		utils/errors.cpp utils/signals.cpp utils/utils.cpp \
+		main.cpp \
+		temp/autoindex.cpp \
 		temp/Cgi.cpp \
 		temp/Client.cpp \
 		temp/Connection.cpp \
 		temp/HTTPRequest.cpp \
 		temp/Response.cpp \
-		temp/Server.cpp \
-		Location.cpp \
-		main.cpp \
-		Parser.cpp \
-		utils/errors.cpp utils/signals.cpp utils/utils.cpp
+		temp/Server.cpp
 
 OBJS = $(addprefix ${OBJS_DIR}/, ${SRCS:%.cpp=%.o})
 
