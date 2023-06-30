@@ -6,67 +6,77 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:40 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/30 16:20:27 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/30 16:56:20 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Location.hpp"
 
+/* ************************************************************************** */
+/*                           Constructor Destructor                           */
+/* ************************************************************************** */
+
 Location::Location(std::ifstream &cfgFile, const std::string &url) : _url(url), _autoIndex(false), _deny(false)
 {
 	std::string line;
 
-	while (getline(cfgFile, line))
+	while (std::getline(cfgFile, line))
 	{
-		std::stringstream	ss;
-		std::string			key;
-		std::string			value;
-
-		ss << line;
 		if (line.empty())
 			continue;
+
+		std::stringstream ss(line);
+		std::string key;
+		std::string value;
+
 		ss >> key;
+
 		if (key == "}")
 			break;
+
 		while (ss >> value)
 		{
+			std::string tmp = value.substr(0, value.size() - 1);
+			// std::cout << key << " = " << value << std::endl;
+
 			if (key == "allow")
 			{
-				std::string	tmp;
-				if (!ss.eof())
-					tmp = value.substr(0, value.size());
-				else
-					tmp = value.substr(0, value.size() -1);
-				if (tmp != "GET" && tmp != "POST" && tmp != "DELETE")
-				{
-					std::cerr << "Error : file config not valide. " << tmp << " is not valide." << std::endl;
-					exit (-1);
+				std::string	method;
+				if (!ss.eof()) {
+					method = value.substr(0, value.size());
+				} else {
+					method = value.substr(0, value.size() -1);
 				}
-				_allow.push_back(tmp);
+				if (method != "GET" && method != "POST" && method != "DELETE") {
+					throw std::runtime_error("Invalid value for allow key (" + method + ")");
+				}
+				this->_allow.push_back(method);
 			}
 			else if (key == "root")
-				_root = value.substr(0, value.size() - 1);
+				this->_root = tmp;
 			else if (key == "index")
-				_index = value.substr(0, value.size() - 1);
+				this->_index = tmp;
 			else if (key == "path")
-				_path = value.substr(0, value.size() - 1);
+				this->_path = tmp;
 			else if (key == "autoindex")
 			{
-				if(value.substr(0, value.size() - 1) == "on")
-					_autoIndex = true;
+				if (tmp == "on") {
+					this->_autoIndex = true;
+				}
 			}
 			else if (key == "return")
-				_return = value.substr(0, value.size() - 1);
+				this->_return = tmp;
             else if(key == "cgi_path")
-                _cgiPath = value.substr(0, value.size() - 1);
+                this->_cgiPath = tmp;
 			else if(key == "cgi_script")
-                _cgiScript = value.substr(0, value.size() - 1);
+                this->_cgiScript = tmp;
 			else if(key == "client_max_body_size")
-                _maxSize = std::atoi(value.substr(0, value.size() - 1).c_str());
+                this->_maxSize = std::atoi(tmp.c_str());
 			else if (key == "deny")
 			{
-				if(value.substr(0, value.size() - 1) == "on")
-					_deny = true;
+				if (tmp == "on") {
+					this->_deny = true;
+				}
 			}
 		}
 		line.clear();
@@ -76,64 +86,69 @@ Location::Location(std::ifstream &cfgFile, const std::string &url) : _url(url), 
 	}
 }
 
-Location::Location(const Location &srcs)
-{ *this = srcs; }
-
-Location::~Location()
-{}
-
-Location & Location::operator=(const Location & srcs)
+Location::~Location(void)
 {
-	if (this != &srcs)
-	{
-		_url = srcs._url;
-		for (std::vector<std::string>::const_iterator it = srcs._allow.begin(); it < srcs._allow.end(); it++)
-			_allow.push_back(*it);
-		_root = srcs._root;
-		_index = srcs._index;
-		_path = srcs._path;
-		_autoIndex = srcs._autoIndex;
-		_return = srcs._return;
-        _cgiPath = srcs._cgiPath;
-        _cgiScript = srcs._cgiScript;
-		_maxSize = srcs._maxSize;
-		_deny = srcs._deny;
-	}
-	return (*this);
+	return ;
 }
 
-const std::string & Location::getUrl() const
-{ return (_url); }
+/* ************************************************************************** */
+/*                              Getters / Setters                             */
+/* ************************************************************************** */
 
-const std::vector<std::string> & Location::getAllow() const
-{ return (_allow); }
+const std::string &Location::getUrl(void) const
+{
+	return (this->_url);
+}
 
-const std::string & Location::getRoot() const
-{ return (_root); }
+const std::vector<std::string> &Location::getAllow(void) const
+{
+	return (this->_allow);
+}
 
-const std::string & Location::getIndex() const
-{ return (_index); }
+const std::string &Location::getRoot(void) const
+{
+	return (this->_root);
+}
 
-const std::string &	Location::getPath() const
-{ return (_path); }
+const std::string &Location::getIndex(void) const
+{
+	return (this->_index);
+}
 
-const bool & Location::getAutoIndex() const
-{ return (_autoIndex); }
+const std::string &Location::getPath(void) const
+{
+	return (this->_path);
+}
 
-const std::string & Location::getReturn() const
-{ return (_return); }
+const bool &Location::getAutoIndex(void) const
+{
+	return (this->_autoIndex);
+}
 
-const std::string & Location::getCgiPath() const
-{ return (_cgiPath); }
+const std::string &Location::getReturn(void) const
+{
+	return (this->_return);
+}
 
-const std::string & Location::getCgiScript() const
-{ return (_cgiScript); }
+const std::string &Location::getCgiPath(void) const
+{
+	return (this->_cgiPath);
+}
 
-const int & Location::getMaxSize() const
-{ return (_maxSize); }
+const std::string &Location::getCgiScript(void) const
+{
+	return (this->_cgiScript);
+}
 
-const bool & Location::getDeny() const
-{ return (_deny); }
+const int &Location::getMaxSize(void) const
+{
+	return (this->_maxSize);
+}
+
+const bool &Location::getDeny(void) const
+{
+	return (this->_deny);
+}
 
 bool Location::isMethodAllowed(std::string method) const
 {

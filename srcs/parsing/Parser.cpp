@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/30 16:19:41 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/06/30 16:45:14 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,16 +214,18 @@ void Parser::parseCfgFile(std::ifstream &cfgFile)
 				throw (std::runtime_error("information found outside a server block"));
 			}
 		} else {
+			std::string tmp = value.substr(0, value.size() - 1);
+
 			if (key == "listen")
-				this->parsePort(value.substr(0, value.size() - 1));
+				this->parsePort(tmp);
 			else if (key == "host")
-				this->parseHost(value.substr(0, value.size() - 1));
+				this->parseHost(tmp);
 			else if (key == "server_name")
-				this->parseServerName(value.substr(0, value.size() - 1));
+				this->_serverName = tmp;
 			else if (key == "root")
-				this->parseRoot(value.substr(0, value.size() - 1));
+				this->_root = tmp;
 			else if (key == "index")
-				this->parseIndex(value.substr(0, value.size() - 1));
+				this->_index = tmp;
 			else if (key == "error_page")
 			{
 				std::string page;
@@ -271,21 +273,6 @@ void Parser::parsePort(const std::string &port)
 void Parser::parseHost(const std::string &host)
 {
 	this->_host = (host == "localhost" ? "127.0.0.1" : host);
-}
-
-void Parser::parseServerName(const std::string &serverName)
-{
-	this->_serverName = serverName;
-}
-
-void Parser::parseRoot(const std::string &root)
-{
-	this->_root = root;
-}
-
-void Parser::parseIndex(const std::string &index)
-{
-	this->_index = index;
 }
 
 void Parser::parseErrorPage(const std::string &error, const std::string &page)
