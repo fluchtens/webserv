@@ -5,62 +5,105 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/16 16:17:26 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/27 09:07:16 by fluchten         ###   ########.fr       */
+/*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
+/*   Updated: 2023/06/29 10:19:40 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "File.hpp"
+#include "utils.hpp"
+#include "Connection.hpp"
 #include "Parser.hpp"
-#include "Socket.hpp"
+#include "Server.hpp"
 
-// volatile bool serverStatus = true;
+std::vector<Server *>		_server;
+std::vector<Parser *>	_config;
+Connection					_connection;
+volatile bool				boolStart = 1;
+char						**_env;
 
-int main(int ac, char **av)
+void creatFileDeleteMethod()
 {
-	if (ac != 2) {
-		std::cerr << "Usage: ./webserv <config_file>" << std::endl;
+	std::ofstream outFile;
+    for (int i = 1; i <= 4; ++i)
+	{
+        std::stringstream fileName;
+        fileName << "fichier" << i << ".txt";
+
+        outFile.open("./www/a_supprimer/" + fileName.str(), std::ios::binary | std::ios::out);
+        if (outFile.is_open())
+		{
+            outFile << "Contenu du fichier " << i << std::endl;
+            outFile.close();
+        }
+		else
+            std::cerr << "Impossible de créer le fichier " << fileName.str() << std::endl;
+    }
+}
+
+int main(int ac, char **av, char **env)
+{
+	signal(SIGINT, signal_handler);
+	_env = env;
+
+	std::string cfgFilePath;
+	if (ac > 2) {
+		printError("wrong number of input arguments");
+		return (1);
+	}
+	else if (ac == 1) {
+		printWarning("no file specified, use default configuration file");
+		cfgFilePath = "config/default.conf";
+	}
+	else {
+		if (!isValidFileExtension(static_cast<std::string>(av[1]))) {
+			printError("invalid configuration file (.conf file required)");
+			return (1);
+		}
+		cfgFilePath = static_cast<std::string>(av[1]);
+	}
+
+	std::ifstream cfgFile(cfgFilePath);
+	if (!cfgFile.is_open()) {
+		printError("failed to open configuration file");
+		return (1);
+	}
+
+	int _nbrServer = countServerBlock(cfgFile);
+	if (!_nbrServer) {
+		printError("no block server found");
 		return (1);
 	}
 
 	try {
-		// signal(SIGINT, signal_handler);
-		File config(static_cast<std::string>(av[1]));
-		std::vector<Parser *> cfg;
-		std::vector<Socket *> server;
-		int serverCount = 1;
-
-		for (int i = 0; i < serverCount; i++) {
-			Parser *tmp = new Parser(static_cast<std::string>(av[1]));
-			cfg.push_back(tmp);
+		for (int i = 0; i < _nbrServer; i++) {
+			Parser *tmp = new Parser(cfgFile);
+			_config.push_back(tmp);
 		}
 
-		cfg[0]->printParser();
-
-		for (int i = 0; i < serverCount; i++) {
-			Socket *tmp = new Socket(cfg[i]);
-			server.push_back(tmp);
+		for (int i = 0; i < _nbrServer; i++) {
+			Server *tmp = new Server(_config[i]);
+			_server.push_back(tmp);
 		}
 
-		std::ifstream file("www/html/index.html");
-		std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-		std::string response = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " + std::to_string(content.length()) + "\n\n" + content;
-		const char *hello = response.c_str();
+		creatFileDeleteMethod();
 
-		while (true)
+		Connection	_tmp(_server);
+		_connection = _tmp;
+		while (boolStart)
 		{
-			server[0]->acceptConnection();
-			int newSocket = server[0]->getNewServerFd();
-			write(newSocket, hello, strlen(hello));
-			close(newSocket);
+			_connection.initConnection();
+			_connection.runSelect();
+			_connection.acceptSocket();
+			_connection.traitement();
 		}
+		delProg();
+		std::cout << "Fin du Programme\n";
 	}
 	catch (std::exception &e) {
-		std::cout << "Error: " << e.what() << "." << std::endl;
+		printError(e.what());
 		return (1);
 	}
 

@@ -1,36 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   File.hpp                                           :+:      :+:    :+:   */
+/*   signals.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/22 18:19:00 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/22 18:51:48 by fluchten         ###   ########.fr       */
+/*   Created: 2023/06/28 18:05:13 by fluchten          #+#    #+#             */
+/*   Updated: 2023/06/28 18:05:28 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FILE_HPP
-# define FILE_HPP
+#include "utils.hpp"
 
-# include <iostream>
-# include <fstream>
-# include "utils.hpp"
-
-class File
+void signal_handler(int signal)
 {
-	private:
-		std::string _cfgFile;
-		std::string _fileContent;
-
-		bool _isValidExtension(void);
-		void _readFile(void);
-		void _checkFile(void);
-		bool _isBracketsClosed(void);
-
-	public:
-		File(const std::string &cfgFile);
-		~File(void);
-};
-
-#endif
+    if (signal == SIGINT)
+	{
+    	std::cout << "Signal SIGINT reçu. Fermeture du programme..." << std::endl;
+		boolStart = 0;
+	}
+	if (signal == SIGPIPE)
+	{
+		std::cout << "Signal SIGPIPE recu. Fermeture du programme..." << std::endl;
+		boolStart = 0;
+	}
+}
