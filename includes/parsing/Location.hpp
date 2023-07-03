@@ -6,19 +6,16 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/30 17:00:13 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/03 10:12:18 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LOCATION_HPP
 #define LOCATION_HPP
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <map>
+# include <fstream>
+# include <sstream>
+# include <vector>
 
 class Location
 {

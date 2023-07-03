@@ -1,9 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Parser.hpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/07/03 10:13:09 by fluchten          #+#    #+#             */
+/*   Updated: 2023/07/03 11:12:50 by fluchten         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <sstream>
 #include <vector>
 #include <map>
