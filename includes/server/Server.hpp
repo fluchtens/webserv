@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/04 20:01:24 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/05 08:58:46 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ class Server
 		void					bindSocket(void);
 		void					listenTCP(void);
 		void					closeSocket();
-		in_addr_t				convertIp(const std::string &str);
+		in_addr_t				convertIpAddress(const std::string &str);
 
 };
 

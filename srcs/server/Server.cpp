@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/04 20:00:59 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/05 09:20:34 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,14 +122,11 @@ void Server::creatSocket(void)
 	// this->_serverFd = socket(AF_INET, SOCK_STREAM, 0);
 	this->_serverFd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (this->_serverFd < 0) {
-		std::cerr << "\033[1;31mError : Server::creatSocket socket() " << strerror(errno) << "\033[0m" << std::endl;
-		exit(1);
+		throw (std::runtime_error("socket()"));
 	}
 	if (fcntl(this->_serverFd, F_SETFL, O_NONBLOCK) < 0) {
-		std::cerr << "\033[1;31mError : Server::creatSocket fcntl() " << strerror(errno) << "\033[0m" << std::endl;
-		exit(1);
+		throw (std::runtime_error("fcntl()"));
 	}
-	std::cout << "\033[34mSocket created : \033[0m" << this->_serverFd << " en mode TCP/IP." << std::endl;
 }
 
 void Server::bindSocket(void)
@@ -137,22 +134,20 @@ void Server::bindSocket(void)
 	std::memset(static_cast<void *>(&this->_address), 0, sizeof(this->_address));
 
 	this->_address.sin_family = AF_INET;
-	this->_address.sin_addr.s_addr = convertIp(getHost()); // htonl(INADDR_ANY)
-	this->_address.sin_port = htons(getPort());
+	this->_address.sin_addr.s_addr = convertIpAddress(this->getHost()); // htonl(INADDR_ANY)
+	this->_address.sin_port = htons(this->getPort());
 
 	if (bind(this->_serverFd, reinterpret_cast<sockaddr *>(&this->_address), sizeof(this->_address)) < 0) {
-		std::cerr << "\033[1;31mError : Server::bindSocket bind() " << strerror(errno) << "\033[0m" << std::endl;
-		exit(1);
+		throw (std::runtime_error("bind()"));
 	}
 }
 
 void Server::listenTCP(void)
 {
 	if (listen(this->_serverFd, this->_maxConnection) < 0) {
-		std::cerr << "\033[1;31mError : Server::linstenTCP listen() " << strerror(errno) << "\033[0m" << std::endl;
-		exit (1);
+		throw (std::runtime_error("listen()"));
 	}
-	std::cout << "\033[33mlistenTCP() - Ecoute du port " << getPort() << "\033[0m" << std::endl;
+	std::cout << "\033[33mlistenTCP() : Listening to port " << getPort() << "\033[0m" << std::endl;
 }
 
 void Server::closeSocket(void)
@@ -160,36 +155,40 @@ void Server::closeSocket(void)
     close(this->_serverFd);
 }
 
-in_addr_t Server::convertIp(const std::string &str)
+in_addr_t Server::convertIpAddress(const std::string &str)
 {
-	std::vector<std::string>	octets;
-    std::stringstream			ss(str);
-    std::string					token;
-
-    while (getline(ss, token, '.'))
-        octets.push_back(token);
-    if (octets.size() != 4)
-	{
-        std::cerr << "\033[33mError: invalid IP address Server::convertIp() " << str << "\033[0m" << std::endl;
-        exit(1);
-    }
+	std::vector<std::string> octets;
+    std::stringstream ss(str);
+    std::string line;
     in_addr_t addr = 0;
-    for (int i = 3; i >= 0; --i)
-	{
-        try
-		{
-            int octet = stoi(octets[i]);
-            if (octet < 0 || octet > 255) {
-                std::cerr << "Error: invalid IP address " << str << std::endl;
-                exit(-1);
-            }
-            addr |= static_cast<in_addr_t>(octet) << ((3 - i) * 8);
-        }
-		catch (const std::exception& e)
-		{
-            std::cerr << "\033[33mError: invalid IP address Server::convertIp() " << str << "\033[0m" << std::endl;
-            exit(1);
-        }
+
+    while (getline(ss, line, '.')) {
+        octets.push_back(line);
+	}
+    if (octets.size() != 4) {
+		throw (std::runtime_error("invalid IP address"));
     }
+
+    for (int i = 3; i >= 0; --i) {
+		for (size_t j = 0; j < octets[i].length(); j++) {
+			if (!std::isdigit(octets[i][j])) {
+				throw (std::runtime_error("invalid IP address"));
+			}
+		}
+
+		std::stringstream ss(octets[i]);
+		int octet;
+		ss >> octet;
+
+		if (ss.fail()) {
+			throw (std::runtime_error("invalid IP address"));
+		}
+		if (octet < 0 || octet > 255) {
+			throw (std::runtime_error("invalid IP address"));
+		}
+
+		addr |= static_cast<in_addr_t>(octet) << ((3 - i) * 8);
+    }
+
     return htonl(addr);
 }
