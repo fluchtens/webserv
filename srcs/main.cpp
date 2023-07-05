@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/05 09:53:40 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/05 09:58:51 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 std::vector<Server *> _server;
 std::vector<Parser *> _config;
 Connection _connection;
-volatile bool boolStart = 1;
+volatile bool serverStatus = true;
 char **_env;
 
 void creatFileDeleteMethod()
@@ -71,28 +71,28 @@ int main(int ac, char **av, char **env)
 		return (1);
 	}
 
-	int _nbrServer = countServerBlock(cfgFile);
-	if (!_nbrServer) {
+	int serverBlockCount = countServerBlock(cfgFile);
+	if (!serverBlockCount) {
 		printError("no block server found");
 		return (1);
 	}
 
 	try {
-		for (int i = 0; i < _nbrServer; i++) {
+		for (int i = 0; i < serverBlockCount; i++) {
 			Parser *tmp = new Parser(cfgFile);
 			_config.push_back(tmp);
 		}
 
-		for (int i = 0; i < _nbrServer; i++) {
+		for (int i = 0; i < serverBlockCount; i++) {
 			Server *tmp = new Server(_config[i]);
 			_server.push_back(tmp);
 		}
 
 		creatFileDeleteMethod();
 
-		Connection	_tmp(_server);
-		_connection = _tmp;
-		while (boolStart)
+		Connection tmp(_server);
+		_connection = tmp;
+		while (serverStatus)
 		{
 			_connection.initConnection();
 			_connection.runSelect();

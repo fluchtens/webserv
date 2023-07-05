@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:42:51 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/03 10:12:32 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/05 09:57:36 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 extern std::vector<Server *>		_server;
 extern std::vector<Parser *>	_config;
 extern Connection					_connection;
-extern volatile bool				boolStart;
+extern volatile bool				serverStatus;
 extern char							**_env;
 
 /* Errors */
