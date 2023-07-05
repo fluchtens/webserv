@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/30 16:45:14 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/05 09:48:15 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 /* ************************************************************************** */
 
 Parser::Parser(std::ifstream &cfgFile) : _port(80), _host("127.0.0.1"), _serverName("default_name"), _index("index.html"), _nbrLocation(0)
-{	
+{
 	this->parseCfgFile(cfgFile);
 	this->printParsing();
 }
@@ -163,11 +163,15 @@ bool	Parser::getLocationDeny(std::string url) const
 	exit (-3);
 }
 
-size_t	Parser::getNbrLocation() const
-{ return (_nbrLocation); }
+size_t	Parser::getNbrLocation(void) const
+{
+	return (this->_nbrLocation);
+}
 
-std::vector<Location> &Parser::getLocation()
-{ return (_location); }
+std::vector<Location> &Parser::getLocation(void)
+{
+	return (this->_location);
+}
 
 /* ************************************************************************** */
 /*                          Private Member functions                          */

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/05 09:20:34 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/05 09:46:49 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 /*                           Constructor Destructor                           */
 /* ************************************************************************** */
 
-Server::Server(Parser *server) :
-_config(server),
-_currentConnection(0),
-_maxConnection(100),
-_location(_config->getLocation()),
-_nbrLocation(_config->getNbrLocation())
+Server::Server(Parser *server)
 {
+	this->_cfg = server;
+	this->_currentConnection = 0;
+	this->_maxConnection = 100;
+	this->_location = this->_cfg->getLocation();
+	this->_nbrLocation = this->_cfg->getNbrLocation();
 	this->creatSocket();
 	this->bindSocket();
 	this->listenTCP();
@@ -30,7 +30,6 @@ _nbrLocation(_config->getNbrLocation())
 
 Server::~Server(void)
 {
-	std::cout << "\033[32mLiberation des sockets serveur : " << getServerName() <<  "\033[0m" <<std::endl; 
 	this->closeSocket();
 }
 
@@ -48,44 +47,44 @@ Server &Server::getServer(void)
 	return (*this);
 }
 
-const std::string &Server::getHost(void) const
-{
-	return (this->_config->getHost());
-}
-		
 const unsigned int &Server::getPort(void) const
 {
-	return (this->_config->getPort());
+	return (this->_cfg->getPort());
+}
+
+const std::string &Server::getHost(void) const
+{
+	return (this->_cfg->getHost());
 }
 
 const std::string &Server::getServerName(void) const
 {
-	return (this->_config->getServerName());
+	return (this->_cfg->getServerName());
 }
 
 const std::string &Server::getRoot(void) const
 {
-	return (this->_config->getRoot());
+	return (this->_cfg->getRoot());
 }
 
 const std::string &Server::getIndex(void) const
 {
-	return (this->_config->getIndex());
+	return (this->_cfg->getIndex());
 }
 
 const std::string Server::getErrorPage(int code) const
 {
-	return (this->_config->getErrorPage(code));
+	return (this->_cfg->getErrorPage(code));
 }
 
 size_t Server::getNbrLocation(void) const
 {
-	return (this->_config->getNbrLocation());
+	return (this->_cfg->getNbrLocation());
 }
 
 Parser &Server::getConfig(void)
 {
-	return (*this->_config);
+	return (*this->_cfg);
 }
 
 std::vector<Location> &Server::getLocation(void)
@@ -134,8 +133,8 @@ void Server::bindSocket(void)
 	std::memset(static_cast<void *>(&this->_address), 0, sizeof(this->_address));
 
 	this->_address.sin_family = AF_INET;
-	this->_address.sin_addr.s_addr = convertIpAddress(this->getHost()); // htonl(INADDR_ANY)
-	this->_address.sin_port = htons(this->getPort());
+	this->_address.sin_addr.s_addr = convertIpAddress(this->_cfg->getHost()); // htonl(INADDR_ANY)
+	this->_address.sin_port = htons(this->_cfg->getPort());
 
 	if (bind(this->_serverFd, reinterpret_cast<sockaddr *>(&this->_address), sizeof(this->_address)) < 0) {
 		throw (std::runtime_error("bind()"));
@@ -147,7 +146,7 @@ void Server::listenTCP(void)
 	if (listen(this->_serverFd, this->_maxConnection) < 0) {
 		throw (std::runtime_error("listen()"));
 	}
-	std::cout << "\033[33mlistenTCP() : Listening to port " << getPort() << "\033[0m" << std::endl;
+	std::cout << "\033[33mlistenTCP() : Listening to port " << this->_cfg->getPort() << "\033[0m" << std::endl;
 }
 
 void Server::closeSocket(void)

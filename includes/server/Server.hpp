@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/05 08:58:46 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/05 09:38:50 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ class Server
 		void					decrementCurrentConnection(void);
 
 	private :
-		Parser					*_config;
+		Parser					*_cfg;
 		int						_currentConnection;
 		int						_maxConnection;
 		int						_serverFd;
