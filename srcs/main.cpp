@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/05 09:58:51 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/11 14:23:43 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,20 +49,8 @@ int main(int ac, char **av, char **env)
 	_env = env;
 
 	std::string cfgFilePath;
-	if (ac > 2) {
-		printError("wrong number of input arguments");
+	if (!isValidInputArgs(ac, av, cfgFilePath)) {
 		return (1);
-	}
-	else if (ac == 1) {
-		printWarning("no file specified, use default configuration file");
-		cfgFilePath = "config/default.conf";
-	}
-	else {
-		if (!isValidFileExtension(static_cast<std::string>(av[1]))) {
-			printError("invalid configuration file (.conf file required)");
-			return (1);
-		}
-		cfgFilePath = static_cast<std::string>(av[1]);
 	}
 
 	std::ifstream cfgFile(cfgFilePath);

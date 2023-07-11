@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/06/28 20:39:20 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/11 14:30:04 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,33 @@ void	delProg()
 		delete _config[i];
 }
 
-bool isValidFileExtension(const std::string &cfgFile)
+bool isValidInputArgs(int ac, char **av, std::string &cfgFilePath)
 {
-	size_t len = cfgFile.length();
+	if (ac > 2) {
+		printError("wrong number of input arguments");
+		return (false);
+	}
+	else if (ac == 1) {
+		printWarning("no file specified, use default configuration file");
+		cfgFilePath = "config/default.conf";
+	}
+	else {
+		if (!isValidFileExtension(static_cast<std::string>(av[1]), ".conf")) {
+			printError("invalid configuration file (.conf file required)");
+			return (false);
+		}
+		cfgFilePath = static_cast<std::string>(av[1]);
+	}
+	return (true);
+}
 
-	if (len >= 5) {
-		if (cfgFile.substr(len - 5) == ".conf") {
+bool isValidFileExtension(const std::string &cfgFile, const std::string &extension)
+{
+	size_t cfgFilelen = cfgFile.length();
+	size_t extensionLen = extension.length();
+
+	if (cfgFilelen >= extensionLen) {
+		if (cfgFile.substr(cfgFilelen - extensionLen) == extension) {
 			return (true);
 		} else {
 			return (false);
