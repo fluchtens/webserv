@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:42:51 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/11 14:29:12 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/11 14:52:42 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,24 +20,24 @@
 # include "Server.hpp"
 # include "Connection.hpp"
 
-extern std::vector<Server *>		_server;
+extern std::vector<Server *>	_server;
 extern std::vector<Parser *>	_config;
-extern Connection					_connection;
-extern volatile bool				serverStatus;
-extern char							**_env;
+extern Connection				_connection;
+extern volatile bool			serverStatus;
+extern char						**_env;
 
 /* Errors */
-void printError(const std::string &str);
-void printWarning(const std::string &str);
+void			printError(const std::string &str);
+void			printWarning(const std::string &str);
 
 /* Signals */
-void signal_handler(int signal);
+void			signalHandler(int signal);
 
 /* Utils */
-void delProg(void);
-bool isValidInputArgs(int ac, char **av, std::string &cfgFilePath);
-bool isValidFileExtension(const std::string &cfgFile, const std::string &extension);
-std::string strTrimWhiteSpaces(const std::string &str);
-unsigned int countServerBlock(std::ifstream &cfgFile);
+void			deleteServers(void);
+bool			isValidInputArgs(int ac, char **av, std::string &cfgFilePath);
+bool			isValidFileExtension(const std::string &cfgFile, const std::string &extension);
+std::string		strTrimWhiteSpaces(const std::string &str);
+unsigned int	countServerBlock(std::ifstream &cfgFile);
 
 #endif

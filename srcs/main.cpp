@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/11 14:23:43 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/11 15:03:52 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void creatFileDeleteMethod()
 
 int main(int ac, char **av, char **env)
 {
-	signal(SIGINT, signal_handler);
+	signal(SIGINT, signalHandler);
 	_env = env;
 
 	std::string cfgFilePath;
@@ -87,11 +87,11 @@ int main(int ac, char **av, char **env)
 			_connection.acceptSocket();
 			_connection.traitement();
 		}
-		delProg();
-		std::cout << "Fin du Programme\n";
+		deleteServers();
 	}
 	catch (std::exception &e) {
 		printError(e.what());
+		deleteServers();
 		return (1);
 	}
 

@@ -6,24 +6,21 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/11 14:30:04 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/11 14:52:42 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.hpp"
 
-void	delProg()
+void deleteServers(void)
 {
-	//delete _server
-	std::cout << "\033[34mDelete des serveurs : \033[0m\n";
 	for (size_t i = 0; i < _server.size(); i++) {
         close(_server[i]->getSocket());
         delete _server[i];
     }
-	//delete _config
-	std::cout << "\033[34mDelete de la config : \033[0m\n";
-	for (size_t i = 0; i < _config.size(); i++)
+	for (size_t i = 0; i < _config.size(); i++) {
 		delete _config[i];
+	}
 }
 
 bool isValidInputArgs(int ac, char **av, std::string &cfgFilePath)
