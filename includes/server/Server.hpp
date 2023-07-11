@@ -6,27 +6,22 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/05 09:38:50 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/05 18:13:46 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <iostream>
-
-#include "Parser.hpp"
-
-#define INVALID_SOCKET -1
-#define SOCKET_ERROR -1
-
-typedef int SOCKET;
-
+# include <iostream>
+# include <sstream>
+# include <vector>
+# include <fcntl.h>
+# include <unistd.h>
+# include <sys/socket.h>
+# include <netinet/tcp.h>
+# include "Parser.hpp"
+ 
 class Server
 {
 	public :
@@ -63,7 +58,6 @@ class Server
 		void					listenTCP(void);
 		void					closeSocket();
 		in_addr_t				convertIpAddress(const std::string &str);
-
 };
 
 #endif

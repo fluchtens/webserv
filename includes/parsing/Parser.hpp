@@ -6,19 +6,19 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:13:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/11 09:28:26 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/11 10:23:42 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <map>
-#include "Location.hpp"
+# include <iostream>
+# include <fstream>
+# include <sstream>
+# include <vector>
+# include <map>
+# include "Location.hpp"
 
 class Parser
 {
