@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:13:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/05 09:38:23 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/11 09:28:26 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ class Parser
 {
 	public:
 		Parser(std::ifstream &cfgFile);
+		Parser(const Parser &rhs);
+		Parser &operator=(const Parser &rhs);
 		~Parser(void);
 
 		const unsigned int			&getPort(void) const;

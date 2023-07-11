@@ -6,13 +6,14 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/03 10:12:18 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/11 10:13:56 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LOCATION_HPP
 #define LOCATION_HPP
 
+# include <iostream>
 # include <fstream>
 # include <sstream>
 # include <vector>
@@ -21,6 +22,8 @@ class Location
 {
 	public:
 		Location(std::ifstream &cfgFile, const std::string &url);
+		Location(const Location &rhs);
+		Location &operator=(const Location &rhs);
 		~Location(void);
 
 		const std::string 				&getUrl(void) const;
@@ -49,6 +52,8 @@ class Location
 		std::string						_cgiPath;
 		int								_maxSize;
 		bool							_deny;
+
+		void							parseLocation(std::ifstream &cfgFile);
 };
 
 #endif

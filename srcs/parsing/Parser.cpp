@@ -6,20 +6,40 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/05 09:48:15 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/11 09:33:19 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Parser.hpp"
 
 /* ************************************************************************** */
-/*                           Constructor Destructor                           */
+/*                               Canonical form                               */
 /* ************************************************************************** */
 
 Parser::Parser(std::ifstream &cfgFile) : _port(80), _host("127.0.0.1"), _serverName("default_name"), _index("index.html"), _nbrLocation(0)
 {
 	this->parseCfgFile(cfgFile);
 	this->printParsing();
+}
+
+Parser::Parser(const Parser &rhs)
+{
+	*this = rhs;
+}
+
+Parser &Parser::operator=(const Parser &rhs)
+{
+	if (this != &rhs) {
+		this->_port = rhs._port;
+		this->_host = rhs._host;
+		this->_serverName = rhs._serverName;
+		this->_root = rhs._root;
+		this->_index = rhs._index;
+		this->_nbrLocation = rhs._nbrLocation;
+		this->_errorPage = rhs._errorPage;
+		this->_location = rhs._location;
+	}
+	return (*this);
 }
 
 Parser::~Parser(void)
