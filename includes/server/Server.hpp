@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/05 18:13:46 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/12 07:29:39 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <fcntl.h>
 # include <unistd.h>
 # include <sys/socket.h>
+# include <netinet/in.h>
 # include <netinet/tcp.h>
 # include "Parser.hpp"
  
