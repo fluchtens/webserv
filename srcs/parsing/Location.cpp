@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:40 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/11 10:17:57 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/12 07:31:42 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,10 +158,8 @@ void Location::parseLocation(std::ifstream &cfgFile)
 				}
 				this->_allow.push_back(method);
 			}
-			else if (key == "root") {
+			else if (key == "root")
 				this->_root = tmp;
-				std::cout << "root " << this->_root << std::endl;
-			}
 			else if (key == "index")
 				this->_index = tmp;
 			else if (key == "path")
