@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/12 13:31:54 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/13 13:35:52 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ Connection::Connection(void)
 	return ;
 }
 
-Connection::Connection(std::vector<Server*>& servers) : _servers(servers), _maxFd(-1)
+Connection::Connection(std::vector<Server*>& servers) : _servers(servers), _highestFd(-1)
 {
 	this->_timeout.tv_sec = 3;
 	this->_timeout.tv_usec = 0;
@@ -42,9 +42,10 @@ Connection &Connection::operator=(const Connection &rhs)
 	if (this != &rhs) {
 		this->_servers = rhs._servers;
 		this->_client = rhs._client;
-		this->_maxFd = rhs._maxFd;
-		this->_read = rhs._read;
-		this->_write = rhs._write;
+		this->_setReads = rhs._setReads;
+		this->_setWrite = rhs._setWrite;
+		this->_setErrors = rhs._setErrors;
+		this->_highestFd = rhs._highestFd;
 		this->_timeout = rhs._timeout;
 		this->_mimeTypes = rhs._mimeTypes;
 	}
@@ -62,70 +63,41 @@ Connection::~Connection(void)
 
 void Connection::initConnection(void)
 {
-	FD_ZERO(&this->_read);
-	FD_ZERO(&this->_write);
-	FD_ZERO(&this->_error);
+	FD_ZERO(&this->_setReads);
+	FD_ZERO(&this->_setWrite);
+	FD_ZERO(&this->_setErrors);
 
 	for (std::vector<Server *>::iterator it = this->_servers.begin(); it < this->_servers.end(); it++) {
-		addToFileDescriptorSet((*it)->getSocket(), this->_read);
+		addToFdSet((*it)->getSocket(), this->_setReads);
 	}
 
 	for (std::vector<Client>::iterator it = this->_client.begin(); it < this->_client.end(); it++) {
 		if (!((*it)._requestPars)) {
-			addToFileDescriptorSet(it->_csock, this->_read);
+			addToFdSet(it->_csock, this->_setReads);
 		} else {
-			addToFileDescriptorSet(it->_csock, this->_write);
+			addToFdSet(it->_csock, this->_setWrite);
 		}
-		addToFileDescriptorSet(it->_csock, this->_error);
+		addToFdSet(it->_csock, this->_setErrors);
 	}
+	this->checkFdStatus();
 }
 
-void Connection::runSelect(void)
+void Connection::acceptSockets(void)
 {
-	int selectReady = select(this->_maxFd + 1, &this->_read, &this->_write, &this->_error, &this->_timeout);
-	if (selectReady == -1) {
-		if (errno == EINTR)
-			return ;
-		printError("select failed");
-		for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
-			(*it)._keepAlive = false;
-		}
-		return ;
-	}
-	else if (selectReady == 0 && (this->_timeout.tv_sec != 0 || this->_timeout.tv_usec != 0)) {
-		for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
-			(*it)._keepAlive = false;
-		}
-	}
-}
-
-void Connection::acceptSocket()
-{
-	for (std::vector<Server *>::iterator it = _servers.begin(); it < _servers.end(); it++)
-	{
-		if (FD_ISSET((*it)->getSocket(), &_read))
-		{
+	for (std::vector<Server *>::iterator it = this->_servers.begin(); it < this->_servers.end(); it++) {
+		if (FD_ISSET((*it)->getSocket(), &this->_setReads)) {
 			Client newClient((*it)->getConfig(), (*it)->getServer(), (*it)->getLocation());
 			std::memset(&newClient._csin, 0, sizeof(newClient._csin));
 			newClient._crecSize = sizeof(newClient._csin);
-			if ((*it)->hasCapacity())
-			{
-				
-				newClient._csock = accept((*it)->getSocket(), (sockaddr*)&newClient._csin, &newClient._crecSize);
-				if (newClient._csock < 0)
-				{
-					std::cerr << "\033[31mFailed to accept connection \033[0mon port " << (*it)->getPort() << ", error code: " << errno << ", error message: " << strerror(errno) << std::endl;
-					close(newClient._csock);
-					continue;
-				}
-				if (fcntl(newClient._csock, F_SETFL, O_NONBLOCK) < 0)
-					std::cerr << "\033[31mError : fcntl Connection::acceptSocket()\033[0m" <<std::endl;
-				std::cerr << "\033[0;32m\nAccepted connection \033[0m on port " << (*it)->getPort() << std::endl;
-				std::cerr << "\033[0;32mClient connected \033[0m on socket: " << newClient._csock << std::endl;
-
-				(*it)->incrementCurrentConnection();
-				_client.push_back(newClient);
+			newClient._csock = accept((*it)->getSocket(), (sockaddr*)&newClient._csin, &newClient._crecSize);
+			if (newClient._csock < 0) {
+				throw (std::runtime_error("accept() failed"));
 			}
+			if (fcntl(newClient._csock, F_SETFL, O_NONBLOCK) < 0) {
+				throw (std::runtime_error("fcntl() failed"));
+			}
+			std::cout << "> New Connection on socket " << newClient._csock << " on port " << (*it)->getPort() << std::endl;
+			this->_client.push_back(newClient);
 		}
 	}
 }
@@ -146,11 +118,11 @@ bool Connection::deadOrAlive(Client client, bool alive)
 {
 	if (alive)
 		return false;
-	client._server.decrementCurrentConnection();
+	// client._server.decrementCurrentConnection();
 	// Supprime le fd du socket read write error
-	FD_CLR(client._csock, &_read);
-	FD_CLR(client._csock, &_write);
-	FD_CLR(client._csock, &_error);
+	FD_CLR(client._csock, &_setReads);
+	FD_CLR(client._csock, &_setWrite);
+	FD_CLR(client._csock, &_setErrors);
 	// ferme la connexion du socket client en spécifiant qu'il ne peut plus envoyer ni recevoir de données.
 	shutdown(client._csock, SHUT_RDWR);
 	if (close(client._csock) != 0)
@@ -164,19 +136,19 @@ void Connection::traitement()
 {
 	for (std::vector<Client>::iterator it = _client.begin(); it < _client.end(); it++)
 	{
-		if (FD_ISSET(it->_csock, &_error))
+		if (FD_ISSET(it->_csock, &_setErrors))
 			(*it)._keepAlive = false;
 
-		if ((*it)._keepAlive && FD_ISSET(it->_csock, &_read))
+		if ((*it)._keepAlive && FD_ISSET(it->_csock, &_setReads))
 		{
 			if (receiveClientRequest(*it))
 			{
 				(*it)._requestPars = true;
-				FD_SET(it->_csock, &_write);
+				FD_SET(it->_csock, &_setWrite);
 			}
 		}
 
-		if ((*it)._keepAlive && FD_ISSET(it->_csock, &_write))
+		if ((*it)._keepAlive && FD_ISSET(it->_csock, &_setWrite))
 		{
 			if (handleReponse(*it))
 				(*it)._keepAlive = false;
@@ -656,9 +628,23 @@ void Connection::initMime(void)
 	this->_mimeTypes.insert(std::make_pair(".ico", "image/vnd.microsoft.icon"));
 }
 
-void Connection::addToFileDescriptorSet(int fd, fd_set &fds)
+void Connection::addToFdSet(int fd, fd_set &fds)
 {
 	FD_SET(fd, &fds);
-	if (fd > this->_maxFd)
-		this->_maxFd = fd;
+	if (fd > this->_highestFd)
+		this->_highestFd = fd;
+}
+
+void Connection::checkFdStatus(void)
+{
+	int selectReady = select(this->_highestFd + 1, &this->_setReads, &this->_setWrite, &this->_setErrors, &this->_timeout);
+	if (selectReady == -1) {
+		throw (std::runtime_error("select() failed"));
+	}
+	else if (selectReady == 0) {
+		// printError("select() timeout");
+		for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
+			(*it)._keepAlive = false;
+		}
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/05 09:46:49 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/13 13:05:21 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 Server::Server(Parser *server)
 {
 	this->_cfg = server;
-	this->_currentConnection = 0;
 	this->_maxConnection = 100;
 	this->_location = this->_cfg->getLocation();
 	this->_nbrLocation = this->_cfg->getNbrLocation();
@@ -92,39 +91,18 @@ std::vector<Location> &Server::getLocation(void)
 	return (this->_location);
 }
 
-const int &Server::getCurrentConnection(void) const
-{
-	return (this->_currentConnection);
-}
-
-bool Server::hasCapacity(void) const
-{
-	return (this->_currentConnection < this->_maxConnection);
-}
-
-void	Server::incrementCurrentConnection(void)
-{
-	++this->_currentConnection;
-}
-
-void	Server::decrementCurrentConnection(void)
-{
-	--this->_currentConnection;
-}
-
 /* ************************************************************************** */
 /*                          Private Member functions                          */
 /* ************************************************************************** */
 
 void Server::creatSocket(void)
 {
-	// this->_serverFd = socket(AF_INET, SOCK_STREAM, 0);
 	this->_serverFd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (this->_serverFd < 0) {
-		throw (std::runtime_error("socket()"));
+		throw (std::runtime_error("socket() failed"));
 	}
 	if (fcntl(this->_serverFd, F_SETFL, O_NONBLOCK) < 0) {
-		throw (std::runtime_error("fcntl()"));
+		throw (std::runtime_error("fcntl() failed"));
 	}
 }
 
@@ -137,7 +115,7 @@ void Server::bindSocket(void)
 	this->_address.sin_port = htons(this->_cfg->getPort());
 
 	if (bind(this->_serverFd, reinterpret_cast<sockaddr *>(&this->_address), sizeof(this->_address)) < 0) {
-		throw (std::runtime_error("bind()"));
+		throw (std::runtime_error("bind() failed"));
 	}
 }
 

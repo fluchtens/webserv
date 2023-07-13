@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/12 07:29:39 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/13 11:05:39 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,9 @@ class Server
 		size_t					getNbrLocation(void) const;
 		Parser					&getConfig(void);
 		std::vector<Location>	&getLocation(void);
-		const int				&getCurrentConnection(void) const;
-		bool					hasCapacity(void) const;
-		void					incrementCurrentConnection(void);
-		void					decrementCurrentConnection(void);
 
 	private :
 		Parser					*_cfg;
-		int						_currentConnection;
 		int						_maxConnection;
 		int						_serverFd;
 		sockaddr_in				_address;
