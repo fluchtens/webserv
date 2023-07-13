@@ -6,7 +6,7 @@
 #    By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/16 16:17:24 by fluchten          #+#    #+#              #
-#    Updated: 2023/07/04 17:43:36 by fluchten         ###   ########.fr        #
+#    Updated: 2023/07/13 09:21:15 by fluchten         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,13 +24,12 @@ INCS_DIRS = $(shell find $(INCS_DIR) -type d)
 INCS = $(addprefix -I, $(INCS_DIRS))
 
 SRCS =	parsing/Location.cpp parsing/Parser.cpp \
-		server/Server.cpp \
+		server/Connection.cpp server/Server.cpp \
 		utils/errors.cpp utils/signals.cpp utils/utils.cpp \
 		main.cpp \
 		temp/autoindex.cpp \
 		temp/Cgi.cpp \
 		temp/Client.cpp \
-		temp/Connection.cpp \
 		temp/HTTPRequest.cpp \
 		temp/Response.cpp
 
