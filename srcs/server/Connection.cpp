@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/13 13:35:52 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/13 20:53:09 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ Connection::Connection(void)
 
 Connection::Connection(std::vector<Server*>& servers) : _servers(servers), _highestFd(-1)
 {
+	this->_highestFd = 0;
 	this->_timeout.tv_sec = 3;
 	this->_timeout.tv_usec = 0;
 	this->initMime();
@@ -54,7 +55,7 @@ Connection &Connection::operator=(const Connection &rhs)
 
 Connection::~Connection(void)
 {
-	clearClientSockets();
+	this->closeClientSockets();
 }
 
 /* ************************************************************************** */
@@ -67,95 +68,67 @@ void Connection::initConnection(void)
 	FD_ZERO(&this->_setWrite);
 	FD_ZERO(&this->_setErrors);
 
-	for (std::vector<Server *>::iterator it = this->_servers.begin(); it < this->_servers.end(); it++) {
+	for (std::vector<Server *>::iterator it = this->_servers.begin(); it != this->_servers.end(); it++) {
 		addToFdSet((*it)->getSocket(), this->_setReads);
 	}
 
-	for (std::vector<Client>::iterator it = this->_client.begin(); it < this->_client.end(); it++) {
+	for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
 		if (!((*it)._requestPars)) {
-			addToFdSet(it->_csock, this->_setReads);
+			addToFdSet(it->_socket, this->_setReads);
 		} else {
-			addToFdSet(it->_csock, this->_setWrite);
+			addToFdSet(it->_socket, this->_setWrite);
 		}
-		addToFdSet(it->_csock, this->_setErrors);
+		addToFdSet(it->_socket, this->_setErrors);
 	}
 	this->checkFdStatus();
 }
 
 void Connection::acceptSockets(void)
 {
-	for (std::vector<Server *>::iterator it = this->_servers.begin(); it < this->_servers.end(); it++) {
-		if (FD_ISSET((*it)->getSocket(), &this->_setReads)) {
+	for (std::vector<Server *>::iterator it = this->_servers.begin(); it != this->_servers.end(); it++)
+	{
+		if (FD_ISSET((*it)->getSocket(), &this->_setReads))
+		{
 			Client newClient((*it)->getConfig(), (*it)->getServer(), (*it)->getLocation());
 			std::memset(&newClient._csin, 0, sizeof(newClient._csin));
 			newClient._crecSize = sizeof(newClient._csin);
-			newClient._csock = accept((*it)->getSocket(), (sockaddr*)&newClient._csin, &newClient._crecSize);
-			if (newClient._csock < 0) {
+			newClient._socket = accept((*it)->getSocket(), (sockaddr*)&newClient._csin, &newClient._crecSize);
+			if (newClient._socket == -1) {
 				throw (std::runtime_error("accept() failed"));
 			}
-			if (fcntl(newClient._csock, F_SETFL, O_NONBLOCK) < 0) {
+			if (fcntl(newClient._socket, F_SETFL, O_NONBLOCK) < 0) {
 				throw (std::runtime_error("fcntl() failed"));
 			}
-			std::cout << "> New Connection on socket " << newClient._csock << " on port " << (*it)->getPort() << std::endl;
+			std::cout << "> New connection on socket " << newClient._socket << " on port " << (*it)->getPort() << std::endl;
 			this->_client.push_back(newClient);
 		}
 	}
 }
 
-void Connection::clearClientSockets()
+void Connection::traitement(void)
 {
-	for (std::vector<Client>::iterator it = _client.begin(); it < _client.end(); it++)
+	for (std::vector<Client>::iterator it = this->_client.begin(); it < this->_client.end(); it++)
 	{
-		std::cout << "\033[32mLiberation des sockets clients\033[0m\n";
-		if (close((*it)._csock) != 0)
-			std::cerr << "\033[0;31mError while closing socket:\033[0m " << strerror(errno) << std::endl;
-	}
-	_client.clear();
-}
+		if (FD_ISSET(it->_socket, &this->_setErrors)) {
+			it->_keepAlive = false;
+		}
 
-// erase client si Connection=close
-bool Connection::deadOrAlive(Client client, bool alive)
-{
-	if (alive)
-		return false;
-	// client._server.decrementCurrentConnection();
-	// Supprime le fd du socket read write error
-	FD_CLR(client._csock, &_setReads);
-	FD_CLR(client._csock, &_setWrite);
-	FD_CLR(client._csock, &_setErrors);
-	// ferme la connexion du socket client en spécifiant qu'il ne peut plus envoyer ni recevoir de données.
-	shutdown(client._csock, SHUT_RDWR);
-	if (close(client._csock) != 0)
-		std::cerr << "\033[0;31mError while closing socket:\033[0m " << strerror(errno) << std::endl;
-
-	std::cout << "\033[0;31mClient close \033[0m" << client._csock << std::endl;;
-	return true;
-}
-
-void Connection::traitement()
-{
-	for (std::vector<Client>::iterator it = _client.begin(); it < _client.end(); it++)
-	{
-		if (FD_ISSET(it->_csock, &_setErrors))
-			(*it)._keepAlive = false;
-
-		if ((*it)._keepAlive && FD_ISSET(it->_csock, &_setReads))
-		{
-			if (receiveClientRequest(*it))
-			{
-				(*it)._requestPars = true;
-				FD_SET(it->_csock, &_setWrite);
+		if (it->_keepAlive && FD_ISSET(it->_socket, &this->_setReads)) {
+			if (receiveClientRequest(*it)) {
+				it->_requestPars = true;
+				FD_SET(it->_socket, &this->_setWrite);
 			}
 		}
 
-		if ((*it)._keepAlive && FD_ISSET(it->_csock, &_setWrite))
-		{
-			if (handleReponse(*it))
-				(*it)._keepAlive = false;
+		if (it->_keepAlive && FD_ISSET(it->_socket, &this->_setWrite)) {
+			if (handleReponse(*it)) {
+				it->_keepAlive = false;
+			}
 		}
 
-		if (deadOrAlive((*it), (*it)._keepAlive))
-			it = _client.erase(it);
+		if (!isAlive(*it, it->_keepAlive)) {
+			it = this->_client.erase(it);
+		}
 	}
 }
 
@@ -164,9 +137,9 @@ bool Connection::receiveClientRequest(Client &client)
 	//On recupere la taille du tampon sur le socket.
 	int optval = 0;
 	socklen_t  optlen = sizeof(optval);
-	if(getsockopt(client._csock, SOL_SOCKET, SO_RCVBUF, &optval, &optlen) == -1)
+	if(getsockopt(client._socket, SOL_SOCKET, SO_RCVBUF, &optval, &optlen) == -1)
 	{
-		std::cerr << "\033[0;31mError : 500 receiving data from client getsockopt():\033[0m " << client._csock << std::endl;
+		std::cerr << "\033[0;31mError : 500 receiving data from client getsockopt():\033[0m " << client._socket << std::endl;
 		sendErrorResponse(client, 500);
 		client._keepAlive = false;
 		return false;
@@ -174,14 +147,14 @@ bool Connection::receiveClientRequest(Client &client)
 
 	//Recupere le tampon avec une taille adaptee
 	char buffer[optval];
-	ssize_t bytesRead = recv(client._csock, buffer, optval, 0);
+	ssize_t bytesRead = recv(client._socket, buffer, optval, 0);
 	if (bytesRead <= 0)
 	{
 		if (bytesRead == 0)
-			std::cout << "Client disconnected on socket: " << client._csock << std::endl;
+			std::cout << "Client disconnected on socket: " << client._socket << std::endl;
 	  	else
 		{
-			std::cerr << "\033[0;31mError : 500 receiving data from client recv():\033[0m " << client._csock << std::endl;
+			std::cerr << "\033[0;31mError : 500 receiving data from client recv():\033[0m " << client._socket << std::endl;
 			sendErrorResponse(client, 500);
 		}
 		client._keepAlive = false;
@@ -190,7 +163,7 @@ bool Connection::receiveClientRequest(Client &client)
 
 	if (bytesRead > optval)
 	{
-		std::cerr << "\033[0;31mError : 413 Request size exceeds the limit (" << optval << " bytes) for client:\033[0m " << client._csock << std::endl;
+		std::cerr << "\033[0;31mError : 413 Request size exceeds the limit (" << optval << " bytes) for client:\033[0m " << client._socket << std::endl;
 		sendErrorResponse(client, 413);
 		return false;
 	}
@@ -250,7 +223,7 @@ bool Connection::handleReponse(Client &client)
 			handleDELETE(client);
 			break;
 		default:
-			std::cerr << "Client " << client._csock << " connected with an unauthorized method." << std::endl;
+			std::cerr << "Client " << client._socket << " connected with an unauthorized method." << std::endl;
 			sendErrorResponse(client, 405);
 			break;
 	}
@@ -264,7 +237,7 @@ bool Connection::handleGET(Client& client)
 	
 	if (client._uri.length() >= MAX_URI_SIZE)
 	{
-		std::cerr << "\033[0;31mError : 414 URI Too Long from client:\033[0m " << client._csock << std::endl;
+		std::cerr << "\033[0;31mError : 414 URI Too Long from client:\033[0m " << client._socket << std::endl;
 		sendErrorResponse(client, 414);
 		return (true);
 	}
@@ -288,7 +261,7 @@ bool Connection::handleGET(Client& client)
 		}
 		else
 		{
-			std::cerr << "\033[0;31mError : 404 Not Found from client:\033[0m " << client._csock << std::endl;
+			std::cerr << "\033[0;31mError : 404 Not Found from client:\033[0m " << client._socket << std::endl;
 			sendErrorResponse(client, 404);
 		}
 	}
@@ -314,14 +287,14 @@ bool Connection::hanglGetLocation(Client &client)
 		
 		if (location->getDeny())
 		{
-			std::cerr << "\033[0;31mError : 403 Forbidden:\033[0m " << client._csock << std::endl;
+			std::cerr << "\033[0;31mError : 403 Forbidden:\033[0m " << client._socket << std::endl;
 			sendErrorResponse(client, 403);
 			return (true);
 		}
 		
 		if (!(location->isMethodAllowed("GET")))
 		{
-			std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._csock << std::endl;
+			std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._socket << std::endl;
 			sendErrorResponse(client, 405);
 			return (true);
 		}
@@ -357,7 +330,7 @@ bool Connection::hanglGetLocation(Client &client)
 		else
 		{
 		std::cout << "Je suis la : " << location->getDeny() << std::endl;
-			std::cerr << "\033[0;31mError : 404 Not Found from client:\033[0m " << client._csock << std::endl;
+			std::cerr << "\033[0;31mError : 404 Not Found from client:\033[0m " << client._socket << std::endl;
 			sendErrorResponse(client, 404);
 		}
 		
@@ -373,13 +346,13 @@ void Connection::handlePOST(Client& client)
 	Location *location = findLocationForUri(client._uri, client._location);
 	if (!location || !location->isMethodAllowed("POST"))
 	{
-		std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._csock << std::endl;
+		std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._socket << std::endl;
 		sendErrorResponse(client, 405);
 		return;
 	}
 	if (location->getDeny())
 	{
-		std::cerr << "\033[0;31mError : 403 Forbidden:\033[0m " << client._csock << std::endl;
+		std::cerr << "\033[0;31mError : 403 Forbidden:\033[0m " << client._socket << std::endl;
 		sendErrorResponse(client, 403);
 		return;
 	}
@@ -479,7 +452,7 @@ void Connection::handleDELETE(Client& client)
 	Location *location = findLocationForUri(client._uri, client._location);
 	if (!location || !location->isMethodAllowed("DELETE"))
 	{
-		std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._csock << std::endl;
+		std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._socket << std::endl;
 		sendErrorResponse(client, 405);
 		return;
 	}
@@ -646,5 +619,30 @@ void Connection::checkFdStatus(void)
 		for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
 			(*it)._keepAlive = false;
 		}
+	}
+}
+
+bool Connection::isAlive(Client &client, bool isAlive)
+{
+	if (isAlive) {
+		return (true);
+	}
+
+	FD_CLR(client._socket, &this->_setReads);
+	FD_CLR(client._socket, &this->_setWrite);
+	FD_CLR(client._socket, &this->_setErrors);
+
+	shutdown(client._socket, SHUT_RDWR);
+	close(client._socket);
+
+	std::cout << "> Client disconnect on socket " << client._socket << std::endl;;
+	return (false);
+}
+
+void Connection::closeClientSockets()
+{
+	for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
+		std::cout << "> Closing client sockets" << std::endl;
+		close(it->_socket);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/13 10:35:22 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/13 20:52:49 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,10 @@ class Connection
 
 		void initConnection(void);
 		void acceptSockets(void);
+		void traitement(void);
 
 		//Fonctionnement coté client
 		Client *findExistingClient(const sockaddr_in& csin);
-		void traitement();
-		void clearClientSockets();
 
 		// @brief lit la requete client et la parse, gere les erreurs
 		// @param client client en cours de vecteur<Client> (*it)
@@ -74,8 +73,6 @@ class Connection
 		std::string getMimeType(const std::string& filePath);
 		Location *findLocationForUri(const std::string& uri, const std::vector<Location>& locations);
 		void executeCGI(Client &client, Location *location);
-		
-		bool deadOrAlive(Client client, bool alive);
 
 	private :
 		std::vector<Server *> _servers;
@@ -92,6 +89,8 @@ class Connection
 		void initMime(void);
 		void addToFdSet(int fd, fd_set &fds);
 		void checkFdStatus(void);
+		bool isAlive(Client &client, bool isAlive);
+		void closeClientSockets(void);
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/13 13:00:04 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/13 19:35:07 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 std::vector<Server *> _server;
 std::vector<Parser *> _config;
 Connection _connection;
+volatile bool serverStatus = true;
 char **_env;
 
 void creatFileDeleteMethod()
@@ -79,12 +80,13 @@ int main(int ac, char **av, char **env)
 
 		Connection tmp(_server);
 		_connection = tmp;
-		while (true)
+		while (serverStatus)
 		{
 			_connection.initConnection();
 			_connection.acceptSockets();
 			_connection.traitement();
 		}
+		deleteServers();
 	}
 	catch (std::exception &e) {
 		printError(e.what());
