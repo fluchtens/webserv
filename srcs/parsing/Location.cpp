@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:40 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/12 07:31:42 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/14 08:12:45 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,19 @@
 
 Location::Location(std::ifstream &cfgFile, const std::string &url) : _url(url), _autoIndex(false), _deny(false)
 {
+	// std::cout << "Location constructor called" << std::endl;
 	this->parseLocation(cfgFile);
 }
 
 Location::Location(const Location &rhs)
 {
+	// std::cout << "Location copy constructor called" << std::endl;
 	*this = rhs;
 }
 
 Location &Location::operator=(const Location &rhs)
 {
+	// std::cout << "Location copy assignment operator called" << std::endl;
 	if (this != &rhs) {
 		this->_allow = rhs._allow;
 		this->_url = rhs._url;
@@ -46,6 +49,7 @@ Location &Location::operator=(const Location &rhs)
 
 Location::~Location(void)
 {
+	// std::cout << "Location destructor called" << std::endl;
 	return ;
 }
 

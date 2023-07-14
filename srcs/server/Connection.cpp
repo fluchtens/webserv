@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/13 20:53:09 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/14 12:34:30 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,13 @@
 
 Connection::Connection(void)
 {
+	// std::cout << "Connection default constructor called" << std::endl;
 	return ;
 }
 
 Connection::Connection(std::vector<Server*>& servers) : _servers(servers), _highestFd(-1)
 {
+	// std::cout << "Connection constructor called" << std::endl;
 	this->_highestFd = 0;
 	this->_timeout.tv_sec = 3;
 	this->_timeout.tv_usec = 0;
@@ -35,11 +37,13 @@ Connection::Connection(std::vector<Server*>& servers) : _servers(servers), _high
 
 Connection::Connection(const Connection &rhs)
 {
+	// std::cout << "Connection copy constructor called" << std::endl;
 	*this = rhs;
 }
 
 Connection &Connection::operator=(const Connection &rhs)
 {
+	// std::cout << "Connection copy assignment operator called" << std::endl;
 	if (this != &rhs) {
 		this->_servers = rhs._servers;
 		this->_client = rhs._client;
@@ -55,6 +59,7 @@ Connection &Connection::operator=(const Connection &rhs)
 
 Connection::~Connection(void)
 {
+	// std::cout << "Connection destructor called" << std::endl;
 	this->closeClientSockets();
 }
 
@@ -110,23 +115,23 @@ void Connection::traitement(void)
 	for (std::vector<Client>::iterator it = this->_client.begin(); it < this->_client.end(); it++)
 	{
 		if (FD_ISSET(it->_socket, &this->_setErrors)) {
-			it->_keepAlive = false;
+			it->_isAlive = false;
 		}
 
-		if (it->_keepAlive && FD_ISSET(it->_socket, &this->_setReads)) {
+		if (FD_ISSET(it->_socket, &this->_setReads)) {
 			if (receiveClientRequest(*it)) {
 				it->_requestPars = true;
 				FD_SET(it->_socket, &this->_setWrite);
 			}
 		}
 
-		if (it->_keepAlive && FD_ISSET(it->_socket, &this->_setWrite)) {
+		if (FD_ISSET(it->_socket, &this->_setWrite)) {
 			if (handleReponse(*it)) {
-				it->_keepAlive = false;
+				it->_isAlive = false;
 			}
 		}
 
-		if (!isAlive(*it, it->_keepAlive)) {
+		if (!isAlive(*it, it->_isAlive)) {
 			it = this->_client.erase(it);
 		}
 	}
@@ -141,36 +146,29 @@ bool Connection::receiveClientRequest(Client &client)
 	{
 		std::cerr << "\033[0;31mError : 500 receiving data from client getsockopt():\033[0m " << client._socket << std::endl;
 		sendErrorResponse(client, 500);
-		client._keepAlive = false;
+		client._isAlive = false;
 		return false;
 	}
 
 	//Recupere le tampon avec une taille adaptee
 	char buffer[optval];
-	ssize_t bytesRead = recv(client._socket, buffer, optval, 0);
-	if (bytesRead <= 0)
-	{
-		if (bytesRead == 0)
-			std::cout << "Client disconnected on socket: " << client._socket << std::endl;
-	  	else
-		{
-			std::cerr << "\033[0;31mError : 500 receiving data from client recv():\033[0m " << client._socket << std::endl;
+	int bytesRead = recv(client._socket, buffer, optval, 0);
+	if (bytesRead <= 0) {
+		if (bytesRead == -1) {
+			std::cerr << "\033[0;31mError : 500 receiving data from client getsockopt():\033[0m " << client._socket << std::endl;
 			sendErrorResponse(client, 500);
 		}
-		client._keepAlive = false;
-		return false;
+		client._isAlive = false;
+		return (false);
 	}
 
-	if (bytesRead > optval)
-	{
+	if (bytesRead > optval) {
 		std::cerr << "\033[0;31mError : 413 Request size exceeds the limit (" << optval << " bytes) for client:\033[0m " << client._socket << std::endl;
 		sendErrorResponse(client, 413);
-		return false;
+		return (false);
 	}
 
-	//Clean avant ecriture sinon ca pose des problemes memoires d'overflow
-	if (client._contentLenght == 0 && client._requestStr.str().empty() == 0)
-	{
+	if (client._contentLenght == 0 && client._requestStr.str().empty() == 0) {
 		client._requestStr.str(std::string());
 		client._bodyReq.str(std::string());
 	}
@@ -190,7 +188,7 @@ bool Connection::receiveClientRequest(Client &client)
 			if (location->getMaxSize() < client._contentLenght)
 			{
 				sendErrorResponse(client, 413);
-				client._keepAlive = false;
+				client._isAlive = false;
 				return false;
 			}
 		}
@@ -617,7 +615,7 @@ void Connection::checkFdStatus(void)
 	else if (selectReady == 0) {
 		// printError("select() timeout");
 		for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
-			(*it)._keepAlive = false;
+			(*it)._isAlive = false;
 		}
 	}
 }
@@ -635,7 +633,7 @@ bool Connection::isAlive(Client &client, bool isAlive)
 	shutdown(client._socket, SHUT_RDWR);
 	close(client._socket);
 
-	std::cout << "> Client disconnect on socket " << client._socket << std::endl;;
+	std::cout << "> Client disconnected on socket " << client._socket << std::endl;;
 	return (false);
 }
 

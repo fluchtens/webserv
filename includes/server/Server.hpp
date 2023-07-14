@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/13 11:05:39 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/14 08:29:14 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ class Server
 {
 	public :
 		Server(Parser *config);
+		Server(const Server &rhs);
+		Server &operator=(const Server &rhs);
 		~Server(void);
 
 		const int				&getSocket(void) const;
@@ -54,6 +56,7 @@ class Server
 		void					listenTCP(void);
 		void					closeSocket();
 		in_addr_t				convertIpAddress(const std::string &str);
+		void					print(const std::string &str) const;
 };
 
 #endif

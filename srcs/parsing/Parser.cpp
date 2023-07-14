@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/11 09:33:19 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/14 08:18:00 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,20 @@
 
 Parser::Parser(std::ifstream &cfgFile) : _port(80), _host("127.0.0.1"), _serverName("default_name"), _index("index.html"), _nbrLocation(0)
 {
+	// std::cout << "Parser constructor called" << std::endl;
 	this->parseCfgFile(cfgFile);
-	this->printParsing();
+	// this->printParsing();
 }
 
 Parser::Parser(const Parser &rhs)
 {
+	// std::cout << "Parser copy constructor called" << std::endl;
 	*this = rhs;
 }
 
 Parser &Parser::operator=(const Parser &rhs)
 {
+	// std::cout << "Parser copy assignment operator called" << std::endl;
 	if (this != &rhs) {
 		this->_port = rhs._port;
 		this->_host = rhs._host;
@@ -44,6 +47,7 @@ Parser &Parser::operator=(const Parser &rhs)
 
 Parser::~Parser(void)
 {
+	// std::cout << "Parser destructor called" << std::endl;
 	return ;
 }
 

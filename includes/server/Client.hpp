@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:58:47 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/13 20:54:30 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/14 12:25:55 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ struct Client
 	timeval				_lastGetTime;
 
 	/* Le client va t'il vivre ou mourir */
-	bool				_keepAlive;
+	bool				_isAlive;
 
 	// Request du client
 	std::stringstream							_requestStr;

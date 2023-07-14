@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/13 13:05:21 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/14 08:32:02 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 Server::Server(Parser *server)
 {
+	// std::cout << "Server constructor called" << std::endl;
 	this->_cfg = server;
 	this->_maxConnection = 100;
 	this->_location = this->_cfg->getLocation();
@@ -27,8 +28,29 @@ Server::Server(Parser *server)
 	this->listenTCP();
 }
 
+Server::Server(const Server &rhs)
+{
+	// std::cout << "Server copy constructor called" << std::endl;
+	*this = rhs;
+}
+
+Server &Server::operator=(const Server &rhs)
+{
+	// std::cout << "Server copy assignment operator called" << std::endl;
+	if (this != &rhs) {
+		this->_cfg = rhs._cfg;
+		this->_maxConnection = rhs._maxConnection;
+		this->_serverFd = rhs._serverFd;
+		this->_address = rhs._address;
+		this->_location = rhs._location;
+		this->_nbrLocation = rhs._nbrLocation;
+	}
+	return (*this);
+}
+
 Server::~Server(void)
 {
+	// std::cout << "Server destructor called" << std::endl;
 	this->closeSocket();
 }
 
@@ -104,6 +126,7 @@ void Server::creatSocket(void)
 	if (fcntl(this->_serverFd, F_SETFL, O_NONBLOCK) < 0) {
 		throw (std::runtime_error("fcntl() failed"));
 	}
+	this->print("createSocket(): Socket created successfully.");
 }
 
 void Server::bindSocket(void)
@@ -117,6 +140,7 @@ void Server::bindSocket(void)
 	if (bind(this->_serverFd, reinterpret_cast<sockaddr *>(&this->_address), sizeof(this->_address)) < 0) {
 		throw (std::runtime_error("bind() failed"));
 	}
+	this->print("bindSocket(): Socket bound successfully.");
 }
 
 void Server::listenTCP(void)
@@ -124,12 +148,13 @@ void Server::listenTCP(void)
 	if (listen(this->_serverFd, this->_maxConnection) < 0) {
 		throw (std::runtime_error("listen()"));
 	}
-	std::cout << "\033[33mlistenTCP() : Listening to port " << this->_cfg->getPort() << "\033[0m" << std::endl;
+	this->print("listenTCP(): Listening to port " + std::to_string(this->_cfg->getPort()));
 }
 
 void Server::closeSocket(void)
 {
     close(this->_serverFd);
+	this->print("closeSocket(): Socket closed successfully.");
 }
 
 in_addr_t Server::convertIpAddress(const std::string &str)
@@ -168,4 +193,9 @@ in_addr_t Server::convertIpAddress(const std::string &str)
     }
 
     return htonl(addr);
+}
+
+void Server::print(const std::string &str) const
+{
+	std::cout << "> 💻 " << str << std::endl;
 }

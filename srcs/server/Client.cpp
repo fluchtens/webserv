@@ -6,14 +6,14 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:59:23 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/13 20:49:39 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/14 12:25:55 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 
 Client::Client(Parser &config, Server &server, std::vector<Location> &location) :
-	_keepAlive(true),
+	_isAlive(true),
 	_contentLenght(0),
 	_sizeBody(0),
 	_requestPars(false),
@@ -43,8 +43,10 @@ Client::Client(const Client &srcs) :
 	_location(srcs._location)
 { *this = srcs; }
 
-Client::~Client()
-{}
+Client::~Client(void)
+{
+	return ;
+}
 
 Client &Client::operator=(const Client &srcs)
 {
@@ -54,7 +56,7 @@ Client &Client::operator=(const Client &srcs)
 		_csin = srcs._csin;
 		_crecSize = srcs._crecSize;
 		_lastGetTime = srcs._lastGetTime;
-		_keepAlive = srcs._keepAlive;
+		_isAlive = srcs._isAlive;
 		_requestStr << srcs._requestStr.str();
 		_contentLenght = srcs._contentLenght;
 		_sizeBody = srcs._sizeBody;
