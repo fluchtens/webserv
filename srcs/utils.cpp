@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/18 16:50:19 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/18 19:58:41 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void printError(const std::string &str)
 
 void printWarning(const std::string &str)
 {
-	std::cerr << "\033[1;33m" << "Warning: " << str << "." << "\033[0m" << std::endl;
+	std::cout << "\033[1;33m" << "Warning: " << str << "." << "\033[0m" << std::endl;
 }
 
 void signalHandler(int signal)

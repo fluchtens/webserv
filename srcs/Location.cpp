@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:40 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/14 08:12:45 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/18 19:51:58 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 /*                               Canonical form                               */
 /* ************************************************************************** */
 
-Location::Location(std::ifstream &cfgFile, const std::string &url) : _url(url), _autoIndex(false), _deny(false)
+Location::Location(std::ifstream &cfgFile, const std::string &url) : _url(url), _autoIndex(false)
 {
 	// std::cout << "Location constructor called" << std::endl;
 	this->parseLocation(cfgFile);
@@ -42,7 +42,6 @@ Location &Location::operator=(const Location &rhs)
 		this->_cgiScript = rhs._cgiScript;
 		this->_cgiPath = rhs._cgiPath;
 		this->_maxSize = rhs._maxSize;
-		this->_deny = rhs._deny;
 	}
 	return (*this);
 }
@@ -105,11 +104,6 @@ const std::string &Location::getCgiScript(void) const
 const int &Location::getMaxSize(void) const
 {
 	return (this->_maxSize);
-}
-
-const bool &Location::getDeny(void) const
-{
-	return (this->_deny);
 }
 
 bool Location::isMethodAllowed(std::string method) const
@@ -176,18 +170,12 @@ void Location::parseLocation(std::ifstream &cfgFile)
 			}
 			else if (key == "return")
 				this->_return = tmp;
-            else if(key == "cgi_path")
+            else if (key == "cgi_path")
                 this->_cgiPath = tmp;
-			else if(key == "cgi_script")
+			else if (key == "cgi_script")
                 this->_cgiScript = tmp;
-			else if(key == "client_max_body_size")
+			else if (key == "client_max_body_size")
                 this->_maxSize = std::atoi(tmp.c_str());
-			else if (key == "deny")
-			{
-				if (tmp == "on") {
-					this->_deny = true;
-				}
-			}
 		}
 		line.clear();
 		ss.clear();

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/18 16:56:09 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/18 19:19:27 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ class Location
 		const std::string &getCgiPath(void) const;
 		const std::string &getCgiScript(void) const;
 		const int &getMaxSize(void) const;
-		const bool &getDeny(void) const;
 
 		bool isMethodAllowed(std::string method) const;
 
@@ -51,7 +50,6 @@ class Location
 		std::string _cgiScript;
 		std::string _cgiPath;
 		int _maxSize;
-		bool _deny;
 
 		void parseLocation(std::ifstream &cfgFile);
 };

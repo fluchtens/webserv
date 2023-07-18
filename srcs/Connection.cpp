@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/18 10:44:48 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/18 20:01:12 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ void Connection::acceptSockets(void)
 			if (fcntl(newClient._socket, F_SETFL, O_NONBLOCK) < 0) {
 				throw (std::runtime_error("fcntl() failed"));
 			}
-			std::cout << "> New connection on socket " << newClient._socket << " on port " << (*it)->getPort() << std::endl;
+			// std::cout << "> New connection on socket " << newClient._socket << " on port " << (*it)->getPort() << std::endl;
 			this->_client.push_back(newClient);
 		}
 	}
@@ -192,13 +192,6 @@ bool Connection::hanglGetLocation(Client &client)
 		}
 
 		
-		if (location->getDeny())
-		{
-			std::cerr << "\033[0;31mError : 403 Forbidden:\033[0m " << client._socket << std::endl;
-			sendErrorResponse(client, 403);
-			return (true);
-		}
-		
 		if (!(location->isMethodAllowed("GET")))
 		{
 			std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._socket << std::endl;
@@ -236,7 +229,6 @@ bool Connection::hanglGetLocation(Client &client)
 		}
 		else
 		{
-		std::cout << "Je suis la : " << location->getDeny() << std::endl;
 			std::cerr << "\033[0;31mError : 404 Not Found from client:\033[0m " << client._socket << std::endl;
 			sendErrorResponse(client, 404);
 		}
@@ -255,18 +247,6 @@ void Connection::handlePOST(Client& client)
 	{
 		std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._socket << std::endl;
 		sendErrorResponse(client, 405);
-		return;
-	}
-	if (location->getDeny())
-	{
-		std::cerr << "\033[0;31mError : 403 Forbidden:\033[0m " << client._socket << std::endl;
-		sendErrorResponse(client, 403);
-		return;
-	}
-	if (location->getUrl() == "/test_max")
-	{
-		createHttpResponse(client, 200, "text/html");
-		sendHttpResponse(client);
 		return;
 	}
 	
@@ -346,9 +326,7 @@ void Connection::handlePOST(Client& client)
 		}
 		outFile.close();
 	}
-	else
-	{
-		// Lancer le cgiPath avec les données reçues
+	else {
 		executeCGI(client, location);
 	}
 }
@@ -356,6 +334,7 @@ void Connection::handlePOST(Client& client)
 void Connection::handleDELETE(Client& client)
 {
 	// Vérification si l'URI correspond à une configuration de location
+	std::cout << "uri: " << client._uri << std::endl;
 	Location *location = findLocationForUri(client._uri, client._location);
 	if (!location || !location->isMethodAllowed("DELETE"))
 	{
@@ -542,7 +521,7 @@ bool Connection::isAlive(Client &client, bool isAlive)
 	shutdown(client._socket, SHUT_RDWR);
 	close(client._socket);
 
-	std::cout << "> Client disconnected on socket " << client._socket << std::endl;;
+	// std::cout << "> Client disconnected on socket " << client._socket << std::endl;;
 	return (false);
 }
 
@@ -580,6 +559,7 @@ bool Connection::receiveClientRequest(Client &client)
 	}
 
 	client._requestStr.write(buffer, readBytes);
+	std::cout << "\033[1;34m" << buffer << "\033[0m" << std::endl;
 	if (client._contentLenght == 0)
 	{
 		HTTPRequest httpRequest(client);
@@ -587,16 +567,6 @@ bool Connection::receiveClientRequest(Client &client)
 		{
 			std::memset(&buffer, 0, maxReadBytes);
 			return true;
-		}
-		if (client._uri == "/test_max")
-		{
-			Location *location = findLocationForUri(client._uri, client._location);
-			if (location->getMaxSize() < client._contentLenght)
-			{
-				sendErrorResponse(client, 413);
-				client._isAlive = false;
-				return false;
-			}
 		}
 	}
 	else
@@ -627,7 +597,7 @@ bool Connection::handleReponse(Client &client)
 			handleDELETE(client);
 			break;
 		default:
-			printError("Unauthorized method");
+			printError("Method not allowed");
 			sendErrorResponse(client, 405);
 			break;
 	}
