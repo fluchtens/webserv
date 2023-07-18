@@ -6,11 +6,35 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/11 14:52:42 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/18 16:50:19 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.hpp"
+
+void printError(const std::string &str)
+{
+	std::cerr << "\033[1;31m" << "Error: " << str << "." << "\033[0m" << std::endl;
+}
+
+void printWarning(const std::string &str)
+{
+	std::cerr << "\033[1;33m" << "Warning: " << str << "." << "\033[0m" << std::endl;
+}
+
+void signalHandler(int signal)
+{
+    if (signal == SIGINT){
+    	std::cout << "SIGINT signal received. Program is shutting down..." << std::endl;
+		deleteServers();
+		exit(1);
+	}
+	else if (signal == SIGPIPE) {
+		std::cout << "Received SIGPIPE signal. Program is shutting down..." << std::endl;
+		deleteServers();
+		exit(1);
+	}
+}
 
 void deleteServers(void)
 {
