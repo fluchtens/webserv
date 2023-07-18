@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/14 12:34:30 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/18 10:44:48 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,14 +119,14 @@ void Connection::traitement(void)
 		}
 
 		if (FD_ISSET(it->_socket, &this->_setReads)) {
-			if (receiveClientRequest(*it)) {
+			if (this->receiveClientRequest(*it)) {
 				it->_requestPars = true;
 				FD_SET(it->_socket, &this->_setWrite);
 			}
 		}
 
 		if (FD_ISSET(it->_socket, &this->_setWrite)) {
-			if (handleReponse(*it)) {
+			if (this->handleReponse(*it)) {
 				it->_isAlive = false;
 			}
 		}
@@ -135,97 +135,6 @@ void Connection::traitement(void)
 			it = this->_client.erase(it);
 		}
 	}
-}
-
-bool Connection::receiveClientRequest(Client &client)
-{
-	//On recupere la taille du tampon sur le socket.
-	int optval = 0;
-	socklen_t  optlen = sizeof(optval);
-	if(getsockopt(client._socket, SOL_SOCKET, SO_RCVBUF, &optval, &optlen) == -1)
-	{
-		std::cerr << "\033[0;31mError : 500 receiving data from client getsockopt():\033[0m " << client._socket << std::endl;
-		sendErrorResponse(client, 500);
-		client._isAlive = false;
-		return false;
-	}
-
-	//Recupere le tampon avec une taille adaptee
-	char buffer[optval];
-	int bytesRead = recv(client._socket, buffer, optval, 0);
-	if (bytesRead <= 0) {
-		if (bytesRead == -1) {
-			std::cerr << "\033[0;31mError : 500 receiving data from client getsockopt():\033[0m " << client._socket << std::endl;
-			sendErrorResponse(client, 500);
-		}
-		client._isAlive = false;
-		return (false);
-	}
-
-	if (bytesRead > optval) {
-		std::cerr << "\033[0;31mError : 413 Request size exceeds the limit (" << optval << " bytes) for client:\033[0m " << client._socket << std::endl;
-		sendErrorResponse(client, 413);
-		return (false);
-	}
-
-	if (client._contentLenght == 0 && client._requestStr.str().empty() == 0) {
-		client._requestStr.str(std::string());
-		client._bodyReq.str(std::string());
-	}
-
-	client._requestStr.write(buffer, bytesRead);
-	if (client._contentLenght == 0)
-	{
-		HTTPRequest httpRequest(client);
-		if (client._method != POST)
-		{
-			std::memset(&buffer, 0, optval);
-			return true;
-		}
-		if (client._uri == "/test_max")
-		{
-			Location *location = findLocationForUri(client._uri, client._location);
-			if (location->getMaxSize() < client._contentLenght)
-			{
-				sendErrorResponse(client, 413);
-				client._isAlive = false;
-				return false;
-			}
-		}
-	}
-	else
-	{
-		client._bodyReq.write(buffer, bytesRead);
-		client._sizeBody += bytesRead;
-	}
-
-	
-	std::memset(&buffer, 0, optval);
-   	if (client._sizeBody < client._contentLenght)
-		return false;
-   	return true;
-}
-
-bool Connection::handleReponse(Client &client)
-{
-	bool ret = true;
-	switch (client._method)
-	{
-		case GET:
-			ret = handleGET(client);
-			break;
-		case POST:
-			handlePOST(client);
-			break;
-		case DELETE:
-			handleDELETE(client);
-			break;
-		default:
-			std::cerr << "Client " << client._socket << " connected with an unauthorized method." << std::endl;
-			sendErrorResponse(client, 405);
-			break;
-	}
-	return (ret);
 }
 
 bool Connection::handleGET(Client& client)
@@ -643,4 +552,84 @@ void Connection::closeClientSockets()
 		std::cout << "> Closing client sockets" << std::endl;
 		close(it->_socket);
 	}
+}
+
+bool Connection::receiveClientRequest(Client &client)
+{
+	int maxReadBytes = 1024;
+	char buffer[maxReadBytes];
+	int readBytes = recv(client._socket, buffer, maxReadBytes, 0);
+	if (readBytes <= 0) {
+		if (readBytes == -1) {
+			printError("recv() failed");
+			sendErrorResponse(client, 500);
+		}
+		client._isAlive = false;
+		return (false);
+	}
+
+	if (readBytes > maxReadBytes) {
+		printError("Request size exceeds the limit");
+		sendErrorResponse(client, 413);
+		return (false);
+	}
+
+	if (client._contentLenght == 0 && client._requestStr.str().empty() == 0) {
+		client._requestStr.str(std::string());
+		client._bodyReq.str(std::string());
+	}
+
+	client._requestStr.write(buffer, readBytes);
+	if (client._contentLenght == 0)
+	{
+		HTTPRequest httpRequest(client);
+		if (client._method != POST)
+		{
+			std::memset(&buffer, 0, maxReadBytes);
+			return true;
+		}
+		if (client._uri == "/test_max")
+		{
+			Location *location = findLocationForUri(client._uri, client._location);
+			if (location->getMaxSize() < client._contentLenght)
+			{
+				sendErrorResponse(client, 413);
+				client._isAlive = false;
+				return false;
+			}
+		}
+	}
+	else
+	{
+		client._bodyReq.write(buffer, readBytes);
+		client._sizeBody += readBytes;
+	}
+
+	
+	std::memset(&buffer, 0, maxReadBytes);
+   	if (client._sizeBody < client._contentLenght)
+		return false;
+   	return true;
+}
+
+bool Connection::handleReponse(Client &client)
+{
+	bool ret = true;
+	switch (client._method)
+	{
+		case GET:
+			ret = handleGET(client);
+			break;
+		case POST:
+			handlePOST(client);
+			break;
+		case DELETE:
+			handleDELETE(client);
+			break;
+		default:
+			printError("Unauthorized method");
+			sendErrorResponse(client, 405);
+			break;
+	}
+	return (ret);
 }

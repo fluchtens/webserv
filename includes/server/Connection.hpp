@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/13 20:52:49 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/18 10:38:14 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,6 @@ class Connection
 		//Fonctionnement coté client
 		Client *findExistingClient(const sockaddr_in& csin);
 
-		// @brief lit la requete client et la parse, gere les erreurs
-		// @param client client en cours de vecteur<Client> (*it)
-		// @return true si client toujours en vie.
-		bool receiveClientRequest(Client &client);
-
 		/// @brief Check si la requete client est conforme
 		/// @param request request du client a check.
 		/// @return bool true si confrome
@@ -58,7 +53,6 @@ class Connection
 
 		/// @brief Gestion de la request parse afin de generer la reponse
 		/// @param client 
-		bool handleReponse(Client &client);
 
 		/// @brief gestion de Get
 		bool handleGET(Client& client);
@@ -77,20 +71,20 @@ class Connection
 	private :
 		std::vector<Server *> _servers;
 		std::vector<Client> _client;
-
+		std::map<std::string, std::string> _mimeTypes;
 		fd_set _setReads;
 		fd_set _setWrite;
 		fd_set _setErrors;
 		int _highestFd;
 		timeval _timeout;
 
-		std::map<std::string, std::string> _mimeTypes;
-
 		void initMime(void);
 		void addToFdSet(int fd, fd_set &fds);
 		void checkFdStatus(void);
 		bool isAlive(Client &client, bool isAlive);
 		void closeClientSockets(void);
+		bool receiveClientRequest(Client &client);
+		bool handleReponse(Client &client);
 };
 
 #endif
