@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 12:35:49 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 14:54:22 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int main(int ac, char **av, char **env)
 	try {
 		for (int i = 0; i < serverBlockCount; i++) {
 			Parser *tmp = new Parser(cfgFile);
-			std::cout << CLR_TEST << *tmp << CLR_RESET << std::endl;
+			std::cout << CLR_GREEN << *tmp << CLR_RESET << std::endl;
 			_config.push_back(tmp);
 		}
 
