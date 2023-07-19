@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 18:11:37 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 19:32:59 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,13 @@ void Parser::parseCfgFile(std::ifstream &cfgFile)
 {
 	std::string line;
 	bool insideServerBlock = false;
+	bool closeServerBlock = false;
 
-	while (std::getline(cfgFile, line) && this->strTrimWhiteSpaces(line) != "}")
+	while (std::getline(cfgFile, line))
 	{
-		if (line.empty())
+		if (line.empty()) {
 			continue;
+		}
 
 		std::stringstream ss(line);
 		std::string key;
@@ -74,8 +76,13 @@ void Parser::parseCfgFile(std::ifstream &cfgFile)
 		ss >> key;
 		ss >> value;
 
-		if (key.empty())
+		if (key.empty()) {
 			continue;
+		}
+		else if (this->strTrimWhiteSpaces(line) == "}") {
+			closeServerBlock = true;
+			break ;
+		}
 		else if (!ss.eof() && key != "location" && key != "error_page") {
 			std::string tmp;
 			ss >> tmp;
@@ -88,23 +95,29 @@ void Parser::parseCfgFile(std::ifstream &cfgFile)
 		}
 
 		if (!insideServerBlock) {
-			if (key == "server" && value == "{")
+			if (key == "server" && value == "{") {
 				insideServerBlock = true;
-			else
+			} else {
 				throw (std::runtime_error("information found outside a server block"));
+			}
 		} else {
 			std::string tmp = value.substr(0, value.size() - 1);
 
-			if (key == "listen")
+			if (key == "listen") {
 				this->parsePort(tmp);
-			else if (key == "host")
+			}
+			else if (key == "host") {
 				this->parseHost(tmp);
-			else if (key == "server_name")
+			}
+			else if (key == "server_name") {
 				this->_serverName = tmp;
-			else if (key == "root")
+			}
+			else if (key == "root") {
 				this->_root = tmp;
-			else if (key == "index")
+			}
+			else if (key == "index") {
 				this->_index = tmp;
+			}
 			else if (key == "error_page") {
 				std::string path;
 				ss >> path;
@@ -131,13 +144,17 @@ void Parser::parseCfgFile(std::ifstream &cfgFile)
 					throw std::runtime_error("missing or invalid bracket at the end of location");
 				this->parseLocation(cfgFile, value);
 			}
-			else
+			else {
 				throw (std::runtime_error("unknown key in configuration file (" + key + ")"));
+			}
 		}
 		line.clear();
 		ss.clear();
 		key.clear();
 		value.clear();
+	}
+	if (!closeServerBlock) {
+		throw std::runtime_error("server block not closed with a bracket");
 	}
 }
 
