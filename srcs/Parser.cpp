@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 12:19:45 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 12:29:51 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -384,10 +384,5 @@ std::ostream &operator<<(std::ostream &o, const Parser &rhs)
 	o << "root: " << rhs.getRoot() << " | ";
 	o << "index: " << rhs.getIndex() << std::endl;
 	o << "> Error pages: " << rhs.getErrorPages() << std::endl;
-	// std::map<int, std::string>::const_iterator it = this->_errorPage.begin();
-	// while (it != this->_errorPage.end()) {
-	// 	o << "ErrorPage: " << it->first << " " << it->second << std::endl;
-	// 	it++;
-	// }
 	return (o);
 }

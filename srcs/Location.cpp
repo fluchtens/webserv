@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:40 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 10:41:50 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 12:30:02 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,70 +50,6 @@ Location::~Location(void)
 {
 	// std::cout << "Location destructor called" << std::endl;
 	return ;
-}
-
-/* ************************************************************************** */
-/*                              Getters / Setters                             */
-/* ************************************************************************** */
-
-const std::vector<std::string> &Location::getAllow(void) const
-{
-	return (this->_allow);
-}
-
-const std::string &Location::getUrl(void) const
-{
-	return (this->_url);
-}
-
-const std::string &Location::getRoot(void) const
-{
-	return (this->_root);
-}
-
-const std::string &Location::getIndex(void) const
-{
-	return (this->_index);
-}
-
-const std::string &Location::getPath(void) const
-{
-	return (this->_path);
-}
-
-const bool &Location::getAutoIndex(void) const
-{
-	return (this->_autoIndex);
-}
-
-const std::string &Location::getReturn(void) const
-{
-	return (this->_return);
-}
-
-const std::string &Location::getCgiPath(void) const
-{
-	return (this->_cgiPath);
-}
-
-const std::string &Location::getCgiScript(void) const
-{
-	return (this->_cgiScript);
-}
-
-const int &Location::getMaxSize(void) const
-{
-	return (this->_maxSize);
-}
-
-bool Location::isMethodAllowed(std::string method) const
-{
-	for (std::vector<std::string>::const_iterator it = _allow.begin(); it != _allow.end(); it++)
-	{
-		if (*it == method)
-			return (true);
-	}
-	return (false);
 }
 
 /* ************************************************************************** */
@@ -182,4 +118,68 @@ void Location::parseLocation(std::ifstream &cfgFile)
 		key.clear();
 		value.clear();
 	}
+}
+
+/* ************************************************************************** */
+/*                              Getters / Setters                             */
+/* ************************************************************************** */
+
+const std::vector<std::string> &Location::getAllow(void) const
+{
+	return (this->_allow);
+}
+
+const std::string &Location::getUrl(void) const
+{
+	return (this->_url);
+}
+
+const std::string &Location::getRoot(void) const
+{
+	return (this->_root);
+}
+
+const std::string &Location::getIndex(void) const
+{
+	return (this->_index);
+}
+
+const std::string &Location::getPath(void) const
+{
+	return (this->_path);
+}
+
+const bool &Location::getAutoIndex(void) const
+{
+	return (this->_autoIndex);
+}
+
+const std::string &Location::getReturn(void) const
+{
+	return (this->_return);
+}
+
+const std::string &Location::getCgiPath(void) const
+{
+	return (this->_cgiPath);
+}
+
+const std::string &Location::getCgiScript(void) const
+{
+	return (this->_cgiScript);
+}
+
+const int &Location::getMaxSize(void) const
+{
+	return (this->_maxSize);
+}
+
+bool Location::isMethodAllowed(std::string method) const
+{
+	for (std::vector<std::string>::const_iterator it = _allow.begin(); it != _allow.end(); it++)
+	{
+		if (*it == method)
+			return (true);
+	}
+	return (false);
 }
