@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 11:31:38 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 12:22:53 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void Server::creatSocket(void)
 	if (fcntl(this->_serverFd, F_SETFL, O_NONBLOCK) < 0) {
 		throw (std::runtime_error("fcntl() failed"));
 	}
-	this->print("createSocket(): Socket created successfully.");
+	// this->print("createSocket() Socket created successfully.");
 }
 
 void Server::bindSocket(void)
@@ -140,7 +140,7 @@ void Server::bindSocket(void)
 	if (bind(this->_serverFd, reinterpret_cast<sockaddr *>(&this->_address), sizeof(this->_address)) < 0) {
 		throw (std::runtime_error("bind() failed"));
 	}
-	this->print("bindSocket(): Socket bound successfully.");
+	// this->print("bindSocket() Socket bound successfully.");
 }
 
 void Server::listenTCP(void)
@@ -148,13 +148,13 @@ void Server::listenTCP(void)
 	if (listen(this->_serverFd, this->_maxConnection) < 0) {
 		throw (std::runtime_error("listen()"));
 	}
-	this->print("listenTCP(): Listening to port " + std::to_string(this->_cfg->getPort()));
+	this->print("listenTCP() Listening to port " + std::to_string(this->_cfg->getPort()));
 }
 
 void Server::closeSocket(void)
 {
     close(this->_serverFd);
-	this->print("closeSocket(): Socket closed successfully.");
+	this->print("closeSocket() Socket closed successfully.");
 }
 
 in_addr_t Server::convertIpAddress(const std::string &str)
@@ -197,5 +197,5 @@ in_addr_t Server::convertIpAddress(const std::string &str)
 
 void Server::print(const std::string &str) const
 {
-	std::cout << "> 💻 " << str << std::endl;
+	std::cout << "> Server::" << str << std::endl;
 }
