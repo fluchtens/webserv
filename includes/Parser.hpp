@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:13:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 11:09:45 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 12:18:13 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class Parser
 		Parser &operator=(const Parser &rhs);
 		~Parser(void);
 
-		const unsigned int &getPort(void) const;
+		const int &getPort(void) const;
 		const std::string &getHost(void) const;
 		const std::string &getServerName(void) const;
 		const std::string &getRoot(void) const;
@@ -48,7 +48,7 @@ class Parser
 		size_t getNbrLocation() const;
 
 	private:
-		unsigned int _port;
+		int _port;
 		std::string _host;
 		std::string _serverName;
 		std::string _root;
@@ -62,6 +62,7 @@ class Parser
 		void parseHost(const std::string &host);
 		void parseErrorPage(const std::string &error, const std::string &page);
 		void parseLocation(std::ifstream &cfgFile, const std::string &url);
+		void hasAllInfos(void);
 		std::string strTrimWhiteSpaces(const std::string &str);
 };
 

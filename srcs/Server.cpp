@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/14 08:32:02 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 11:31:38 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ Server &Server::getServer(void)
 	return (*this);
 }
 
-const unsigned int &Server::getPort(void) const
+const int &Server::getPort(void) const
 {
 	return (this->_cfg->getPort());
 }

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 11:13:27 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 12:19:45 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,13 @@
 /*                               Canonical form                               */
 /* ************************************************************************** */
 
-Parser::Parser(std::ifstream &cfgFile) : _port(80), _host("127.0.0.1"), _serverName("default_name"), _index("index.html"), _nbrLocation(0)
+Parser::Parser(std::ifstream &cfgFile)
 {
 	// std::cout << "Parser constructor called" << std::endl;
+	this->_port = -1;
+	this->_serverName = "default_name";
 	this->parseCfgFile(cfgFile);
+	this->hasAllInfos();
 }
 
 Parser::Parser(const Parser &rhs)
@@ -172,7 +175,7 @@ void Parser::parseErrorPage(const std::string &error, const std::string &page)
 	this->_errorPage.insert(make_pair(nb, page));
 }
 
-void    Parser::parseLocation(std::ifstream &cfgFile, const std::string &url)
+void Parser::parseLocation(std::ifstream &cfgFile, const std::string &url)
 {
 	size_t i = 0;
 	Location tmp(cfgFile, url);
@@ -189,6 +192,26 @@ void    Parser::parseLocation(std::ifstream &cfgFile, const std::string &url)
 	}
 }
 
+void Parser::hasAllInfos(void)
+{
+	std::string	missingInfo;
+
+	if (this->_port < 0)
+		missingInfo += "listen ";
+	if (this->_host.empty())
+		missingInfo += "host ";
+	if (this->_serverName.empty())
+		missingInfo += "serverName ";
+	if (this->_root.empty())
+		missingInfo += "root ";
+	if (this->_index.empty())
+		missingInfo += "index ";
+	missingInfo = this->strTrimWhiteSpaces(missingInfo);
+	if (!missingInfo.empty()) {
+		throw (std::runtime_error("server missing information (" + missingInfo + ")"));
+	}
+}
+
 std::string Parser::strTrimWhiteSpaces(const std::string &str)
 {
 	size_t first = str.find_first_not_of(" \t");
@@ -202,7 +225,7 @@ std::string Parser::strTrimWhiteSpaces(const std::string &str)
 /*                              Getters / Setters                             */
 /* ************************************************************************** */
 
-const unsigned int &Parser::getPort(void) const
+const int &Parser::getPort(void) const
 {
 	return (this->_port);
 }
