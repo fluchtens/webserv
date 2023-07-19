@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 12:29:51 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 12:45:01 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,6 +179,7 @@ void Parser::parseLocation(std::ifstream &cfgFile, const std::string &url)
 {
 	size_t i = 0;
 	Location tmp(cfgFile, url);
+	std::cout << "\033[32m" << tmp << "\033[0m" << std::endl;
 
 	while (i != _location.size() && _location[i].getUrl() != url)
 		i++;

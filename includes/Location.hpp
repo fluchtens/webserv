@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 10:42:06 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 12:43:15 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,7 @@ class Location
 
 		void parseLocation(std::ifstream &cfgFile);
 };
+
+std::ostream &operator<<(std::ostream &o, const Location &rhs);
 
 #endif

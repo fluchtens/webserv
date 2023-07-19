@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:40 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 12:30:02 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 12:44:15 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,4 +182,15 @@ bool Location::isMethodAllowed(std::string method) const
 			return (true);
 	}
 	return (false);
+}
+
+/* ************************************************************************** */
+/*                             Operators Overloads                            */
+/* ************************************************************************** */
+
+std::ostream &operator<<(std::ostream &o, const Location &rhs)
+{
+	o << "> Location: ";
+	o << "path: " << rhs.getUrl() << " | ";
+	return (o);
 }
