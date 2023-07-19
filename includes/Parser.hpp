@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:13:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/18 19:21:27 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 11:09:45 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ class Parser
 		const std::string &getServerName(void) const;
 		const std::string &getRoot(void) const;
 		const std::string &getIndex(void) const;
+		const std::string getErrorPages(void) const;
 		const std::string getErrorPage(int code) const;
 
 		std::string getLocationUrl(size_t size) const;
@@ -62,7 +63,8 @@ class Parser
 		void parseErrorPage(const std::string &error, const std::string &page);
 		void parseLocation(std::ifstream &cfgFile, const std::string &url);
 		std::string strTrimWhiteSpaces(const std::string &str);
-		void printParsing(void) const;
 };
+
+std::ostream &operator<<(std::ostream &o, const Parser &rhs);
 
 #endif

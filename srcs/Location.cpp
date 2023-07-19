@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:40 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/18 19:51:58 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 10:41:50 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,14 @@ Location::~Location(void)
 /*                              Getters / Setters                             */
 /* ************************************************************************** */
 
-const std::string &Location::getUrl(void) const
-{
-	return (this->_url);
-}
-
 const std::vector<std::string> &Location::getAllow(void) const
 {
 	return (this->_allow);
+}
+
+const std::string &Location::getUrl(void) const
+{
+	return (this->_url);
 }
 
 const std::string &Location::getRoot(void) const
