@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 19:32:59 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 20:15:32 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,12 @@ void Parser::parseCfgFile(std::ifstream &cfgFile)
 		if (key.empty()) {
 			continue;
 		}
-		else if (this->strTrimWhiteSpaces(line) == "}") {
+		else if (key == "}") {
+			if (ss) {
+				throw std::runtime_error("unexpected additional content after server close bracket");
+			}
 			closeServerBlock = true;
-			break ;
+			break;
 		}
 		else if (!ss.eof() && key != "location" && key != "error_page") {
 			std::string tmp;
@@ -110,13 +113,13 @@ void Parser::parseCfgFile(std::ifstream &cfgFile)
 				this->parseHost(tmp);
 			}
 			else if (key == "server_name") {
-				this->_serverName = tmp;
+				this->parseServerName(tmp);
 			}
 			else if (key == "root") {
-				this->_root = tmp;
+				this->parseRoot(tmp);
 			}
 			else if (key == "index") {
-				this->_index = tmp;
+				this->parseIndex(tmp);
 			}
 			else if (key == "error_page") {
 				std::string path;
@@ -160,6 +163,9 @@ void Parser::parseCfgFile(std::ifstream &cfgFile)
 
 void Parser::parsePort(const std::string &port)
 {
+	if (this->_port != -1) {
+		throw (std::runtime_error("duplicate listen key"));
+	}
 	for (size_t i = 0; i < port.length(); i++) {
 		if (!std::isdigit(port[i])) {
 			throw (std::runtime_error("port contains non-digital characters"));
@@ -175,7 +181,34 @@ void Parser::parsePort(const std::string &port)
 
 void Parser::parseHost(const std::string &host)
 {
+	if (!this->_host.empty()) {
+		throw (std::runtime_error("duplicate host key"));
+	}
 	this->_host = (host == "localhost" ? "127.0.0.1" : host);
+}
+
+void Parser::parseServerName(const std::string &serverName)
+{
+	if (this->_serverName != "default_name") {
+		throw (std::runtime_error("duplicate server_name key"));
+	}
+	this->_serverName = serverName;
+}
+
+void Parser::parseRoot(const std::string &root)
+{
+	if (!this->_root.empty()) {
+		throw (std::runtime_error("duplicate root key"));
+	}
+	this->_root = root;
+}
+
+void Parser::parseIndex(const std::string &index)
+{
+	if (!this->_index.empty()) {
+		throw (std::runtime_error("duplicate index key"));
+	}
+	this->_index = index;
 }
 
 void Parser::parseErrorPage(const std::string &error, const std::string &page)

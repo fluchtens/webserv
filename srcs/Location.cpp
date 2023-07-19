@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:40 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 18:21:13 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 20:16:44 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,20 +59,28 @@ Location::~Location(void)
 void Location::parseLocation(std::ifstream &cfgFile)
 {
 	std::string line;
+	bool closeLocationBlock = false;
 
 	while (std::getline(cfgFile, line))
 	{
-		if (line.empty())
+		if (line.empty()) {
 			continue;
+		}
 
 		std::stringstream ss(line);
 		std::string key;
 		std::string value;
-
 		ss >> key;
 
-		if (key == "}")
+		if (key == "}") {
+			closeLocationBlock = true;
+			std::string tmp;
+			ss >> tmp;
+			if (ss) {
+				throw std::runtime_error("unexpected additional content after location close bracket");
+			}
 			break;
+		}
 
 		while (ss >> value)
 		{
@@ -117,6 +125,9 @@ void Location::parseLocation(std::ifstream &cfgFile)
 		ss.clear();
 		key.clear();
 		value.clear();
+	}
+	if (!closeLocationBlock) {
+		throw std::runtime_error("location block not closed with a bracket");
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:13:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 17:59:07 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 20:12:42 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,12 @@ class Parser
 		void parseCfgFile(std::ifstream &cfgFile);
 		void parsePort(const std::string &port);
 		void parseHost(const std::string &host);
+		void parseServerName(const std::string &serverName);
+		void parseRoot(const std::string &root);
+		void parseIndex(const std::string &index);
 		void parseErrorPage(const std::string &error, const std::string &page);
 		void parseLocation(std::ifstream &cfgFile, const std::string &url);
+
 		void hasAllInfos(void);
 		std::string strTrimWhiteSpaces(const std::string &str);
 		void printParsing(void) const;
