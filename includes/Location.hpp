@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 12:43:15 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 18:19:45 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ class Location
 		Location &operator=(const Location &rhs);
 		~Location(void);
 
-		const std::vector<std::string> &getAllow(void) const;
 		const std::string &getUrl(void) const;
+		const std::vector<std::string> &getAllow(void) const;
 		const std::string &getRoot(void) const;
 		const std::string &getIndex(void) const;
 		const std::string &getPath(void) const;
@@ -40,8 +40,8 @@ class Location
 		bool isMethodAllowed(std::string method) const;
 
 	private:
-		std::vector<std::string> _allow;
 		std::string _url;
+		std::vector<std::string> _allow;
 		std::string _root;
 		std::string _index;
 		std::string _path;

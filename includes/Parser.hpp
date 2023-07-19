@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:13:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 12:18:13 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 17:59:07 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ class Parser
 		void parseLocation(std::ifstream &cfgFile, const std::string &url);
 		void hasAllInfos(void);
 		std::string strTrimWhiteSpaces(const std::string &str);
+		void printParsing(void) const;
 };
 
 std::ostream &operator<<(std::ostream &o, const Parser &rhs);

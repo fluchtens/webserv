@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 12:45:01 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/19 18:11:37 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ Parser::Parser(std::ifstream &cfgFile)
 	this->_serverName = "default_name";
 	this->parseCfgFile(cfgFile);
 	this->hasAllInfos();
+	this->printParsing();
 }
 
 Parser::Parser(const Parser &rhs)
@@ -179,7 +180,6 @@ void Parser::parseLocation(std::ifstream &cfgFile, const std::string &url)
 {
 	size_t i = 0;
 	Location tmp(cfgFile, url);
-	std::cout << "\033[32m" << tmp << "\033[0m" << std::endl;
 
 	while (i != _location.size() && _location[i].getUrl() != url)
 		i++;
@@ -220,6 +220,17 @@ std::string Parser::strTrimWhiteSpaces(const std::string &str)
 		return ("");
 	size_t last = str.find_last_not_of(" \t");
 	return (str.substr(first, last - first + 1));
+}
+
+void Parser::printParsing(void) const
+{
+	std::cout << "\033[32m" << *this << "\033[0m";
+	std::vector<Location>::const_iterator it = this->_location.begin();
+	while (it != this->_location.end()) {
+		std::cout << "\033[32m" << *it << "\033[0m";
+		it++;
+	}
+	std::cout << std::endl;
 }
 
 /* ************************************************************************** */
