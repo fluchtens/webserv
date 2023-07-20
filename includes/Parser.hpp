@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:13:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 20:12:42 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/20 09:16:09 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ class Parser
 		std::string getLocationPath(std::string url) const;
 		bool getLocationAutoIndex(std::string url) const;
 		std::string getLocationReturn(std::string url) const;
-		int getLocationMaxSize(std::string url) const;
 		std::vector<Location> &getLocation();
 		size_t getNbrLocation() const;
 

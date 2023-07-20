@@ -6,14 +6,15 @@
 #    By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/16 16:17:24 by fluchten          #+#    #+#              #
-#    Updated: 2023/07/18 16:51:21 by fluchten         ###   ########.fr        #
+#    Updated: 2023/07/20 10:17:13 by fluchten         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = webserv
 
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98
+CFLAGS = -Wall -Wextra -Werror -std=c++98 #${FSANITIZE}
+FSANITIZE = -fsanitize=address -g
 RM = rm -rf
 
 INCS_DIR = includes

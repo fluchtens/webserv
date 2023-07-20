@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 20:15:32 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/20 10:31:29 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,21 +79,24 @@ void Parser::parseCfgFile(std::ifstream &cfgFile)
 		if (key.empty()) {
 			continue;
 		}
-		else if (key == "}") {
+
+		if (key == "}") {
 			if (ss) {
 				throw std::runtime_error("unexpected additional content after server close bracket");
 			}
 			closeServerBlock = true;
 			break;
 		}
-		else if (!ss.eof() && key != "location" && key != "error_page") {
+
+		if (key != "location" && key != "error_page") {
 			std::string tmp;
 			ss >> tmp;
 			if (ss) {
 				throw std::runtime_error("unexpected additional content after value of " + key);
 			}
 		}
-		else if (value.back() != ';' && key != "server" && key != "location" && key != "error_page") {
+
+		if (value.back() != ';' && key != "server" && key != "location" && key != "error_page") {
 			throw std::runtime_error("missing final semicolon at the end of the value of " + key);
 		}
 
@@ -124,27 +127,27 @@ void Parser::parseCfgFile(std::ifstream &cfgFile)
 			else if (key == "error_page") {
 				std::string path;
 				ss >> path;
-				if (!ss.eof()) {
-					std::string tmp;
-					ss >> tmp;
-					if (ss)
-						throw std::runtime_error("unexpected additional content after page path of error_page");
+				std::string tmp;
+				ss >> tmp;
+				if (ss) {
+					throw std::runtime_error("unexpected additional content after page path of error_page");
 				}
-				if (path.back() != ';')
+				else if (path.back() != ';') {
 					throw std::runtime_error("missing final semicolon at the end of error_page");
+				}
 				this->parseErrorPage(value, path.substr(0, path.size() - 1));
 			}
 			else if (key == "location") {
 				std::string bracket;
 				ss >> bracket;
-				if (!ss.eof()) {
-					std::string tmp;
-					ss >> tmp;
-					if (ss)
-						throw std::runtime_error("unexpected additional content after bracket of location");
+				std::string tmp;
+				ss >> tmp;
+				if (ss) {
+					throw std::runtime_error("unexpected additional content after bracket of location");
 				}
-				if (bracket != "{")
+				else if (bracket != "{") {
 					throw std::runtime_error("missing or invalid bracket at the end of location");
+				}
 				this->parseLocation(cfgFile, value);
 			}
 			else {
@@ -407,17 +410,6 @@ std::string	Parser::getLocationReturn(std::string url) const
 	{
 		if(it->getUrl() == url)
 			return (it->getReturn());
-	}
-	std::cerr << "\033[1;31mgetLocationReturn : url don't exist ! \033[0m" << std::endl;
-	exit (-3);
-}
-
-int	Parser::getLocationMaxSize(std::string url) const
-{
-	for(std::vector<Location>::const_iterator it = _location.begin(); it != _location.end(); it++)
-	{
-		if(it->getUrl() == url)
-			return (it->getMaxSize());
 	}
 	std::cerr << "\033[1;31mgetLocationReturn : url don't exist ! \033[0m" << std::endl;
 	exit (-3);

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:40 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 20:16:44 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/20 12:25:43 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,13 @@
 /*                               Canonical form                               */
 /* ************************************************************************** */
 
-Location::Location(std::ifstream &cfgFile, const std::string &url) : _url(url), _autoIndex(false)
+Location::Location(std::ifstream &cfgFile, const std::string &url)
 {
 	// std::cout << "Location constructor called" << std::endl;
+	this->_url = url;
+	this->_autoIndex = false;
 	this->parseLocation(cfgFile);
+	// this->hasAllInfos();
 }
 
 Location::Location(const Location &rhs)
@@ -41,7 +44,6 @@ Location &Location::operator=(const Location &rhs)
 		this->_return = rhs._return;
 		this->_cgiScript = rhs._cgiScript;
 		this->_cgiPath = rhs._cgiPath;
-		this->_maxSize = rhs._maxSize;
 	}
 	return (*this);
 }
@@ -71,6 +73,11 @@ void Location::parseLocation(std::ifstream &cfgFile)
 		std::string key;
 		std::string value;
 		ss >> key;
+		ss >> value;
+
+		if (key.empty()) {
+			continue ;
+		}
 
 		if (key == "}") {
 			closeLocationBlock = true;
@@ -82,44 +89,47 @@ void Location::parseLocation(std::ifstream &cfgFile)
 			break;
 		}
 
-		while (ss >> value)
-		{
-			std::string tmp = value.substr(0, value.size() - 1);
-			// std::cout << key << " = " << value << std::endl;
+		if (key != "allow") {
+			std::string tmp;
+			ss >> tmp;
+			if (ss) {
+				throw std::runtime_error("unexpected additional content after value of " + key);
+			}
+		}
 
-			if (key == "allow")
-			{
-				std::string	method;
-				if (!ss.eof()) {
-					method = value.substr(0, value.size());
-				} else {
-					method = value.substr(0, value.size() -1);
-				}
-				if (method != "GET" && method != "POST" && method != "DELETE") {
-					throw std::runtime_error("Invalid value for allow key (" + method + ")");
-				}
-				this->_allow.push_back(method);
+		if (value.back() != ';' && key != "allow") {
+			throw std::runtime_error("missing final semicolon at the end of the value of " + key);
+		}
+
+		std::string tmp = value.substr(0, value.size() - 1);
+		// std::cout << key << " = " << value << std::endl;
+
+		if (key == "allow") {
+			this->parseAllowedMethods(value, ss);
+		}
+		else if (key == "root") {
+			this->_root = tmp;
+		}
+		else if (key == "index") {
+			this->_index = tmp;
+		}
+		else if (key == "path") {
+			this->_path = tmp;
+		}
+		else if (key == "autoindex")
+		{
+			if (tmp == "on") {
+				this->_autoIndex = true;
 			}
-			else if (key == "root")
-				this->_root = tmp;
-			else if (key == "index")
-				this->_index = tmp;
-			else if (key == "path")
-				this->_path = tmp;
-			else if (key == "autoindex")
-			{
-				if (tmp == "on") {
-					this->_autoIndex = true;
-				}
-			}
-			else if (key == "return")
-				this->_return = tmp;
-            else if (key == "cgi_path")
-                this->_cgiPath = tmp;
-			else if (key == "cgi_script")
-                this->_cgiScript = tmp;
-			else if (key == "client_max_body_size")
-                this->_maxSize = std::atoi(tmp.c_str());
+		}
+		else if (key == "return") {
+			this->_return = tmp;
+		}
+		else if (key == "cgi_path") {
+			this->_cgiPath = tmp;
+		}
+		else if (key == "cgi_script") {
+			this->_cgiScript = tmp;
 		}
 		line.clear();
 		ss.clear();
@@ -129,6 +139,81 @@ void Location::parseLocation(std::ifstream &cfgFile)
 	if (!closeLocationBlock) {
 		throw std::runtime_error("location block not closed with a bracket");
 	}
+}
+
+void Location::parseAllowedMethods(std::string &value, std::stringstream &ss)
+{
+	std::string method;
+	std::string tmp;
+
+	while (ss >> method) {
+		if (!ss.eof()) {
+			tmp = method;
+		} else {
+			if (method.back() != ';') {
+				throw (std::runtime_error("missing final semicolon at the end of method"));
+			}
+			tmp = method.substr(0, method.size() - 1);
+		}
+		if (!this->isValidMethod(tmp)) {
+			throw (std::runtime_error("unknown allow method (" + tmp + ")"));
+		} else {
+			if (std::find(this->_allow.begin(), this->_allow.end(), tmp) != this->_allow.end()) {
+				throw (std::runtime_error("duplicate allowed method"));
+			}
+			this->_allow.push_back(tmp);
+		}
+	}
+
+	if (method.empty()) {
+		if (value.back() != ';') {
+			throw (std::runtime_error("missing final semicolon at the end of method"));
+		}
+		tmp = value.substr(0, value.size() - 1);
+	} else {
+		tmp = value;
+	}
+	if (!this->isValidMethod(tmp)) {
+		throw (std::runtime_error("unknown allow method (" + tmp + ")"));
+	} else {
+		if (std::find(this->_allow.begin(), this->_allow.end(), tmp) != this->_allow.end()) {
+			throw (std::runtime_error("duplicate allowed method"));
+		}
+		this->_allow.push_back(tmp);
+	}
+}
+
+void Location::hasAllInfos(void)
+{
+	std::string	missingInfo;
+
+	if (!this->_allow.size())
+		missingInfo += "allow ";
+	if (this->_root.empty())
+		missingInfo += "root ";
+	if (this->_index.empty())
+		missingInfo += "index ";
+	missingInfo = this->strTrimWhiteSpaces(missingInfo);
+	if (!missingInfo.empty()) {
+		throw (std::runtime_error("location missing information (" + missingInfo + ")"));
+	}
+}
+
+bool Location::isValidMethod(const std::string &method) const
+{
+	if (method != "GET" && method != "POST" && method != "DELETE") {
+		return (false);
+	}
+	return (true);
+}
+
+std::string Location::strTrimWhiteSpaces(const std::string &str)
+{
+	size_t first = str.find_first_not_of(" \t");
+	if (first == std::string::npos)
+		return ("");
+	size_t last = str.find_last_not_of(" \t");
+	return (str.substr(first, last - first + 1));
 }
 
 /* ************************************************************************** */
@@ -180,11 +265,6 @@ const std::string &Location::getCgiScript(void) const
 	return (this->_cgiScript);
 }
 
-const int &Location::getMaxSize(void) const
-{
-	return (this->_maxSize);
-}
-
 bool Location::isMethodAllowed(std::string method) const
 {
 	for (std::vector<std::string>::const_iterator it = _allow.begin(); it != _allow.end(); it++)
@@ -211,7 +291,6 @@ std::ostream &operator<<(std::ostream &o, const Location &rhs)
 	o << "return: " << rhs.getReturn() << " | ";
 	o << "cgi_path: " << rhs.getCgiPath() << " | ";
 	o << "cgi_script: " << rhs.getCgiScript() << " | ";
-	o << "client_max_body_size: " << rhs.getMaxSize() << " | ";
 	o << std::endl;
 	return (o);
 }
