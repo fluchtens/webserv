@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/18 20:01:12 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/20 18:25:14 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -558,28 +558,24 @@ bool Connection::receiveClientRequest(Client &client)
 		client._bodyReq.str(std::string());
 	}
 
+	std::cout << CLR_BLUEB << buffer << CLR_RESET << std::endl;
 	client._requestStr.write(buffer, readBytes);
-	std::cout << "\033[1;34m" << buffer << "\033[0m" << std::endl;
-	if (client._contentLenght == 0)
-	{
+	if (client._contentLenght == 0) {
 		HTTPRequest httpRequest(client);
-		if (client._method != POST)
-		{
+		if (client._method != POST) {
 			std::memset(&buffer, 0, maxReadBytes);
-			return true;
+			return (true);
 		}
-	}
-	else
-	{
+	} else {
 		client._bodyReq.write(buffer, readBytes);
 		client._sizeBody += readBytes;
 	}
-
 	
 	std::memset(&buffer, 0, maxReadBytes);
-   	if (client._sizeBody < client._contentLenght)
-		return false;
-   	return true;
+   	if (client._sizeBody < client._contentLenght) {
+		return (false);
+	}
+   	return (true);
 }
 
 bool Connection::handleReponse(Client &client)
