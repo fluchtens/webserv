@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/20 11:34:05 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/20 12:34:55 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ class Location
 		const std::string &getPath(void) const;
 		const bool &getAutoIndex(void) const;
 		const std::string &getReturn(void) const;
-		const std::string &getCgiPath(void) const;
 		const std::string &getCgiScript(void) const;
+		const std::string &getCgiPath(void) const;
 
 		bool isMethodAllowed(std::string method) const;
 
@@ -50,7 +50,15 @@ class Location
 		std::string _cgiPath;
 
 		void parseLocation(std::ifstream &cfgFile);
-		void parseAllowedMethods(std::string &value, std::stringstream &ss);
+		void parseAllowedMethods(const std::string &value, std::stringstream &ss);
+		void parseRoot(const std::string &root);
+		void parseIndex(const std::string &index);
+		void parsePath(const std::string &path);
+		void parseAutoIndex(const std::string &autoIndex);
+		void parseReturn(const std::string &ret);
+		void parseCgiScript(const std::string &cgiScript);
+		void parseCgiPath(const std::string &cgiPath);
+	
 		bool isValidMethod(const std::string &method) const;
 		void hasAllInfos(void);
 		std::string strTrimWhiteSpaces(const std::string &str);

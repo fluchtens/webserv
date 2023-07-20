@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:40 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/20 12:25:43 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/20 13:04:24 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,28 +108,28 @@ void Location::parseLocation(std::ifstream &cfgFile)
 			this->parseAllowedMethods(value, ss);
 		}
 		else if (key == "root") {
-			this->_root = tmp;
+			parseRoot(tmp);
 		}
 		else if (key == "index") {
-			this->_index = tmp;
+			parseIndex(tmp);
 		}
 		else if (key == "path") {
-			this->_path = tmp;
+			parsePath(tmp);
 		}
-		else if (key == "autoindex")
-		{
-			if (tmp == "on") {
-				this->_autoIndex = true;
-			}
+		else if (key == "autoindex") {
+			parseAutoIndex(tmp);
 		}
 		else if (key == "return") {
-			this->_return = tmp;
-		}
-		else if (key == "cgi_path") {
-			this->_cgiPath = tmp;
+			parseReturn(tmp);
 		}
 		else if (key == "cgi_script") {
-			this->_cgiScript = tmp;
+			parseCgiScript(tmp);
+		}
+		else if (key == "cgi_path") {
+			parseCgiPath(tmp);
+		}
+		else {
+			throw (std::runtime_error("unknown key in configuration file (" + key + ")"));
 		}
 		line.clear();
 		ss.clear();
@@ -141,8 +141,11 @@ void Location::parseLocation(std::ifstream &cfgFile)
 	}
 }
 
-void Location::parseAllowedMethods(std::string &value, std::stringstream &ss)
+void Location::parseAllowedMethods(const std::string &value, std::stringstream &ss)
 {
+	if (this->_allow.size()) {
+		throw (std::runtime_error("duplicate allow key"));
+	}
 	std::string method;
 	std::string tmp;
 
@@ -181,6 +184,67 @@ void Location::parseAllowedMethods(std::string &value, std::stringstream &ss)
 		}
 		this->_allow.push_back(tmp);
 	}
+}
+
+void Location::parseRoot(const std::string &root)
+{
+	if (!this->_root.empty()) {
+		throw (std::runtime_error("duplicate root key"));
+	}
+	this->_root = root;
+}
+
+void Location::parseIndex(const std::string &index)
+{
+	if (!this->_index.empty()) {
+		throw (std::runtime_error("duplicate index key"));
+	}
+	this->_index = index;
+}
+
+void Location::parsePath(const std::string &path)
+{
+	if (!this->_path.empty()) {
+		throw (std::runtime_error("duplicate path key"));
+	}
+	this->_path = path;
+}
+
+void Location::parseAutoIndex(const std::string &autoIndex)
+{
+	if (this->_autoIndex) {
+		throw (std::runtime_error("duplicate autoindex key"));
+	}
+
+	if (autoIndex == "on") {
+		this->_autoIndex = true;
+	} else {
+		throw (std::runtime_error("invalid value of autoindex"));
+	}
+}
+
+void Location::parseReturn(const std::string &ret)
+{
+	if (!this->_return.empty()) {
+		throw (std::runtime_error("duplicate return key"));
+	}
+	this->_return = ret;
+}
+
+void Location::parseCgiScript(const std::string &cgiScript)
+{
+	if (!this->_cgiScript.empty()) {
+		throw (std::runtime_error("duplicate cgi_script key"));
+	}
+	this->_cgiScript = cgiScript;
+}
+
+void Location::parseCgiPath(const std::string &cgiPath)
+{
+	if (!this->_cgiPath.empty()) {
+		throw (std::runtime_error("duplicate cgi_path key"));
+	}
+	this->_cgiPath = cgiPath;
 }
 
 void Location::hasAllInfos(void)
@@ -255,14 +319,14 @@ const std::string &Location::getReturn(void) const
 	return (this->_return);
 }
 
-const std::string &Location::getCgiPath(void) const
-{
-	return (this->_cgiPath);
-}
-
 const std::string &Location::getCgiScript(void) const
 {
 	return (this->_cgiScript);
+}
+
+const std::string &Location::getCgiPath(void) const
+{
+	return (this->_cgiPath);
 }
 
 bool Location::isMethodAllowed(std::string method) const
@@ -289,8 +353,8 @@ std::ostream &operator<<(std::ostream &o, const Location &rhs)
 	o << "path: " << rhs.getPath() << " | ";
 	o << "autoindex: " << rhs.getAutoIndex() << " | ";
 	o << "return: " << rhs.getReturn() << " | ";
-	o << "cgi_path: " << rhs.getCgiPath() << " | ";
 	o << "cgi_script: " << rhs.getCgiScript() << " | ";
+	o << "cgi_path: " << rhs.getCgiPath() << " | ";
 	o << std::endl;
 	return (o);
 }
