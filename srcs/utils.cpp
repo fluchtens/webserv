@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 17:24:10 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/20 17:36:25 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,10 @@ void deleteServers(void)
 
 bool isValidInputArgs(int ac, char **av, std::string &cfgFilePath)
 {
-	if (ac > 2) {
-		printError("wrong number of input arguments");
+	if (ac != 2) {
+		printError("Usage: ./webserv config_file");
 		return (false);
-	}
-	else if (ac == 1) {
-		printWarning("no file specified, use default configuration file");
-		cfgFilePath = "config/default.conf";
-	}
-	else {
+	} else {
 		if (!isValidFileExtension(static_cast<std::string>(av[1]), ".conf")) {
 			printError("invalid configuration file (.conf file required)");
 			return (false);

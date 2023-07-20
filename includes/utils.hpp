@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:42:51 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 12:36:29 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/20 17:57:20 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,6 @@
 # include "Parser.hpp"
 # include "Server.hpp"
 # include "Connection.hpp"
-
-# define CLR_GREEN "\033[32m"
-# define CLR_GREENB "\033[1;32m"
-# define CLR_RESET "\033[0m"
 
 extern std::vector<Server *> _server;
 extern std::vector<Parser *> _config;

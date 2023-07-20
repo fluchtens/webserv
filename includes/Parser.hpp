@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:13:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/20 09:16:09 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/20 17:49:31 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <vector>
 # include <map>
 # include "Location.hpp"
+# include "colors.hpp"
 
 class Parser
 {

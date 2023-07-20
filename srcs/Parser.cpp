@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/20 10:31:29 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/20 17:56:47 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,10 +277,10 @@ std::string Parser::strTrimWhiteSpaces(const std::string &str)
 
 void Parser::printParsing(void) const
 {
-	std::cout << "\033[32m" << *this << "\033[0m";
+	std::cout << *this;
 	std::vector<Location>::const_iterator it = this->_location.begin();
 	while (it != this->_location.end()) {
-		std::cout << "\033[32m" << *it << "\033[0m";
+		std::cout << *it;
 		it++;
 	}
 	std::cout << std::endl;
@@ -320,13 +320,13 @@ const std::string Parser::getErrorPages(void) const
 	std::string errorPages;
 	std::map<int, std::string>::const_iterator it = this->_errorPage.begin();
 	while (it != this->_errorPage.end()) {
-		errorPages += std::to_string(it->first) + ": " + it->second;
+		errorPages += "	- " + std::to_string(it->first) + ": " + it->second;
 		if (++it != this->_errorPage.end()) {
-			errorPages += " | ";
+			errorPages += "\n";
 		}
 	}
 	if (errorPages.empty())
-		errorPages = "no pages configured";
+		errorPages = "	- no pages configured";
 	return (errorPages);
 }
 
@@ -431,12 +431,17 @@ std::vector<Location> &Parser::getLocation(void)
 
 std::ostream &operator<<(std::ostream &o, const Parser &rhs)
 {
-	o << "> Server config: ";
-	o << "listen: " << rhs.getPort() << " | ";
-	o << "host: " << rhs.getHost() << " | ";
-	o << "server_name: " << rhs.getServerName() << " | ";
-	o << "root: " << rhs.getRoot() << " | ";
-	o << "index: " << rhs.getIndex() << std::endl;
-	o << "> Error pages: " << rhs.getErrorPages() << std::endl;
+	o << CLR_GREENB << "> Server config: " << CLR_RESET << std::endl;
+	o << CLR_GREEN;
+	o << "	- listen: " << rhs.getPort() << std::endl;
+	o << "	- host: " << rhs.getHost() << std::endl;
+	o << "	- server_name: " << rhs.getServerName() << std::endl;
+	o << "	- root: " << rhs.getRoot() << std::endl;
+	o << "	- index: " << rhs.getIndex() << std::endl;
+	o << CLR_RESET;
+	o << CLR_REDB << "> Error pages: " << CLR_RESET << std::endl;
+	o << CLR_RED;
+	o << rhs.getErrorPages() << std::endl;
+	o << CLR_RESET;
 	return (o);
 }
