@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:58:47 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/21 18:55:45 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/21 19:03:42 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,9 @@ struct Client
 	bool _isAlive;
 
 	/* Client socket */
-	int _socket;
-	sockaddr_storage _csin;
-	socklen_t _crecSize;
-	timeval _lastGetTime;
+	int _socketFd;
+	sockaddr_storage _socketAddress;
+	socklen_t _socketAddrLen;
 
 	/* Client request */
 	std::stringstream _requestStr;

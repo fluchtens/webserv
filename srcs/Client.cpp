@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:59:23 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/21 18:48:45 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/21 19:03:49 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ Client::Client(Parser &config, Server &server, std::vector<Location> &location) 
 	this->_sizeSend = 0;
 	this->_sizeRep = 0;
 	_requestStr.str(std::string());
-	_socket = 0;
+	_socketFd = 0;
 }
 
 Client::Client(const Client &srcs) :
@@ -48,10 +48,9 @@ Client &Client::operator=(const Client &srcs)
 {
 	if (this != &srcs)
 	{
-		_socket = srcs._socket;
-		_csin = srcs._csin;
-		_crecSize = srcs._crecSize;
-		_lastGetTime = srcs._lastGetTime;
+		_socketFd = srcs._socketFd;
+		_socketAddress = srcs._socketAddress;
+		_socketAddrLen = srcs._socketAddrLen;
 		_isAlive = srcs._isAlive;
 		_requestStr << srcs._requestStr.str();
 		_contentLenght = srcs._contentLenght;
