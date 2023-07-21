@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:58:47 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/21 13:40:54 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/21 18:55:45 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,43 +29,39 @@ enum HTTPMethod {
 struct Client
 {
 	Client(Parser &config, Server &server, std::vector<Location> &location);
-	Client (const Client &rhs);
+	Client(const Client &rhs);
 	Client &operator=(const Client &rhs);
 	~Client(void);
 
 	Parser &_config;
 	Server &_server;
     std::vector<Location> &_location;
-
 	bool _isAlive;
 
+	/* Client socket */
 	int _socket;
 	sockaddr_storage _csin;
 	socklen_t _crecSize;
 	timeval _lastGetTime;
 
+	/* Client request */
 	std::stringstream _requestStr;
-	ssize_t _contentLenght;
-	ssize_t _sizeBody;
 	bool _requestPars;
-
     HTTPMethod _method;
-    std::string _httpVersion;
     std::string _uri;
 	std::string _query;
+    std::string _httpVersion;
+    std::map<std::string, std::string> _headers;
+	int _contentLenght;
+	std::string _cookie;
+	std::stringstream _bodyReq;
+	int _bodySize;
 
-    std::map<std::string, std::string>			_headers;
-	std::stringstream							_bodyReq;
-	std::string                                 _cookie;
-
-	// Reponse du serveur
-	std::string									_filePath;
-	std::string									_bodyRep;
-	std::string									_response;
-	ssize_t										_sizeSend;
-	ssize_t										_sizeRep;
-
-	//Autoindex
+	std::string _filePath;
+	std::string _bodyRep;
+	std::string _response;
+	int _sizeSend;
+	int _sizeRep;
 	std::vector<std::pair<std::pair<std::string, std::string>, int> > _autoIndex;
 	
 };

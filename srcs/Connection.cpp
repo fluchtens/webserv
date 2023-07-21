@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/20 18:25:14 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/21 18:48:45 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ bool Connection::handleGET(Client& client)
 	}
 
 	// On ouvre le fichier a renvoyer et on le stock dans client._bodyRep.
-	// Pour eviter de le faire a chaque tour, on check si client._sizeBodyRep == 0
+	// Pour eviter de le faire a chaque tour, on check si client._bodySizeRep == 0
 	if (client._sizeRep == 0)
 	{
 		client._filePath = getFilePath(client);
@@ -568,11 +568,11 @@ bool Connection::receiveClientRequest(Client &client)
 		}
 	} else {
 		client._bodyReq.write(buffer, readBytes);
-		client._sizeBody += readBytes;
+		client._bodySize += readBytes;
 	}
 	
 	std::memset(&buffer, 0, maxReadBytes);
-   	if (client._sizeBody < client._contentLenght) {
+   	if (client._bodySize < client._contentLenght) {
 		return (false);
 	}
    	return (true);

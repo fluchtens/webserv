@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 10:27:07 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/21 13:38:26 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/21 17:43:36 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,11 @@ class HTTPRequest
 		~HTTPRequest(void);
 
 	private:
-		void parseRequest(Client &client);
-		void parseRequestLine(Client &client, std::stringstream &requestStream);
-		void parseRequestHeader(Client &client, std::stringstream &requestStream);
+		Client &_client;
+
+		void parseRequest(void);
+		void parseRequestLine(std::stringstream &requestStream);
+		void parseRequestHeader(std::stringstream &requestStream);
 };
 
 #endif

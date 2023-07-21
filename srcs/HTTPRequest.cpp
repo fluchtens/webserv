@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 10:28:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/21 13:40:54 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/21 18:48:45 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,19 @@
 /*                               Canonical form                               */
 /* ************************************************************************** */
 
-HTTPRequest::HTTPRequest(Client &client)
+HTTPRequest::HTTPRequest(Client &client) : _client(client)
 {
-	this->parseRequest(client);
+	this->parseRequest();
 }
 
-HTTPRequest::HTTPRequest(const HTTPRequest &rhs)
+HTTPRequest::HTTPRequest(const HTTPRequest &rhs) : _client(rhs._client)
 {
 	*this = rhs;
 }
 
 HTTPRequest &HTTPRequest::operator=(const HTTPRequest &rhs)
 {
-	(void)rhs;
+	(void) rhs;
 	return (*this);
 }
 
@@ -41,28 +41,15 @@ HTTPRequest::~HTTPRequest(void)
 /*                          Private Member functions                          */
 /* ************************************************************************** */
 
-// GET / HTTP/1.1
-// Host: localhost:4242
-// User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/110.0
-// Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
-// Accept-Language: en-US,en;q=0.5
-// Accept-Encoding: gzip, deflate, br
-// Connection: keep-alive
-// Cookie: delicieux_cookie=choco
-// Upgrade-Insecure-Requests: 1
-// Sec-Fetch-Dest: document
-// Sec-Fetch-Mode: navigate
-// Sec-Fetch-Site: cross-site
-
-void HTTPRequest::parseRequest(Client &client)
+void HTTPRequest::parseRequest(void)
 {
-	std::stringstream requestStream(client._requestStr.str());
+	std::stringstream requestStream(this->_client._requestStr.str());
 
-	this->parseRequestLine(client, requestStream);
-	this->parseRequestHeader(client, requestStream);
+	this->parseRequestLine(requestStream);
+	this->parseRequestHeader(requestStream);
 }
 
-void HTTPRequest::parseRequestLine(Client &client, std::stringstream &requestStream)
+void HTTPRequest::parseRequestLine(std::stringstream &requestStream)
 {
 	std::string line;
 
@@ -72,69 +59,56 @@ void HTTPRequest::parseRequestLine(Client &client, std::stringstream &requestStr
 		std::string method;
 
 		ss >> method;
-		ss >> client._uri;
-		ss >> client._httpVersion;
+		ss >> this->_client._uri;
+		ss >> this->_client._httpVersion;
 
 		if (method == "GET") {
-			client._method = GET;
+			this->_client._method = GET;
 		}
 		else if (method == "POST") {
-			client._method = POST;
+			this->_client._method = POST;
 		}
 		else if (method == "DELETE") {
-			client._method = DELETE;
+			this->_client._method = DELETE;
 		}
 		else {
-			client._method = UNKNOWN;
+			this->_client._method = UNKNOWN;
 		}
 
-		std::string::size_type pos = client._uri.find("?");
+		std::string::size_type pos = this->_client._uri.find("?");
 		if (pos != std::string::npos) {
-			client._query = client._uri.substr(pos);
-			client._uri.erase(pos);
+			this->_client._query = this->_client._uri.substr(pos);
+			this->_client._uri.erase(pos);
 		}
 	}
 }
 
-void HTTPRequest::parseRequestHeader(Client &client, std::stringstream &requestStream)
+void HTTPRequest::parseRequestHeader(std::stringstream &requestStream)
 {
 	std::string line;
 
-	while (std::getline(requestStream, line) && line.length() != 1)
-	{
-		std::cout << "line: " << line << std::endl;
-		size_t separator = line.find(": ");
-		if (separator != std::string::npos)
-		{
-			std::string headerName = line.substr(0, separator);
-			std::string headerValue = line.substr(separator + 2, line.size() - separator - 2 - 1);
-			if (headerName == "Content-Length")
-				client._contentLenght = std::atoi(headerValue.c_str());
-			client._headers[headerName] = headerValue;
-			if (headerName == "Cookie")
-				client._cookie = headerValue.c_str();
+	while (std::getline(requestStream, line) && line.length() != 1) {
+		std::size_t separatorPos = line.find(':');
+
+		if (separatorPos != std::string::npos) {
+			std::string headerName = line.substr(0, separatorPos);
+			std::string headerValue = line.substr(separatorPos + 2);
+			if (headerName == "Content-Length") {
+				this->_client._contentLenght = std::atoi(headerValue.c_str());
+			}
+			else if (headerName == "Cookie") {
+				this->_client._cookie = headerValue;
+			}
+			this->_client._headers.insert(std::make_pair(headerName, headerValue));
 		}
 	}
 
-	std::cout << "_contentLenght: " << client._contentLenght << std::endl;
-	std::cout << "_cookie: " << client._cookie << std::endl;
-	std::cout << "_method: " << client._method << std::endl;
-	std::cout << "_bodyReq: " << client._bodyReq << std::endl;
-	std::cout << "_sizeBody: " << client._sizeBody << std::endl;
-
-	std::map<std::string, std::string>::const_iterator it = client._headers.begin();
-	while (it != client._headers.end()) {
-		std::cout << "headers: " << it->first << " -> " << it->second << std::endl;
-		it++;
-	}
-
-	if (client._method != POST) {
-		requestStream.clear();
-		line.clear();
+	if (this->_client._method != POST) {
 		return ;
+	} else {
+		std::size_t bodyPos = this->_client._requestStr.str().find("\r\n\r\n");
+		this->_client._bodyReq << this->_client._requestStr.str().substr(bodyPos + 4);
+		this->_client._bodySize = this->_client._bodyReq.str().length();
+		std::cout << _client._bodySize << std::endl;
 	}
-
-	size_t posBody = client._requestStr.str().find("\r\n\r\n");
-	client._bodyReq << client._requestStr.str().substr(posBody + 4);
-	client._sizeBody = client._bodyReq.str().size();
 }

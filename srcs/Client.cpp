@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:59:23 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/21 12:52:29 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/21 18:48:45 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ Client::Client(Parser &config, Server &server, std::vector<Location> &location) 
 {
 	this->_isAlive = true;
 	this->_contentLenght = 0;
-	this->_sizeBody = 0;
+	this->_bodySize = 0;
 	this->_requestPars = false;
 	this->_httpVersion = "";
 	this->_uri = "";
@@ -55,7 +55,7 @@ Client &Client::operator=(const Client &srcs)
 		_isAlive = srcs._isAlive;
 		_requestStr << srcs._requestStr.str();
 		_contentLenght = srcs._contentLenght;
-		_sizeBody = srcs._sizeBody;
+		_bodySize = srcs._bodySize;
 		_requestPars = srcs._requestPars;
 		_httpVersion = srcs._httpVersion;
 		_uri = srcs._uri;
