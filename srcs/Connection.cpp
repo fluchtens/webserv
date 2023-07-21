@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/21 19:01:56 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/21 19:24:18 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,137 @@ Connection::~Connection(void)
 {
 	// std::cout << "Connection destructor called" << std::endl;
 	this->closeClientSockets();
+}
+
+/* ************************************************************************** */
+/*                          Private Member functions                          */
+/* ************************************************************************** */
+
+void Connection::initMime(void)
+{
+	this->_mimeTypes.insert(std::make_pair(".html", "text/html"));
+	this->_mimeTypes.insert(std::make_pair(".css", "text/css"));
+	this->_mimeTypes.insert(std::make_pair(".js", "application/javascript"));
+	this->_mimeTypes.insert(std::make_pair(".pdf", "application/pdf"));
+	this->_mimeTypes.insert(std::make_pair(".odt", "application/vnd.oasis.opendocument.text"));
+	this->_mimeTypes.insert(std::make_pair(".rtf", "application/rtf"));
+	this->_mimeTypes.insert(std::make_pair(".jpg", "image/jpeg"));
+	this->_mimeTypes.insert(std::make_pair(".webp", "image/webp"));
+	this->_mimeTypes.insert(std::make_pair(".png", "image/png"));
+	this->_mimeTypes.insert(std::make_pair(".gif", "image/gif"));
+	this->_mimeTypes.insert(std::make_pair(".mp4", "video/mp4"));
+	this->_mimeTypes.insert(std::make_pair(".ico", "image/vnd.microsoft.icon"));
+}
+
+void Connection::addToFdSet(int fd, fd_set &fds)
+{
+	FD_SET(fd, &fds);
+	if (fd > this->_highestFd)
+		this->_highestFd = fd;
+}
+
+void Connection::checkFdStatus(void)
+{
+	int selectReady = select(this->_highestFd + 1, &this->_setReads, &this->_setWrite, &this->_setErrors, &this->_timeout);
+	if (selectReady == -1) {
+		throw (std::runtime_error("select() failed"));
+	}
+	else if (selectReady == 0) {
+		// printError("select() timeout");
+		for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
+			(*it)._isAlive = false;
+		}
+	}
+}
+
+bool Connection::isAlive(Client &client, bool isAlive)
+{
+	if (isAlive) {
+		return (true);
+	}
+
+	FD_CLR(client._socketFd, &this->_setReads);
+	FD_CLR(client._socketFd, &this->_setWrite);
+	FD_CLR(client._socketFd, &this->_setErrors);
+
+	shutdown(client._socketFd, SHUT_RDWR);
+	close(client._socketFd);
+
+	// std::cout << "> Client disconnected on socket " << client._socketFd << std::endl;;
+	return (false);
+}
+
+void Connection::closeClientSockets()
+{
+	for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
+		std::cout << "> Closing client sockets" << std::endl;
+		close(it->_socketFd);
+	}
+}
+
+bool Connection::receiveClientRequest(Client &client)
+{
+	int maxReadBytes = 1024;
+	char buffer[maxReadBytes];
+	int readBytes = recv(client._socketFd, buffer, maxReadBytes, 0);
+	if (readBytes <= 0) {
+		if (readBytes == -1) {
+			printError("recv() failed");
+			sendErrorResponse(client, 500);
+		}
+		client._isAlive = false;
+		return (false);
+	}
+
+	if (readBytes > maxReadBytes) {
+		printError("Request size exceeds the limit");
+		sendErrorResponse(client, 413);
+		return (false);
+	}
+
+	if (client._contentLenght == 0 && client._requestStr.str().empty() == 0) {
+		client._requestStr.str(std::string());
+		client._bodyReq.str(std::string());
+	}
+
+	std::cout << CLR_BLUEB << buffer << CLR_RESET << std::endl;
+	client._requestStr.write(buffer, readBytes);
+	if (client._contentLenght == 0) {
+		HTTPRequest httpRequest(client);
+		if (client._method != POST) {
+			return (true);
+		}
+	} else {
+		client._bodyReq.write(buffer, readBytes);
+		client._bodySize += readBytes;
+	}
+	
+   	if (client._bodySize < client._contentLenght) {
+		return (false);
+	}
+   	return (true);
+}
+
+bool Connection::handleReponse(Client &client)
+{
+	bool ret = true;
+	switch (client._method)
+	{
+		case GET:
+			ret = handleGET(client);
+			break;
+		case POST:
+			handlePOST(client);
+			break;
+		case DELETE:
+			handleDELETE(client);
+			break;
+		default:
+			printError("Method not allowed");
+			sendErrorResponse(client, 405);
+			break;
+	}
+	return (ret);
 }
 
 /* ************************************************************************** */
@@ -465,137 +596,4 @@ void Connection::executeCGI(Client &client, Location *location)
 		else
 			sendErrorResponse(client, 500);
 	}
-}
-
-/* ************************************************************************** */
-/*                          Private Member functions                          */
-/* ************************************************************************** */
-
-void Connection::initMime(void)
-{
-	this->_mimeTypes.insert(std::make_pair(".html", "text/html"));
-	this->_mimeTypes.insert(std::make_pair(".css", "text/css"));
-	this->_mimeTypes.insert(std::make_pair(".js", "application/javascript"));
-	this->_mimeTypes.insert(std::make_pair(".pdf", "application/pdf"));
-	this->_mimeTypes.insert(std::make_pair(".odt", "application/vnd.oasis.opendocument.text"));
-	this->_mimeTypes.insert(std::make_pair(".rtf", "application/rtf"));
-	this->_mimeTypes.insert(std::make_pair(".jpg", "image/jpeg"));
-	this->_mimeTypes.insert(std::make_pair(".webp", "image/webp"));
-	this->_mimeTypes.insert(std::make_pair(".png", "image/png"));
-	this->_mimeTypes.insert(std::make_pair(".gif", "image/gif"));
-	this->_mimeTypes.insert(std::make_pair(".mp4", "video/mp4"));
-	this->_mimeTypes.insert(std::make_pair(".ico", "image/vnd.microsoft.icon"));
-}
-
-void Connection::addToFdSet(int fd, fd_set &fds)
-{
-	FD_SET(fd, &fds);
-	if (fd > this->_highestFd)
-		this->_highestFd = fd;
-}
-
-void Connection::checkFdStatus(void)
-{
-	int selectReady = select(this->_highestFd + 1, &this->_setReads, &this->_setWrite, &this->_setErrors, &this->_timeout);
-	if (selectReady == -1) {
-		throw (std::runtime_error("select() failed"));
-	}
-	else if (selectReady == 0) {
-		// printError("select() timeout");
-		for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
-			(*it)._isAlive = false;
-		}
-	}
-}
-
-bool Connection::isAlive(Client &client, bool isAlive)
-{
-	if (isAlive) {
-		return (true);
-	}
-
-	FD_CLR(client._socketFd, &this->_setReads);
-	FD_CLR(client._socketFd, &this->_setWrite);
-	FD_CLR(client._socketFd, &this->_setErrors);
-
-	shutdown(client._socketFd, SHUT_RDWR);
-	close(client._socketFd);
-
-	// std::cout << "> Client disconnected on socket " << client._socketFd << std::endl;;
-	return (false);
-}
-
-void Connection::closeClientSockets()
-{
-	for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
-		std::cout << "> Closing client sockets" << std::endl;
-		close(it->_socketFd);
-	}
-}
-
-bool Connection::receiveClientRequest(Client &client)
-{
-	int maxReadBytes = 1024;
-	char buffer[maxReadBytes];
-	int readBytes = recv(client._socketFd, buffer, maxReadBytes, 0);
-	if (readBytes <= 0) {
-		if (readBytes == -1) {
-			printError("recv() failed");
-			sendErrorResponse(client, 500);
-		}
-		client._isAlive = false;
-		return (false);
-	}
-
-	if (readBytes > maxReadBytes) {
-		printError("Request size exceeds the limit");
-		sendErrorResponse(client, 413);
-		return (false);
-	}
-
-	if (client._contentLenght == 0 && client._requestStr.str().empty() == 0) {
-		client._requestStr.str(std::string());
-		client._bodyReq.str(std::string());
-	}
-
-	std::cout << CLR_BLUEB << buffer << CLR_RESET << std::endl;
-	client._requestStr.write(buffer, readBytes);
-	if (client._contentLenght == 0) {
-		HTTPRequest httpRequest(client);
-		if (client._method != POST) {
-			std::memset(&buffer, 0, maxReadBytes);
-			return (true);
-		}
-	} else {
-		client._bodyReq.write(buffer, readBytes);
-		client._bodySize += readBytes;
-	}
-	
-	std::memset(&buffer, 0, maxReadBytes);
-   	if (client._bodySize < client._contentLenght) {
-		return (false);
-	}
-   	return (true);
-}
-
-bool Connection::handleReponse(Client &client)
-{
-	bool ret = true;
-	switch (client._method)
-	{
-		case GET:
-			ret = handleGET(client);
-			break;
-		case POST:
-			handlePOST(client);
-			break;
-		case DELETE:
-			handleDELETE(client);
-			break;
-		default:
-			printError("Method not allowed");
-			sendErrorResponse(client, 405);
-			break;
-	}
-	return (ret);
 }
