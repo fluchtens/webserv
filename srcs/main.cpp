@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 17:53:26 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/21 13:06:45 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void creatFileDeleteMethod()
         std::stringstream fileName;
         fileName << "fichier" << i << ".txt";
 
-        outFile.open("./www/a_supprimer/" + fileName.str(), std::ios::binary | std::ios::out);
+        outFile.open("./assets/example/a_supprimer/" + fileName.str(), std::ios::binary | std::ios::out);
         if (outFile.is_open())
 		{
             outFile << "Contenu du fichier " << i << std::endl;
@@ -75,7 +75,7 @@ int main(int ac, char **av, char **env)
 			_server.push_back(tmp);
 		}
 
-		// creatFileDeleteMethod();
+		creatFileDeleteMethod();
 
 		Connection tmp(_server);
 		_connection = tmp;

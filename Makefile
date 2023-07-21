@@ -6,7 +6,7 @@
 #    By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/16 16:17:24 by fluchten          #+#    #+#              #
-#    Updated: 2023/07/20 10:17:13 by fluchten         ###   ########.fr        #
+#    Updated: 2023/07/21 10:31:16 by fluchten         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ INCS = $(addprefix -I, $(INCS_DIRS))
 
 SRCS =	Client.cpp \
 		Connection.cpp \
+		HTTPRequest.cpp \
 		Location.cpp \
 		main.cpp \
 		Parser.cpp \
@@ -33,7 +34,6 @@ SRCS =	Client.cpp \
 		utils.cpp \
 		temp/autoindex.cpp \
 		temp/Cgi.cpp \
-		temp/HTTPRequest.cpp \
 		temp/Response.cpp
 
 OBJS = $(addprefix ${OBJS_DIR}/, ${SRCS:%.cpp=%.o})

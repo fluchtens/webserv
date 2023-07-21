@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:58:47 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/14 12:25:55 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/21 12:53:52 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,29 +33,30 @@ struct Client
 	Client &operator=(const Client &rhs);
 	~Client(void);
 
-    /* Socket et contexte d'adressage du client */
-	int					_socket;
-	sockaddr_storage	_csin;
-	socklen_t			_crecSize;
-	timeval				_lastGetTime;
+	Parser &_config;
+	Server &_server;
+    std::vector<Location> &_location;
 
-	/* Le client va t'il vivre ou mourir */
-	bool				_isAlive;
+	bool _isAlive;
 
-	// Request du client
-	std::stringstream							_requestStr;
-	ssize_t										_contentLenght;
-	ssize_t										_sizeBody;
-	bool										_requestPars;
+	int _socket;
+	sockaddr_storage _csin;
+	socklen_t _crecSize;
+	timeval _lastGetTime;
 
-	// Request HTTP parsee.
-    std::string									_httpVersion;
-    std::string									_uri;
-    HTTPMethod									_method;
+	std::stringstream _requestStr;
+	ssize_t _contentLenght;
+	ssize_t _sizeBody;
+	bool _requestPars;
+
+    HTTPMethod _method;
+    std::string _httpVersion;
+    std::string _uri;
+	std::string _query;
+
     std::map<std::string, std::string>			_headers;
 	std::stringstream							_bodyReq;
 	std::string                                 _cookie;
-	std::string                                 _query;
 
 	// Reponse du serveur
 	std::string									_filePath;
@@ -67,11 +68,6 @@ struct Client
 	//Autoindex
 	std::vector<std::pair<std::pair<std::string, std::string>, int> > _autoIndex;
 	
-    // Config du serveur
-    Parser									&_config;
-	Server										&_server;
-    std::vector<Location>			&_location;
-	
-};//struct Client
+};
 
 #endif
