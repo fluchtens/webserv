@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/20 17:36:25 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/22 15:18:30 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,17 @@
 
 void printError(const std::string &str)
 {
-	std::cerr << "\033[1;31m" << "Error: " << str << "." << "\033[0m" << std::endl;
+	std::cerr << CLR_RED << "Error: " << str << "." << CLR_RESET << std::endl;
+}
+
+void printHttpError(const std::string &str, const int &code)
+{
+	std::cerr << CLR_RED << "HTTP ERROR " << code <<  ":" << str << CLR_RESET << std::endl;
 }
 
 void printWarning(const std::string &str)
 {
-	std::cout << "\033[1;33m" << "Warning: " << str << "." << "\033[0m" << std::endl;
+	std::cout << CLR_YELLOW << "Warning: ERR" << str << "." << CLR_RESET << std::endl;
 }
 
 void signalHandler(int signal)

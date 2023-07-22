@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:42:51 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/20 17:57:20 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/22 15:18:38 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ extern char **_env;
 
 /* Errors */
 void printError(const std::string &str);
+void printHttpError(const std::string &str, const int &code);
 void printWarning(const std::string &str);
 
 /* Signals */

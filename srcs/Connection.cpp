@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/21 19:24:18 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/22 15:20:33 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,37 +270,35 @@ void Connection::traitement(void)
 
 bool Connection::handleGET(Client& client)
 {
-	if (hanglGetLocation(client))
+	if (hanglGetLocation(client)) {
 		return (true);
+	}
 	
-	if (client._uri.length() >= MAX_URI_SIZE)
-	{
-		std::cerr << "\033[0;31mError : 414 URI Too Long from client:\033[0m " << client._socketFd << std::endl;
+	if (client._uri.length() >= 100) {
+		printHttpError("Request-URI Too Long", 414);
 		sendErrorResponse(client, 414);
 		return (true);
 	}
 
-	// On ouvre le fichier a renvoyer et on le stock dans client._bodyRep.
-	// Pour eviter de le faire a chaque tour, on check si client._bodySizeRep == 0
-	if (client._sizeRep == 0)
-	{
+	if (client._sizeRep == 0) {
 		client._filePath = getFilePath(client);
-		std::ifstream	file(client._filePath, std::ios::in | std::ios::binary);
-		if (file.is_open())
-		{
-			std::stringstream buf;
-			buf << file.rdbuf();
-			client._bodyRep = buf.str();
+		std::ifstream file(client._filePath, std::ios::in | std::ios::binary);
+		if (!file.is_open()) {
+			printHttpError("Not Found", 404);
+			sendErrorResponse(client, 404);
+		} else {
+			std::string content, line;
+			while (std::getline(file, line)) {
+				content += line;
+				if (!file.eof()) {
+					content += "\n";
+				}
+			}
+			client._bodyRep = content;
 			client._sizeRep = 0;
 			client._sizeSend = 0;
 			file.close();
-			buf.clear();
 			createHttpResponse(client, 200, getMimeType(client._filePath));
-		}
-		else
-		{
-			std::cerr << "\033[0;31mError : 404 Not Found from client:\033[0m " << client._socketFd << std::endl;
-			sendErrorResponse(client, 404);
 		}
 	}
 

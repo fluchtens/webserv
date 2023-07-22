@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/20 18:24:44 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/22 13:20:41 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@
 # include "colors.hpp"
 
 #define BSIZE 1024
-#define MAX_URI_SIZE 64
 
 class Connection
 {
