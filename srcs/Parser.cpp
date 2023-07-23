@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/20 17:56:47 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/23 12:51:29 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,6 +226,9 @@ void Parser::parseErrorPage(const std::string &error, const std::string &page)
 	ss >> nb;
 	if (ss.fail())
 		throw (std::runtime_error("invalid error page code number"));
+	if (page.empty()) {
+		throw (std::runtime_error("empty path error page"));
+	}
 	this->_errorPage.insert(make_pair(nb, page));
 }
 
@@ -336,7 +339,7 @@ const std::string Parser::getErrorPage(int code) const
 	if (it != this->_errorPage.end()) {
 		return (it->second);
 	}
-	return ("notFound");
+	return ("");
 }
 
 std::string	Parser::getLocationUrl(size_t pos) const

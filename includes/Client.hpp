@@ -6,18 +6,24 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:58:47 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/22 12:45:14 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/23 11:52:38 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
-#include <netinet/tcp.h>
-#include <sys/socket.h>
-#include "Server.hpp"
-#include "Parser.hpp"
-#include "HTTPRequest.hpp"
+# include <iostream>
+# include <fstream>
+# include <sstream>
+# include <vector>
+# include <map>
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <netinet/tcp.h>
+# include "Parser.hpp"
+# include "Server.hpp"
+# include "Location.hpp"
 
 enum HTTPMethod {
     GET,

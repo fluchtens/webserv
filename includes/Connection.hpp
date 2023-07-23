@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/22 13:20:41 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/23 11:43:16 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 #include "Server.hpp"
 #include "Client.hpp"
 #include "HTTPRequest.hpp"
-#include "Response.hpp"
+#include "HTTPResponse.hpp"
 #include "Autoindex.hpp"
 #include "Cgi.hpp"
 #include <vector>
