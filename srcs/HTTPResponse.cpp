@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/23 13:28:33 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/23 14:06:33 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ void sendErrorResponse(Client &client, int code)
     }
 
     if (send(client._socketFd, response.c_str(), response.length(), 0) == -1) {
-        std::cerr << "\033[31Error : sendErrorResponse() lors de l'envoi de la réponse d'erreur\033[0m" << std::endl;
+        printError("send() failed");
         client._isAlive = false;
     }
 }
