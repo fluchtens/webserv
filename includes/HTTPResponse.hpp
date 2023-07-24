@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:40:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 12:19:00 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 17:54:03 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,6 @@ struct Client;
 
 void createHttpResponse(Client &client, int statusCode, const std::string &contentType);
 void sendHttpResponse(Client &client);
-void sendErrorResponse(Client &client, int code);
+void sendErrorResponse(Client &client, int errorCode);
 
 #endif

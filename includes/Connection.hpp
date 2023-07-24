@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 09:49:50 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 16:57:31 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ class Connection
 		int _highestFd;
 		timeval _timeout;
 
-		void initMime(void);
+		void initCommonMimeTypes(void);
 		void addToFdSet(int fd, fd_set &fds);
 		void checkFdStatus(void);
 		bool isAlive(Client &client, bool isAlive);

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:58:47 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 10:28:18 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 17:39:22 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ struct Client
 	std::string _filePath;
 	std::string _bodyRep;
 	std::string _response;
-	int _sizeSend;
 	int _sizeRep;
 	std::vector<std::pair<std::pair<std::string, std::string>, int> > _autoIndex;
 };
