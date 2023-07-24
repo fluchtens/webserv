@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/23 11:43:16 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 09:30:59 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ class Connection
 		/// @param client 
 
 		/// @brief gestion de Get
-		bool handleGET(Client& client);
 		bool hanglGetLocation(Client &client);
 		/// @brief gestion de Post
 		void handlePOST(Client& client);
@@ -85,6 +84,7 @@ class Connection
 		void closeClientSockets(void);
 		bool receiveClientRequest(Client &client);
 		bool handleReponse(Client &client);
+		bool handleGET(Client& client);
 };
 
 #endif

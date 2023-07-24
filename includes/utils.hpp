@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:42:51 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/22 15:18:38 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 08:46:47 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include "Parser.hpp"
 # include "Server.hpp"
 # include "Connection.hpp"
+
+class Connection;
 
 extern std::vector<Server *> _server;
 extern std::vector<Parser *> _config;

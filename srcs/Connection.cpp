@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/22 15:20:33 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 09:22:27 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,6 +194,47 @@ bool Connection::handleReponse(Client &client)
 	return (ret);
 }
 
+bool Connection::handleGET(Client& client)
+{
+	if (hanglGetLocation(client)) {
+		return (true);
+	}
+	
+	if (client._uri.length() >= 100) {
+		printHttpError("Request-URI Too Long", 414);
+		sendErrorResponse(client, 414);
+		return (true);
+	}
+
+	if (client._sizeRep == 0) {
+		client._filePath = getFilePath(client);
+		std::ifstream file(client._filePath);
+		std::cout << client._filePath << std::endl;
+		if (!file.is_open()) {
+			printHttpError("Not Found", 404);
+			sendErrorResponse(client, 404);
+		} else {
+			std::string content, line;
+			while (std::getline(file, line)) {
+				content += line;
+				if (!file.eof()) {
+					content += "\n";
+				}
+			}
+			client._bodyRep = content;
+			client._sizeRep = 0;
+			client._sizeSend = 0;
+			file.close();
+			createHttpResponse(client, 200, getMimeType(client._filePath));
+		}
+	}
+
+	sendHttpResponse(client);
+	if (client._sizeSend < client._sizeRep)
+		return (false);
+	return (true);
+}
+
 /* ************************************************************************** */
 /*                          Public Member functions                           */
 /* ************************************************************************** */
@@ -266,46 +307,6 @@ void Connection::traitement(void)
 			it = this->_client.erase(it);
 		}
 	}
-}
-
-bool Connection::handleGET(Client& client)
-{
-	if (hanglGetLocation(client)) {
-		return (true);
-	}
-	
-	if (client._uri.length() >= 100) {
-		printHttpError("Request-URI Too Long", 414);
-		sendErrorResponse(client, 414);
-		return (true);
-	}
-
-	if (client._sizeRep == 0) {
-		client._filePath = getFilePath(client);
-		std::ifstream file(client._filePath, std::ios::in | std::ios::binary);
-		if (!file.is_open()) {
-			printHttpError("Not Found", 404);
-			sendErrorResponse(client, 404);
-		} else {
-			std::string content, line;
-			while (std::getline(file, line)) {
-				content += line;
-				if (!file.eof()) {
-					content += "\n";
-				}
-			}
-			client._bodyRep = content;
-			client._sizeRep = 0;
-			client._sizeSend = 0;
-			file.close();
-			createHttpResponse(client, 200, getMimeType(client._filePath));
-		}
-	}
-
-	sendHttpResponse(client);
-	if (client._sizeSend < client._sizeRep)
-		return (false);
-	return (true);
 }
 
 bool Connection::hanglGetLocation(Client &client)
