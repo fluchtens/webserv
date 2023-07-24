@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 17:52:31 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 18:16:13 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,7 @@ bool Connection::receiveClientRequest(Client &client)
 	if (readBytes <= 0) {
 		if (readBytes == -1) {
 			printError("recv() failed");
-			sendErrorResponse(client, 500);
+			sendHttpErrorResponse(client, 500);
 		}
 		client._isAlive = false;
 		return (false);
@@ -208,7 +208,7 @@ bool Connection::receiveClientRequest(Client &client)
 
 	if (readBytes > maxReadBytes) {
 		printError("Request size exceeds the limit");
-		sendErrorResponse(client, 413);
+		sendHttpErrorResponse(client, 413);
 		return (false);
 	}
 
@@ -220,7 +220,7 @@ bool Connection::receiveClientRequest(Client &client)
 	std::cout << CLR_BLUEB << buffer << CLR_RESET << std::endl;
 	client._requestStr.write(buffer, readBytes);
 	if (client._contentLenght == 0) {
-		HTTPRequest httpRequest(client);
+		parseHttpRequest(client);
 		if (client._method != POST) {
 			return (true);
 		}
@@ -251,7 +251,7 @@ bool Connection::handleReponse(Client &client)
 			break;
 		default:
 			printError("Method not allowed");
-			sendErrorResponse(client, 405);
+			sendHttpErrorResponse(client, 405);
 			break;
 	}
 	return (ret);
@@ -265,7 +265,7 @@ bool Connection::getRequest(Client& client)
 	
 	if (client._uri.length() >= 100) {
 		printHttpError("Request-URI Too Long", 414);
-		sendErrorResponse(client, 414);
+		sendHttpErrorResponse(client, 414);
 		return (true);
 	}
 
@@ -274,7 +274,7 @@ bool Connection::getRequest(Client& client)
 		std::ifstream file(client._filePath);
 		if (!file.is_open()) {
 			printHttpError("Not Found", 404);
-			sendErrorResponse(client, 404);
+			sendHttpErrorResponse(client, 404);
 		} else {
 			std::string content, line;
 			while (std::getline(file, line)) {
@@ -393,7 +393,7 @@ bool Connection::hanglGetLocation(Client &client)
 		if (!(location->isMethodAllowed("GET")))
 		{
 			std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._socketFd << std::endl;
-			sendErrorResponse(client, 405);
+			sendHttpErrorResponse(client, 405);
 			return (true);
 		}
 
@@ -428,7 +428,7 @@ bool Connection::hanglGetLocation(Client &client)
 		else
 		{
 			std::cerr << "\033[0;31mError : 404 Not Found from client:\033[0m " << client._socketFd << std::endl;
-			sendErrorResponse(client, 404);
+			sendHttpErrorResponse(client, 404);
 		}
 		
 		file.close();
@@ -444,7 +444,7 @@ void Connection::handlePOST(Client& client)
 	if (!location || !location->isMethodAllowed("POST"))
 	{
 		std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._socketFd << std::endl;
-		sendErrorResponse(client, 405);
+		sendHttpErrorResponse(client, 405);
 		return;
 	}
 	
@@ -456,7 +456,7 @@ void Connection::handlePOST(Client& client)
 		std::string boundary = client._headers.find(boundaryHeader)->second.erase(0, std::strlen("multipart/form-data; boundary="));
 		if (boundary.empty())
 		{
-			sendErrorResponse(client, 400);
+			sendHttpErrorResponse(client, 400);
 			return;
 		}
 
@@ -465,7 +465,7 @@ void Connection::handlePOST(Client& client)
 		std::string::size_type	filePartHeaderPos = client._requestStr.str().find(filePartHeader);
 		if (filePartHeaderPos == std::string::npos)
 		{
-			sendErrorResponse(client, 400);
+			sendHttpErrorResponse(client, 400);
 			return;
 		}
 		std::string::size_type startPos = filePartHeaderPos + filePartHeader.length();
@@ -477,7 +477,7 @@ void Connection::handlePOST(Client& client)
 		startPos = client._requestStr.str().find(contentTypeHeader, endPos);
 		if (startPos == std::string::npos)
 		{
-			sendErrorResponse(client, 400);
+			sendHttpErrorResponse(client, 400);
 			return;
 		}
 		startPos += contentTypeHeader.length();
@@ -487,7 +487,7 @@ void Connection::handlePOST(Client& client)
 		{
 			if (it == _mimeTypes.end())
 			{
-				sendErrorResponse(client, 400);
+				sendHttpErrorResponse(client, 400);
 				return;
 			}
 		}
@@ -503,7 +503,7 @@ void Connection::handlePOST(Client& client)
 		endPos -= 4;
 		if (endPos == std::string::npos)
 		{
-			sendErrorResponse(client, 400);
+			sendHttpErrorResponse(client, 400);
 			return;
 		}
 		std::string fileData = body.substr(startPos, endPos - startPos);
@@ -519,7 +519,7 @@ void Connection::handlePOST(Client& client)
 		}
 		else 
 		{
-			sendErrorResponse(client, 400);
+			sendHttpErrorResponse(client, 400);
 			return;
 		}
 		outFile.close();
@@ -537,7 +537,7 @@ void Connection::handleDELETE(Client& client)
 	if (!location || !location->isMethodAllowed("DELETE"))
 	{
 		std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._socketFd << std::endl;
-		sendErrorResponse(client, 405);
+		sendHttpErrorResponse(client, 405);
 		return;
 	}
 
@@ -599,14 +599,14 @@ void Connection::executeCGI(Client &client, Location *location)
 
 	if (pipe(cgiInput) < 0 || pipe(cgiOutput) < 0)
 	{
-		sendErrorResponse(client, 500);
+		sendHttpErrorResponse(client, 500);
 		return;
 	}
 
 	pid_t pid = fork();
 	if (pid < 0)
 	{
-		sendErrorResponse(client, 500);
+		sendHttpErrorResponse(client, 500);
 		return;
 	}
 	if (pid == 0)
@@ -620,7 +620,7 @@ void Connection::executeCGI(Client &client, Location *location)
 
 		if (execve(argv[0], argv, env) == -1)
 		{
-			sendErrorResponse(client, 500);
+			sendHttpErrorResponse(client, 500);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -652,6 +652,6 @@ void Connection::executeCGI(Client &client, Location *location)
 			sendHttpResponse(client);
 		}
 		else
-			sendErrorResponse(client, 500);
+			sendHttpErrorResponse(client, 500);
 	}
 }

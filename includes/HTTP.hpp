@@ -1,41 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HTTPRequest.hpp                                    :+:      :+:    :+:   */
+/*   http.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/21 10:27:07 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/23 11:49:17 by fluchten         ###   ########.fr       */
+/*   Created: 2023/07/24 18:03:09 by fluchten          #+#    #+#             */
+/*   Updated: 2023/07/24 18:16:18 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HTTPREQUEST_HPP
-#define HTTPREQUEST_HPP
+#ifndef HTTP_HPP
+# define HTTP_HPP
 
 # include <iostream>
 # include <fstream>
 # include <sstream>
 # include <vector>
 # include <map>
+# include "utils.hpp"
 # include "Client.hpp"
 
-struct Client;
+/* Requests */
+void parseHttpRequest(Client &client);
 
-class HTTPRequest
-{
-	public:
-    	HTTPRequest(Client &client);
-		HTTPRequest(const HTTPRequest &rhs);
-		HTTPRequest &operator=(const HTTPRequest &rhs);
-		~HTTPRequest(void);
-
-	private:
-		Client &_client;
-
-		void parseRequest(void);
-		void parseRequestLine(std::stringstream &requestStream);
-		void parseRequestHeader(std::stringstream &requestStream);
-};
+/* Responses */
+void createHttpResponse(Client &client, int statusCode, const std::string &contentType);
+void sendHttpResponse(Client &client);
+void sendHttpErrorResponse(Client &client, int errorCode);
 
 #endif

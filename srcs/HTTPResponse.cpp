@@ -6,15 +6,11 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 17:54:02 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 18:16:15 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "HTTPResponse.hpp"
-
-/* ************************************************************************** */
-/*                               HTTP Responses                               */
-/* ************************************************************************** */
+#include "HTTP.hpp"
 
 void createHttpResponse(Client &client, int statusCode, const std::string &contentType)
 {
@@ -54,7 +50,7 @@ void sendHttpResponse(Client &client)
 	socklen_t errLen = sizeof(err);
 	if (getsockopt(client._socketFd, SOL_SOCKET, SO_SNDBUF, &err, &errLen) == -1) {
 		printError("getsockopt() failed");
-		sendErrorResponse(client, 500);
+		sendHttpErrorResponse(client, 500);
 		client._isAlive = false;
 		return ;
 	}
@@ -69,10 +65,6 @@ void sendHttpResponse(Client &client)
 		client._isAlive = false;
 	}
 }
-
-/* ************************************************************************** */
-/*                            HTTP errors responses                           */
-/* ************************************************************************** */
 
 static const std::string getErrorMessage(int &errorCode)
 {
@@ -105,7 +97,7 @@ static const std::string getErrorMessage(int &errorCode)
 	return (errorMessage);
 }
 
-void sendErrorResponse(Client &client, int errorCode)
+void sendHttpErrorResponse(Client &client, int errorCode)
 {
 	std::string errorMessage, response, htmlContent;
 	std::string errorPagePath, errorPageContent;
