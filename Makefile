@@ -6,7 +6,7 @@
 #    By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/16 16:17:24 by fluchten          #+#    #+#              #
-#    Updated: 2023/07/24 19:03:09 by fluchten         ###   ########.fr        #
+#    Updated: 2023/07/24 19:20:00 by fluchten         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,7 @@ SRCS =	Client.cpp \
 		HTTPResponse.cpp \
 		Location.cpp \
 		main.cpp \
+		MimeTypes.cpp \
 		Parser.cpp \
 		Server.cpp \
 		Utils.cpp \
