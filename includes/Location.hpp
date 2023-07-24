@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/20 17:53:21 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 19:01:05 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <fstream>
 # include <sstream>
 # include <vector>
-# include "colors.hpp"
+# include "Colors.hpp"
 
 class Location
 {

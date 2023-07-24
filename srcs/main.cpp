@@ -6,14 +6,14 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 18:41:16 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 19:02:56 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "utils.hpp"
+#include "Utils.hpp"
 #include "Connection.hpp"
 #include "Parser.hpp"
 #include "Server.hpp"

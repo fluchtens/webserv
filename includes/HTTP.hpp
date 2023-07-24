@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 18:03:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 18:16:18 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 19:01:33 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 # include <sstream>
 # include <vector>
 # include <map>
-# include "utils.hpp"
 # include "Client.hpp"
+# include "Utils.hpp"
 
 /* Requests */
 void parseHttpRequest(Client &client);

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 18:45:22 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 19:02:43 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@
 #include "Autoindex.hpp"
 #include "Cgi.hpp"
 #include <vector>
-# include "colors.hpp"
+# include "Colors.hpp"
+#include "Utils.hpp"
 
 #define BSIZE 1024
 

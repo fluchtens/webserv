@@ -6,7 +6,7 @@
 #    By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/16 16:17:24 by fluchten          #+#    #+#              #
-#    Updated: 2023/07/23 11:43:40 by fluchten         ###   ########.fr        #
+#    Updated: 2023/07/24 19:03:09 by fluchten         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,7 @@ SRCS =	Client.cpp \
 		main.cpp \
 		Parser.cpp \
 		Server.cpp \
-		utils.cpp \
+		Utils.cpp \
 		temp/autoindex.cpp \
 		temp/Cgi.cpp
 
