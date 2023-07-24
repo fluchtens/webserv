@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 09:22:27 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 10:24:52 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ bool Connection::handleReponse(Client &client)
 	switch (client._method)
 	{
 		case GET:
-			ret = handleGET(client);
+			ret = this->getRequest(client);
 			break;
 		case POST:
 			handlePOST(client);
@@ -194,7 +194,7 @@ bool Connection::handleReponse(Client &client)
 	return (ret);
 }
 
-bool Connection::handleGET(Client& client)
+bool Connection::getRequest(Client& client)
 {
 	if (hanglGetLocation(client)) {
 		return (true);
@@ -207,9 +207,8 @@ bool Connection::handleGET(Client& client)
 	}
 
 	if (client._sizeRep == 0) {
-		client._filePath = getFilePath(client);
+		client._filePath = this->getFilePath(client);
 		std::ifstream file(client._filePath);
-		std::cout << client._filePath << std::endl;
 		if (!file.is_open()) {
 			printHttpError("Not Found", 404);
 			sendErrorResponse(client, 404);
@@ -228,11 +227,21 @@ bool Connection::handleGET(Client& client)
 			createHttpResponse(client, 200, getMimeType(client._filePath));
 		}
 	}
-
 	sendHttpResponse(client);
-	if (client._sizeSend < client._sizeRep)
+	if (client._sizeSend < client._sizeRep) {
 		return (false);
+	}
 	return (true);
+}
+
+std::string Connection::getFilePath(const Client &client)
+{
+	std::string root = client._config.getRoot();
+	std::string path = root + client._uri;
+	if (path.back() == '/') {
+		path += client._config.getIndex();
+	}
+	return (path);
 }
 
 /* ************************************************************************** */
@@ -500,15 +509,6 @@ std::string Connection::getMimeType(const std::string& filePath)
 		return _mimeTypes[fileExtension];
 	else
 		return "application/octet-stream"; // Type MIME par défaut ?? ou "text/plain"
-}
-
-std::string Connection::getFilePath(const Client &client)
-{
-	std::string basePath = client._config.getRoot();
-	std::string filePath = basePath + client._uri;
-	if (filePath.back() == '/')
-		filePath += client._config.getIndex();
-	return filePath;
 }
 
 std::string Connection::getFilePath(const Client &client,const Location *location)

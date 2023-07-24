@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 09:30:59 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 09:49:50 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ class Connection
 		/// @brief gestion de Delete
 		void handleDELETE(Client& client);
 
-		std::string getFilePath(const Client &client);
 		std::string getFilePath(const Client &client, const Location *location);
 		std::string getMimeType(const std::string& filePath);
 		Location *findLocationForUri(const std::string& uri, const std::vector<Location>& locations);
@@ -84,7 +83,8 @@ class Connection
 		void closeClientSockets(void);
 		bool receiveClientRequest(Client &client);
 		bool handleReponse(Client &client);
-		bool handleGET(Client& client);
+		bool getRequest(Client& client);
+		std::string getFilePath(const Client &client);
 };
 
 #endif

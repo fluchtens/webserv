@@ -6,16 +6,19 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/23 14:06:33 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 12:37:30 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HTTPResponse.hpp"
 
+/* ************************************************************************** */
+/*                               HTTP Responses                               */
+/* ************************************************************************** */
+
 void createHttpResponse(Client &client, int statusCode, const std::string &contentType)
 {
-    std::string response;
-    std::string statusMessage;
+    std::string response, statusMessage;
 
     switch (statusCode)
     {
@@ -30,33 +33,30 @@ void createHttpResponse(Client &client, int statusCode, const std::string &conte
             break;
         default:
             statusMessage = "Unknown Status";
+            break ;
     }
 
-    response.append("HTTP/1.1 " + std::to_string(statusCode) + " " + statusMessage + "\r\n");
-    if(client._cookie.empty())
-		response.append("Set-Cookie: delicieux_cookie=choco\r\n");
-    response.append("Content-Type: " + contentType + "\r\n");
-    response.append("Content-Length: " + std::to_string(client._bodyRep.size()) + "\r\n");
-    response.append("Connection: Closed\r\n");
-    response.append("\r\n");
-    response.append(client._bodyRep);
-
+    response = "HTTP/1.1 " + std::to_string(statusCode) + " " + statusMessage + "\r\n";
+    if (client._cookie.empty()) {
+		response += "Set-Cookie: delicieux_cookie=choco\r\n";
+    }
+    response += "Content-Type: " + contentType + "\r\n";
+    response += "Content-Length: " + std::to_string(client._bodyRep.size()) + "\r\n";
+    response += "\r\n";
+    response += client._bodyRep;
     client._sizeRep = response.size();
-
-    //On enregistre l'ensemble de la reponse dans le client pour l'envoyer en plusieurs fois.
     client._response = response;
 }
 
 void sendHttpResponse(Client &client)
 {
     int optval = 0;
-    socklen_t  optlen = sizeof(optval);
-    if(getsockopt(client._socketFd, SOL_SOCKET, SO_SNDBUF, &optval, &optlen) == -1 || optval <= 0)
-    {
-        std::cerr << "Error : 500 sending data to client getsockopt(): " << client._socketFd << std::endl;
+    socklen_t optlen = sizeof(optval);
+    if (getsockopt(client._socketFd, SOL_SOCKET, SO_SNDBUF, &optval, &optlen) == -1) {
+        printError("getsockopt() failed");
         sendErrorResponse(client, 500);
         client._isAlive = false;
-        return;
+        return ;
     }
     
     ssize_t remainingSize = client._sizeRep - client._sizeSend;
@@ -78,6 +78,10 @@ void sendHttpResponse(Client &client)
         client._isAlive = false;
     }
 }
+
+/* ************************************************************************** */
+/*                            HTTP errors responses                           */
+/* ************************************************************************** */
 
 static const std::string getErrorMessage(int &errorCode)
 {
