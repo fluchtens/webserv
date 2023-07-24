@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:58:47 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 17:39:22 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 19:13:02 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,17 +39,17 @@ struct Client
 	Client &operator=(const Client &rhs);
 	~Client(void);
 
-	// Classes
+	/* Classes */
 	Parser &_config;
 	Server &_server;
     std::vector<Location> &_location;
 	/* Life */
 	bool _isAlive;
-	// Socket
+	/* Socket */
 	int _socketFd;
 	sockaddr_storage _socketAddress;
 	socklen_t _socketAddrLen;
-	// Request
+	/* Request */
 	std::stringstream _requestStr;
 	bool _requestPars;
     HTTPMethod _method;
@@ -61,11 +61,11 @@ struct Client
 	std::string _cookie;
 	std::stringstream _bodyReq;
 	int _bodySize;
-	// Response
+	/* Response */
 	std::string _filePath;
-	std::string _bodyRep;
+	std::string _bodyResp;
 	std::string _response;
-	int _sizeRep;
+	int _respSize;
 	std::vector<std::pair<std::pair<std::string, std::string>, int> > _autoIndex;
 };
 

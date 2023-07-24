@@ -6,11 +6,12 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 18:16:15 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 19:13:02 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HTTP.hpp"
+#include "Utils.hpp"
 
 void createHttpResponse(Client &client, int statusCode, const std::string &contentType)
 {
@@ -37,10 +38,10 @@ void createHttpResponse(Client &client, int statusCode, const std::string &conte
 		response += "Set-Cookie: delicieux_cookie=choco\r\n";
 	}
 	response += "Content-Type: " + contentType + "\r\n";
-	response += "Content-Length: " + std::to_string(client._bodyRep.size()) + "\r\n";
+	response += "Content-Length: " + std::to_string(client._bodyResp.size()) + "\r\n";
 	response += "\r\n";
-	response += client._bodyRep;
-	client._sizeRep = response.size();
+	response += client._bodyResp;
+	client._respSize = response.size();
 	client._response = response;
 }
 
@@ -55,7 +56,7 @@ void sendHttpResponse(Client &client)
 		return ;
 	}
 
-	ssize_t sentBytes = send(client._socketFd, client._response.c_str(), client._sizeRep, 0);
+	ssize_t sentBytes = send(client._socketFd, client._response.c_str(), client._respSize, 0);
 	if (sentBytes == -1) {
 		printError("send() failed");
 		client._isAlive = false;

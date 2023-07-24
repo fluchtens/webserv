@@ -6,11 +6,12 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 10:28:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 18:15:38 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 19:06:44 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HTTP.hpp"
+#include "Utils.hpp"
 
 static void parseRequestLine(Client &client, std::stringstream &requestStream)
 {

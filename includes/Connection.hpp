@@ -6,29 +6,30 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 19:02:43 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 19:14:21 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONNECTION_HPP
 # define CONNECTION_HPP
 
-#include <sys/select.h>
-#include <iostream>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <map>
-#include <sstream>
-#include "Server.hpp"
-#include "Client.hpp"
-#include "HTTP.hpp"
-#include "Autoindex.hpp"
-#include "Cgi.hpp"
-#include <vector>
+# include <iostream>
+# include <fstream>
+# include <sstream>
+# include <vector>
+# include <map>
+# include <fcntl.h>
+# include <sys/socket.h>
+# include <sys/select.h>
+# include <sys/stat.h>
+# include <netinet/in.h>
+# include <netinet/tcp.h>
+# include "Server.hpp"
+# include "Client.hpp"
+# include "HTTP.hpp"
+# include "Autoindex.hpp"
+# include "Cgi.hpp"
 # include "Colors.hpp"
-#include "Utils.hpp"
-
-#define BSIZE 1024
 
 class Connection
 {
@@ -52,11 +53,7 @@ class Connection
 		/// @brief Gestion de la request parse afin de generer la reponse
 		/// @param client 
 
-		/// @brief gestion de Get
-		bool hanglGetLocation(Client &client);
-		/// @brief gestion de Post
 		void handlePOST(Client& client);
-		/// @brief gestion de Delete
 		void handleDELETE(Client& client);
 
 		std::string getFilePath(const Client &client, const Location *location);
@@ -82,6 +79,7 @@ class Connection
 		bool receiveClientRequest(Client &client);
 		bool handleReponse(Client &client);
 		bool getRequest(Client& client);
+		bool hanglGetLocation(Client &client);
 		/* Utils */
 		void initCommonMimeTypes(void);
 		void addToFdSet(int fd, fd_set &fds);

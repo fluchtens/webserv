@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:59:23 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 17:39:32 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 19:13:02 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ Client::Client(Parser &config, Server &server, std::vector<Location> &location) 
 	this->_bodySize = 0;
 
 	this->_filePath = "";
-	this->_bodyRep = "";
+	this->_bodyResp = "";
 	this->_response = "";
-	this->_sizeRep = 0;
+	this->_respSize = 0;
 	this->_autoIndex.clear();
 }
 
@@ -74,11 +74,11 @@ Client &Client::operator=(const Client &rhs)
 		this->_cookie = rhs._cookie;
 		this->_bodyReq << rhs._bodyReq.str();
 		this->_bodySize = rhs._bodySize;
-
+		// Response
 		this->_filePath = rhs._filePath;
-		this->_bodyRep = rhs._bodyRep;
+		this->_bodyResp = rhs._bodyResp;
 		this->_response = rhs._response;
-		this->_sizeRep = rhs._sizeRep;
+		this->_respSize = rhs._respSize;
 		this->_autoIndex = rhs._autoIndex;
 	}
 	return (*this);
