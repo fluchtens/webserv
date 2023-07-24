@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/21 13:06:45 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 18:41:16 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,11 +79,8 @@ int main(int ac, char **av, char **env)
 
 		Connection tmp(_server);
 		_connection = tmp;
-		while (true)
-		{
-			_connection.initConnection();
-			_connection.acceptSockets();
-			_connection.traitement();
+		while (true) {
+			_connection.start();
 		}
 	}
 	catch (std::exception &e) {

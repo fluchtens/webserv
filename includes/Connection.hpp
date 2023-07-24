@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 18:13:55 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 18:45:22 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,7 @@ class Connection
 		Connection &operator=(const Connection &rhs);
 		~Connection(void);
 
-		void initConnection(void);
-		void acceptSockets(void);
-		void traitement(void);
+		void start(void);
 
 		//Fonctionnement coté client
 		Client *findExistingClient(const sockaddr_in& csin);
@@ -75,14 +73,20 @@ class Connection
 		int _highestFd;
 		timeval _timeout;
 
+		/* Initialization */
+		void initConnection(void);
+		void acceptSockets(void);
+		void traitement(void);
+		/* Requests */
+		bool receiveClientRequest(Client &client);
+		bool handleReponse(Client &client);
+		bool getRequest(Client& client);
+		/* Utils */
 		void initCommonMimeTypes(void);
 		void addToFdSet(int fd, fd_set &fds);
 		void checkFdStatus(void);
 		bool isAlive(Client &client, bool isAlive);
 		void closeClientSockets(void);
-		bool receiveClientRequest(Client &client);
-		bool handleReponse(Client &client);
-		bool getRequest(Client& client);
 		std::string getFilePath(const Client &client);
 };
 

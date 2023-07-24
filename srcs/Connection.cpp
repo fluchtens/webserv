@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 18:16:13 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/24 18:45:14 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,318 +64,8 @@ Connection::~Connection(void)
 }
 
 /* ************************************************************************** */
-/*                          Private Member functions                          */
-/* ************************************************************************** */
-
-void Connection::initCommonMimeTypes(void)
-{
-	this->_mimeTypes.insert(std::make_pair(".aac", "audio/aac"));
-	this->_mimeTypes.insert(std::make_pair(".abw", "application/x-abiword"));
-	this->_mimeTypes.insert(std::make_pair(".arc", "application/x-freearc"));
-	this->_mimeTypes.insert(std::make_pair(".avif", "image/avif"));
-	this->_mimeTypes.insert(std::make_pair(".avi", "video/x-msvideo"));
-	this->_mimeTypes.insert(std::make_pair(".azw", "application/vnd.amazon.ebook"));
-	this->_mimeTypes.insert(std::make_pair(".bin", "application/octet-stream"));
-	this->_mimeTypes.insert(std::make_pair(".bmp", "image/bmp"));
-	this->_mimeTypes.insert(std::make_pair(".bz", "application/x-bzip"));
-	this->_mimeTypes.insert(std::make_pair(".bz2", "application/x-bzip2"));
-	this->_mimeTypes.insert(std::make_pair(".cda", "application/x-cdf"));
-	this->_mimeTypes.insert(std::make_pair(".csh", "application/x-csh"));
-	this->_mimeTypes.insert(std::make_pair(".css", "text/css"));
-	this->_mimeTypes.insert(std::make_pair(".csv", "text/csv"));
-	this->_mimeTypes.insert(std::make_pair(".doc", "application/msword"));
-	this->_mimeTypes.insert(std::make_pair(".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
-	this->_mimeTypes.insert(std::make_pair(".eot", "application/vnd.ms-fontobject"));
-	this->_mimeTypes.insert(std::make_pair(".epub", "application/epub+zip"));
-	this->_mimeTypes.insert(std::make_pair(".gz", "application/gzip"));
-	this->_mimeTypes.insert(std::make_pair(".gif", "image/gif"));
-	this->_mimeTypes.insert(std::make_pair(".html", "text/html"));
-	this->_mimeTypes.insert(std::make_pair(".ico", "image/vnd.microsoft.icon"));
-	this->_mimeTypes.insert(std::make_pair(".ics", "text/calendar"));
-	this->_mimeTypes.insert(std::make_pair(".jar", "application/java-archive"));
-	this->_mimeTypes.insert(std::make_pair(".jpeg", "image/jpeg"));
-	this->_mimeTypes.insert(std::make_pair(".jpg", "image/jpeg"));
-	this->_mimeTypes.insert(std::make_pair(".js", "text/javascript"));
-	this->_mimeTypes.insert(std::make_pair(".json", "application/json"));
-	this->_mimeTypes.insert(std::make_pair(".jsonld", "application/ld+json"));
-	this->_mimeTypes.insert(std::make_pair(".mid", "audio/midi"));
-	this->_mimeTypes.insert(std::make_pair(".midi", "audio/midi"));
-	this->_mimeTypes.insert(std::make_pair(".mjs", "text/javascript"));
-	this->_mimeTypes.insert(std::make_pair(".mp3", "audio/mpeg"));
-	this->_mimeTypes.insert(std::make_pair(".mp4", "video/mp4"));
-	this->_mimeTypes.insert(std::make_pair(".mpeg", "video/mpeg"));
-	this->_mimeTypes.insert(std::make_pair(".mpkg", "application/vnd.apple.installer+xml"));
-	this->_mimeTypes.insert(std::make_pair(".odp", "application/vnd.oasis.opendocument.presentation"));
-	this->_mimeTypes.insert(std::make_pair(".ods", "application/vnd.oasis.opendocument.spreadsheet"));
-	this->_mimeTypes.insert(std::make_pair(".odt", "application/vnd.oasis.opendocument.text"));
-	this->_mimeTypes.insert(std::make_pair(".oga", "audio/ogg"));
-	this->_mimeTypes.insert(std::make_pair(".ogv", "video/ogg"));
-	this->_mimeTypes.insert(std::make_pair(".ogx", "application/ogg"));
-	this->_mimeTypes.insert(std::make_pair(".opus", "audio/opus"));
-	this->_mimeTypes.insert(std::make_pair(".otf", "font/otf"));
-	this->_mimeTypes.insert(std::make_pair(".png", "image/png"));
-	this->_mimeTypes.insert(std::make_pair(".pdf", "application/pdf"));
-	this->_mimeTypes.insert(std::make_pair(".php", "application/x-httpd-php"));
-	this->_mimeTypes.insert(std::make_pair(".ppt", "application/vnd.ms-powerpoint"));
-	this->_mimeTypes.insert(std::make_pair(".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation"));
-	this->_mimeTypes.insert(std::make_pair(".rar", "application/vnd.rar"));
-	this->_mimeTypes.insert(std::make_pair(".rtf", "application/rtf"));
-	this->_mimeTypes.insert(std::make_pair(".sh", "application/x-sh"));
-	this->_mimeTypes.insert(std::make_pair(".svg", "image/svg+xml"));
-	this->_mimeTypes.insert(std::make_pair(".tar", "application/x-tar"));
-	this->_mimeTypes.insert(std::make_pair(".tif", "image/tiff"));
-	this->_mimeTypes.insert(std::make_pair(".tiff", "image/tiff"));
-	this->_mimeTypes.insert(std::make_pair(".ts", "video/mp2t"));
-	this->_mimeTypes.insert(std::make_pair(".ttf", "font/ttf"));
-	this->_mimeTypes.insert(std::make_pair(".txt", "text/plain"));
-	this->_mimeTypes.insert(std::make_pair(".vsd", "application/vnd.visio"));
-	this->_mimeTypes.insert(std::make_pair(".wav", "audio/wav"));
-	this->_mimeTypes.insert(std::make_pair(".weba", "audio/webm"));
-	this->_mimeTypes.insert(std::make_pair(".webm", "video/webm"));
-	this->_mimeTypes.insert(std::make_pair(".webp", "image/webp"));
-	this->_mimeTypes.insert(std::make_pair(".woff", "font/woff"));
-	this->_mimeTypes.insert(std::make_pair(".woff2", "font/woff2"));
-	this->_mimeTypes.insert(std::make_pair(".xhtml", "application/xhtml+xml"));
-	this->_mimeTypes.insert(std::make_pair(".xls", "application/vnd.ms-excel"));
-	this->_mimeTypes.insert(std::make_pair(".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-	this->_mimeTypes.insert(std::make_pair(".xml", "application/xml"));
-	this->_mimeTypes.insert(std::make_pair(".xul", "application/vnd.mozilla.xul+xml"));
-	this->_mimeTypes.insert(std::make_pair(".zip", "application/zip"));
-	this->_mimeTypes.insert(std::make_pair(".3gp", "video/3gpp"));
-	this->_mimeTypes.insert(std::make_pair(".3g2", "video/3gpp2"));
-	this->_mimeTypes.insert(std::make_pair(".7z", "application/x-7z-compressed"));
-}
-
-void Connection::addToFdSet(int fd, fd_set &fds)
-{
-	FD_SET(fd, &fds);
-	if (fd > this->_highestFd)
-		this->_highestFd = fd;
-}
-
-void Connection::checkFdStatus(void)
-{
-	int selectReady = select(this->_highestFd + 1, &this->_setReads, &this->_setWrite, &this->_setErrors, &this->_timeout);
-	if (selectReady == -1) {
-		throw (std::runtime_error("select() failed"));
-	}
-	else if (selectReady == 0) {
-		// printError("select() timeout");
-		for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
-			(*it)._isAlive = false;
-		}
-	}
-}
-
-bool Connection::isAlive(Client &client, bool isAlive)
-{
-	if (isAlive) {
-		return (true);
-	}
-
-	FD_CLR(client._socketFd, &this->_setReads);
-	FD_CLR(client._socketFd, &this->_setWrite);
-	FD_CLR(client._socketFd, &this->_setErrors);
-
-	shutdown(client._socketFd, SHUT_RDWR);
-	close(client._socketFd);
-
-	// std::cout << "> Client disconnected on socket " << client._socketFd << std::endl;;
-	return (false);
-}
-
-void Connection::closeClientSockets()
-{
-	for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
-		std::cout << "> Closing client sockets" << std::endl;
-		close(it->_socketFd);
-	}
-}
-
-bool Connection::receiveClientRequest(Client &client)
-{
-	int maxReadBytes = 1024;
-	char buffer[maxReadBytes];
-	int readBytes = recv(client._socketFd, buffer, maxReadBytes, 0);
-	if (readBytes <= 0) {
-		if (readBytes == -1) {
-			printError("recv() failed");
-			sendHttpErrorResponse(client, 500);
-		}
-		client._isAlive = false;
-		return (false);
-	}
-
-	if (readBytes > maxReadBytes) {
-		printError("Request size exceeds the limit");
-		sendHttpErrorResponse(client, 413);
-		return (false);
-	}
-
-	if (client._contentLenght == 0 && client._requestStr.str().empty() == 0) {
-		client._requestStr.str(std::string());
-		client._bodyReq.str(std::string());
-	}
-
-	std::cout << CLR_BLUEB << buffer << CLR_RESET << std::endl;
-	client._requestStr.write(buffer, readBytes);
-	if (client._contentLenght == 0) {
-		parseHttpRequest(client);
-		if (client._method != POST) {
-			return (true);
-		}
-	} else {
-		client._bodyReq.write(buffer, readBytes);
-		client._bodySize += readBytes;
-	}
-	
-   	if (client._bodySize < client._contentLenght) {
-		return (false);
-	}
-   	return (true);
-}
-
-bool Connection::handleReponse(Client &client)
-{
-	bool ret = true;
-	switch (client._method)
-	{
-		case GET:
-			ret = this->getRequest(client);
-			break;
-		case POST:
-			handlePOST(client);
-			break;
-		case DELETE:
-			handleDELETE(client);
-			break;
-		default:
-			printError("Method not allowed");
-			sendHttpErrorResponse(client, 405);
-			break;
-	}
-	return (ret);
-}
-
-bool Connection::getRequest(Client& client)
-{
-	if (hanglGetLocation(client)) {
-		return (true);
-	}
-	
-	if (client._uri.length() >= 100) {
-		printHttpError("Request-URI Too Long", 414);
-		sendHttpErrorResponse(client, 414);
-		return (true);
-	}
-
-	if (client._sizeRep == 0) {
-		client._filePath = this->getFilePath(client);
-		std::ifstream file(client._filePath);
-		if (!file.is_open()) {
-			printHttpError("Not Found", 404);
-			sendHttpErrorResponse(client, 404);
-		} else {
-			std::string content, line;
-			while (std::getline(file, line)) {
-				content += line;
-				if (!file.eof()) {
-					content += "\n";
-				}
-			}
-			client._bodyRep = content;
-			client._sizeRep = 0;
-			file.close();
-			createHttpResponse(client, 200, getMimeType(client._filePath));
-		}
-	}
-	sendHttpResponse(client);
-	return (true);
-}
-
-std::string Connection::getFilePath(const Client &client)
-{
-	std::string root = client._config.getRoot();
-	std::string path = root + client._uri;
-	if (path.back() == '/') {
-		path += client._config.getIndex();
-	}
-	return (path);
-}
-
-/* ************************************************************************** */
 /*                          Public Member functions                           */
 /* ************************************************************************** */
-
-void Connection::initConnection(void)
-{
-	FD_ZERO(&this->_setReads);
-	FD_ZERO(&this->_setWrite);
-	FD_ZERO(&this->_setErrors);
-
-	for (std::vector<Server *>::iterator it = this->_servers.begin(); it != this->_servers.end(); it++) {
-		addToFdSet((*it)->getSocket(), this->_setReads);
-	}
-
-	for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
-		if (!((*it)._requestPars)) {
-			addToFdSet(it->_socketFd, this->_setReads);
-		} else {
-			addToFdSet(it->_socketFd, this->_setWrite);
-		}
-		addToFdSet(it->_socketFd, this->_setErrors);
-	}
-	this->checkFdStatus();
-}
-
-void Connection::acceptSockets(void)
-{
-	for (std::vector<Server *>::iterator it = this->_servers.begin(); it != this->_servers.end(); it++)
-	{
-		if (FD_ISSET((*it)->getSocket(), &this->_setReads))
-		{
-			Client newClient((*it)->getConfig(), (*it)->getServer(), (*it)->getLocation());
-			std::memset(&newClient._socketAddress, 0, sizeof(newClient._socketAddress));
-			newClient._socketAddrLen = sizeof(newClient._socketAddress);
-			newClient._socketFd = accept((*it)->getSocket(), (sockaddr*)&newClient._socketAddress, &newClient._socketAddrLen);
-			if (newClient._socketFd == -1) {
-				throw (std::runtime_error("accept() failed"));
-			}
-			if (fcntl(newClient._socketFd, F_SETFL, O_NONBLOCK) < 0) {
-				throw (std::runtime_error("fcntl() failed"));
-			}
-			// std::cout << "> New connection on socket " << newClient._socketFd << " on port " << (*it)->getPort() << std::endl;
-			this->_client.push_back(newClient);
-		}
-	}
-}
-
-void Connection::traitement(void)
-{
-	for (std::vector<Client>::iterator it = this->_client.begin(); it < this->_client.end(); it++)
-	{
-		if (FD_ISSET(it->_socketFd, &this->_setErrors)) {
-			it->_isAlive = false;
-		}
-
-		if (FD_ISSET(it->_socketFd, &this->_setReads)) {
-			if (this->receiveClientRequest(*it)) {
-				it->_requestPars = true;
-				FD_SET(it->_socketFd, &this->_setWrite);
-			}
-		}
-
-		if (FD_ISSET(it->_socketFd, &this->_setWrite)) {
-			if (this->handleReponse(*it)) {
-				it->_isAlive = false;
-			}
-		}
-
-		if (!isAlive(*it, it->_isAlive)) {
-			it = this->_client.erase(it);
-		}
-	}
-}
 
 bool Connection::hanglGetLocation(Client &client)
 {
@@ -654,4 +344,325 @@ void Connection::executeCGI(Client &client, Location *location)
 		else
 			sendHttpErrorResponse(client, 500);
 	}
+}
+
+/* ************************************************************************** */
+/*                               Initialization                               */
+/* ************************************************************************** */
+
+void Connection::initConnection(void)
+{
+	FD_ZERO(&this->_setReads);
+	FD_ZERO(&this->_setWrite);
+	FD_ZERO(&this->_setErrors);
+
+	for (std::vector<Server *>::iterator it = this->_servers.begin(); it != this->_servers.end(); it++) {
+		this->addToFdSet((*it)->getSocket(), this->_setReads);
+	}
+
+	for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
+		if (!((*it)._requestPars)) {
+			this->addToFdSet(it->_socketFd, this->_setReads);
+		} else {
+			this->addToFdSet(it->_socketFd, this->_setWrite);
+		}
+		this->addToFdSet(it->_socketFd, this->_setErrors);
+	}
+	this->checkFdStatus();
+}
+
+void Connection::acceptSockets(void)
+{
+	for (std::vector<Server *>::iterator it = this->_servers.begin(); it != this->_servers.end(); it++)
+	{
+		if (FD_ISSET((*it)->getSocket(), &this->_setReads))
+		{
+			Client newClient((*it)->getConfig(), (*it)->getServer(), (*it)->getLocation());
+			std::memset(&newClient._socketAddress, 0, sizeof(newClient._socketAddress));
+			newClient._socketAddrLen = sizeof(newClient._socketAddress);
+			newClient._socketFd = accept((*it)->getSocket(), (sockaddr*)&newClient._socketAddress, &newClient._socketAddrLen);
+			if (newClient._socketFd == -1) {
+				throw (std::runtime_error("accept() failed"));
+			}
+			if (fcntl(newClient._socketFd, F_SETFL, O_NONBLOCK) < 0) {
+				throw (std::runtime_error("fcntl() failed"));
+			}
+			// std::cout << "> New connection on socket " << newClient._socketFd << " on port " << (*it)->getPort() << std::endl;
+			this->_client.push_back(newClient);
+		}
+	}
+}
+
+void Connection::traitement(void)
+{
+	for (std::vector<Client>::iterator it = this->_client.begin(); it < this->_client.end(); it++)
+	{
+		if (FD_ISSET(it->_socketFd, &this->_setErrors)) {
+			it->_isAlive = false;
+		}
+
+		if (FD_ISSET(it->_socketFd, &this->_setReads)) {
+			if (this->receiveClientRequest(*it)) {
+				it->_requestPars = true;
+				FD_SET(it->_socketFd, &this->_setWrite);
+			}
+		}
+
+		if (FD_ISSET(it->_socketFd, &this->_setWrite)) {
+			if (this->handleReponse(*it)) {
+				it->_isAlive = false;
+			}
+		}
+
+		if (!isAlive(*it, it->_isAlive)) {
+			it = this->_client.erase(it);
+		}
+	}
+}
+
+void Connection::start(void)
+{
+	this->initConnection();
+	this->acceptSockets();
+	this->traitement();
+}
+
+/* ************************************************************************** */
+/*                                  Requests                                  */
+/* ************************************************************************** */
+
+bool Connection::receiveClientRequest(Client &client)
+{
+	int maxReadBytes = 1024;
+	char buffer[maxReadBytes];
+	int readBytes = recv(client._socketFd, buffer, maxReadBytes, 0);
+	if (readBytes <= 0) {
+		if (readBytes == -1) {
+			printError("recv() failed");
+			sendHttpErrorResponse(client, 500);
+		}
+		client._isAlive = false;
+		return (false);
+	}
+
+	if (readBytes > maxReadBytes) {
+		printError("Request size exceeds the limit");
+		sendHttpErrorResponse(client, 413);
+		return (false);
+	}
+
+	if (client._contentLenght == 0 && client._requestStr.str().empty() == 0) {
+		client._requestStr.str(std::string());
+		client._bodyReq.str(std::string());
+	}
+
+	std::cout << CLR_BLUEB << buffer << CLR_RESET << std::endl;
+	client._requestStr.write(buffer, readBytes);
+	if (client._contentLenght == 0) {
+		parseHttpRequest(client);
+		if (client._method != POST) {
+			return (true);
+		}
+	} else {
+		client._bodyReq.write(buffer, readBytes);
+		client._bodySize += readBytes;
+	}
+	
+   	if (client._bodySize < client._contentLenght) {
+		return (false);
+	}
+   	return (true);
+}
+
+bool Connection::handleReponse(Client &client)
+{
+	bool ret = true;
+	switch (client._method)
+	{
+		case GET:
+			ret = this->getRequest(client);
+			break;
+		case POST:
+			handlePOST(client);
+			break;
+		case DELETE:
+			handleDELETE(client);
+			break;
+		default:
+			printError("Method not allowed");
+			sendHttpErrorResponse(client, 405);
+			break;
+	}
+	return (ret);
+}
+
+bool Connection::getRequest(Client& client)
+{
+	if (hanglGetLocation(client)) {
+		return (true);
+	}
+	
+	if (client._uri.length() >= 100) {
+		printHttpError("Request-URI Too Long", 414);
+		sendHttpErrorResponse(client, 414);
+		return (true);
+	}
+
+	if (client._sizeRep == 0) {
+		client._filePath = this->getFilePath(client);
+		std::ifstream file(client._filePath);
+		if (!file.is_open()) {
+			printHttpError("Not Found", 404);
+			sendHttpErrorResponse(client, 404);
+		} else {
+			std::string content, line;
+			while (std::getline(file, line)) {
+				content += line;
+				if (!file.eof()) {
+					content += "\n";
+				}
+			}
+			client._bodyRep = content;
+			client._sizeRep = 0;
+			file.close();
+			createHttpResponse(client, 200, getMimeType(client._filePath));
+		}
+	}
+	sendHttpResponse(client);
+	return (true);
+}
+
+/* ************************************************************************** */
+/*                                    Utils                                   */
+/* ************************************************************************** */
+
+void Connection::initCommonMimeTypes(void)
+{
+	this->_mimeTypes.insert(std::make_pair(".aac", "audio/aac"));
+	this->_mimeTypes.insert(std::make_pair(".abw", "application/x-abiword"));
+	this->_mimeTypes.insert(std::make_pair(".arc", "application/x-freearc"));
+	this->_mimeTypes.insert(std::make_pair(".avif", "image/avif"));
+	this->_mimeTypes.insert(std::make_pair(".avi", "video/x-msvideo"));
+	this->_mimeTypes.insert(std::make_pair(".azw", "application/vnd.amazon.ebook"));
+	this->_mimeTypes.insert(std::make_pair(".bin", "application/octet-stream"));
+	this->_mimeTypes.insert(std::make_pair(".bmp", "image/bmp"));
+	this->_mimeTypes.insert(std::make_pair(".bz", "application/x-bzip"));
+	this->_mimeTypes.insert(std::make_pair(".bz2", "application/x-bzip2"));
+	this->_mimeTypes.insert(std::make_pair(".cda", "application/x-cdf"));
+	this->_mimeTypes.insert(std::make_pair(".csh", "application/x-csh"));
+	this->_mimeTypes.insert(std::make_pair(".css", "text/css"));
+	this->_mimeTypes.insert(std::make_pair(".csv", "text/csv"));
+	this->_mimeTypes.insert(std::make_pair(".doc", "application/msword"));
+	this->_mimeTypes.insert(std::make_pair(".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
+	this->_mimeTypes.insert(std::make_pair(".eot", "application/vnd.ms-fontobject"));
+	this->_mimeTypes.insert(std::make_pair(".epub", "application/epub+zip"));
+	this->_mimeTypes.insert(std::make_pair(".gz", "application/gzip"));
+	this->_mimeTypes.insert(std::make_pair(".gif", "image/gif"));
+	this->_mimeTypes.insert(std::make_pair(".html", "text/html"));
+	this->_mimeTypes.insert(std::make_pair(".ico", "image/vnd.microsoft.icon"));
+	this->_mimeTypes.insert(std::make_pair(".ics", "text/calendar"));
+	this->_mimeTypes.insert(std::make_pair(".jar", "application/java-archive"));
+	this->_mimeTypes.insert(std::make_pair(".jpeg", "image/jpeg"));
+	this->_mimeTypes.insert(std::make_pair(".jpg", "image/jpeg"));
+	this->_mimeTypes.insert(std::make_pair(".js", "text/javascript"));
+	this->_mimeTypes.insert(std::make_pair(".json", "application/json"));
+	this->_mimeTypes.insert(std::make_pair(".jsonld", "application/ld+json"));
+	this->_mimeTypes.insert(std::make_pair(".mid", "audio/midi"));
+	this->_mimeTypes.insert(std::make_pair(".midi", "audio/midi"));
+	this->_mimeTypes.insert(std::make_pair(".mjs", "text/javascript"));
+	this->_mimeTypes.insert(std::make_pair(".mp3", "audio/mpeg"));
+	this->_mimeTypes.insert(std::make_pair(".mp4", "video/mp4"));
+	this->_mimeTypes.insert(std::make_pair(".mpeg", "video/mpeg"));
+	this->_mimeTypes.insert(std::make_pair(".mpkg", "application/vnd.apple.installer+xml"));
+	this->_mimeTypes.insert(std::make_pair(".odp", "application/vnd.oasis.opendocument.presentation"));
+	this->_mimeTypes.insert(std::make_pair(".ods", "application/vnd.oasis.opendocument.spreadsheet"));
+	this->_mimeTypes.insert(std::make_pair(".odt", "application/vnd.oasis.opendocument.text"));
+	this->_mimeTypes.insert(std::make_pair(".oga", "audio/ogg"));
+	this->_mimeTypes.insert(std::make_pair(".ogv", "video/ogg"));
+	this->_mimeTypes.insert(std::make_pair(".ogx", "application/ogg"));
+	this->_mimeTypes.insert(std::make_pair(".opus", "audio/opus"));
+	this->_mimeTypes.insert(std::make_pair(".otf", "font/otf"));
+	this->_mimeTypes.insert(std::make_pair(".png", "image/png"));
+	this->_mimeTypes.insert(std::make_pair(".pdf", "application/pdf"));
+	this->_mimeTypes.insert(std::make_pair(".php", "application/x-httpd-php"));
+	this->_mimeTypes.insert(std::make_pair(".ppt", "application/vnd.ms-powerpoint"));
+	this->_mimeTypes.insert(std::make_pair(".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation"));
+	this->_mimeTypes.insert(std::make_pair(".rar", "application/vnd.rar"));
+	this->_mimeTypes.insert(std::make_pair(".rtf", "application/rtf"));
+	this->_mimeTypes.insert(std::make_pair(".sh", "application/x-sh"));
+	this->_mimeTypes.insert(std::make_pair(".svg", "image/svg+xml"));
+	this->_mimeTypes.insert(std::make_pair(".tar", "application/x-tar"));
+	this->_mimeTypes.insert(std::make_pair(".tif", "image/tiff"));
+	this->_mimeTypes.insert(std::make_pair(".tiff", "image/tiff"));
+	this->_mimeTypes.insert(std::make_pair(".ts", "video/mp2t"));
+	this->_mimeTypes.insert(std::make_pair(".ttf", "font/ttf"));
+	this->_mimeTypes.insert(std::make_pair(".txt", "text/plain"));
+	this->_mimeTypes.insert(std::make_pair(".vsd", "application/vnd.visio"));
+	this->_mimeTypes.insert(std::make_pair(".wav", "audio/wav"));
+	this->_mimeTypes.insert(std::make_pair(".weba", "audio/webm"));
+	this->_mimeTypes.insert(std::make_pair(".webm", "video/webm"));
+	this->_mimeTypes.insert(std::make_pair(".webp", "image/webp"));
+	this->_mimeTypes.insert(std::make_pair(".woff", "font/woff"));
+	this->_mimeTypes.insert(std::make_pair(".woff2", "font/woff2"));
+	this->_mimeTypes.insert(std::make_pair(".xhtml", "application/xhtml+xml"));
+	this->_mimeTypes.insert(std::make_pair(".xls", "application/vnd.ms-excel"));
+	this->_mimeTypes.insert(std::make_pair(".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+	this->_mimeTypes.insert(std::make_pair(".xml", "application/xml"));
+	this->_mimeTypes.insert(std::make_pair(".xul", "application/vnd.mozilla.xul+xml"));
+	this->_mimeTypes.insert(std::make_pair(".zip", "application/zip"));
+	this->_mimeTypes.insert(std::make_pair(".3gp", "video/3gpp"));
+	this->_mimeTypes.insert(std::make_pair(".3g2", "video/3gpp2"));
+	this->_mimeTypes.insert(std::make_pair(".7z", "application/x-7z-compressed"));
+}
+
+void Connection::addToFdSet(int fd, fd_set &fds)
+{
+	FD_SET(fd, &fds);
+	if (fd > this->_highestFd)
+		this->_highestFd = fd;
+}
+
+void Connection::checkFdStatus(void)
+{
+	int selectReady = select(this->_highestFd + 1, &this->_setReads, &this->_setWrite, &this->_setErrors, &this->_timeout);
+	if (selectReady == -1) {
+		throw (std::runtime_error("select() failed"));
+	}
+	else if (selectReady == 0) {
+		// printError("select() timeout");
+		for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
+			(*it)._isAlive = false;
+		}
+	}
+}
+
+bool Connection::isAlive(Client &client, bool isAlive)
+{
+	if (isAlive) {
+		return (true);
+	}
+	FD_CLR(client._socketFd, &this->_setReads);
+	FD_CLR(client._socketFd, &this->_setWrite);
+	FD_CLR(client._socketFd, &this->_setErrors);
+	shutdown(client._socketFd, SHUT_RDWR);
+	close(client._socketFd);
+	return (false);
+}
+
+void Connection::closeClientSockets()
+{
+	for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
+		std::cout << "> Closing client sockets" << std::endl;
+		close(it->_socketFd);
+	}
+}
+
+std::string Connection::getFilePath(const Client &client)
+{
+	std::string root = client._config.getRoot();
+	std::string path = root + client._uri;
+	if (path.back() == '/') {
+		path += client._config.getIndex();
+	}
+	return (path);
 }
