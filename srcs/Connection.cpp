@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 15:45:16 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 19:40:03 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -480,7 +480,6 @@ bool Connection::hanglGetLocation(Client &client)
 	}
 
 	if (location->getAutoIndex()) {
-		std::cout << location->getPath();
 		startAutoIndex(client, location->getPath());
 		return (true);
 	}

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 12:11:10 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 18:03:18 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,13 @@
 # include <sys/stat.h>
 # include <netinet/in.h>
 # include <netinet/tcp.h>
+# include "Colors.hpp"
 # include "Server.hpp"
 # include "Client.hpp"
 # include "MimeTypes.hpp"
 # include "HTTP.hpp"
-# include "Autoindex.hpp"
+# include "AutoIndex.hpp"
 # include "Cgi.hpp"
-# include "Colors.hpp"
 
 class Connection
 {
