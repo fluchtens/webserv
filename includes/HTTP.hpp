@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 18:03:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 19:06:21 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 15:45:50 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,14 @@
 # include <vector>
 # include <map>
 # include "Client.hpp"
+# include "Location.hpp"
 
 /* Requests */
 void parseHttpRequest(Client &client);
 
 /* Responses */
 void createHttpResponse(Client &client, int statusCode, const std::string &contentType);
+void createHttpRedirResponse(Client &client, Location *location);
 void sendHttpResponse(Client &client);
 void sendHttpErrorResponse(Client &client, int errorCode);
 

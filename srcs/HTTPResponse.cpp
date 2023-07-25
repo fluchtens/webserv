@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 19:13:02 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 15:45:08 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,16 @@ void createHttpResponse(Client &client, int statusCode, const std::string &conte
 	response += client._bodyResp;
 	client._respSize = response.size();
 	client._response = response;
+}
+
+void createHttpRedirResponse(Client &client, Location *location)
+{
+	std::string response = "HTTP/1.1 301 Moved Permanently\r\n";
+	response += "Location: " + location->getReturn() + "\r\n";
+	response += "\r\n";
+	client._respSize = response.size();
+	client._response = response;
+	std::cout << "resp: " << client._response << std::endl;
 }
 
 void sendHttpResponse(Client &client)

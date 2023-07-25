@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.cpp                                          :+:      :+:    :+:   */
+/*   Utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 09:24:52 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 15:05:18 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,10 @@ void deleteServers(void)
 {
 	for (size_t i = 0; i < ws.configs.size(); i++) {
 		delete ws.configs[i];
-		std::cout << "Deleting " << ws.configs[i]->getServerName() << " server configuration!" << std::endl;
 	}
 	for (size_t i = 0; i < ws.servers.size(); i++) {
         close(ws.servers[i]->getSocket());
         delete ws.servers[i];
-		std::cout << "Closing " << ws.configs[i]->getServerName() << " server!" << std::endl;
     }
 }
 

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 12:40:26 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 15:45:16 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -455,7 +455,6 @@ Location *findLocation(Client &client)
 {
 	for (size_t i = 0; i < client._location.size(); i++) {
 		if (client._location[i].getUrl() == client._uri) {
-			std::cout << client._location[i].getUrl() << std::endl;
 			return &(client._location[i]);
 		}
 	}
@@ -503,16 +502,10 @@ bool Connection::hanglGetLocation(Client &client)
 			client._bodyResp = content;
 			createHttpResponse(client, 200, this->_mimeTypes.getType(filePath));
 			sendHttpResponse(client);
-		}
-		else if (!location->getReturn().empty()) {
-			std::cout << "prout\n";
-			client._response.append("HTTP/1.1 301 Moved Permanently\r\n");
-			client._response.append("Location: " + location->getReturn() + "\r\n\r\n");
-			client._respSize = client._response.size();
-			std::cout << "resp: " << client._response << std::endl;
+		} else {
+			createHttpRedirResponse(client, location);
 			sendHttpResponse(client);
 		}
-	
 	}
 	file.close();
 	return (true);
