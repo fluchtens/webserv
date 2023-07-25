@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:42:51 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 19:10:27 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 09:12:33 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,10 @@
 # include "Parser.hpp"
 # include "Server.hpp"
 # include "Connection.hpp"
+# include "WebServ.hpp"
 
-extern std::vector<Server *> _server;
-extern std::vector<Parser *> _config;
-extern Connection _connection;
 extern char **_env;
+extern WebServ ws;
 
 /* Errors */
 void printError(const std::string &str);

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 19:02:56 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 09:13:48 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,10 @@
 #include "Connection.hpp"
 #include "Parser.hpp"
 #include "Server.hpp"
+#include "WebServ.hpp"
 
-std::vector<Server *> _server;
-std::vector<Parser *> _config;
-Connection _connection;
 char **_env;
+WebServ ws;
 
 void creatFileDeleteMethod()
 {
@@ -44,9 +43,6 @@ void creatFileDeleteMethod()
 
 int main(int ac, char **av, char **env)
 {
-	signal(SIGINT, signalHandler);
-	_env = env;
-
 	std::string cfgFilePath;
 	if (!isValidInputArgs(ac, av, cfgFilePath)) {
 		return (1);
@@ -64,23 +60,25 @@ int main(int ac, char **av, char **env)
 		return (1);
 	}
 
+	_env = env;
+	signal(SIGINT, signalHandler);
+
 	try {
 		for (int i = 0; i < serverBlockCount; i++) {
 			Parser *tmp = new Parser(cfgFile);
-			_config.push_back(tmp);
+			ws.configs.push_back(tmp);
 		}
 
 		for (int i = 0; i < serverBlockCount; i++) {
-			Server *tmp = new Server(_config[i]);
-			_server.push_back(tmp);
+			Server *tmp = new Server(ws.configs[i]);
+			ws.servers.push_back(tmp);
 		}
 
 		creatFileDeleteMethod();
 
-		Connection tmp(_server);
-		_connection = tmp;
+		Connection connection(ws.servers);
 		while (true) {
-			_connection.start();
+			connection.start();
 		}
 	}
 	catch (std::exception &e) {

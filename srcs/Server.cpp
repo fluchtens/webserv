@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/19 18:26:19 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 09:18:44 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ Server &Server::operator=(const Server &rhs)
 Server::~Server(void)
 {
 	// std::cout << "Server destructor called" << std::endl;
-	this->closeSocket();
+	return ;
 }
 
 /* ************************************************************************** */
@@ -151,12 +151,6 @@ void Server::listenTCP(void)
 	// this->print("listenTCP() Listening to port " + std::to_string(this->_cfg->getPort()));
 }
 
-void Server::closeSocket(void)
-{
-    close(this->_serverFd);
-	// this->print("closeSocket() Socket closed successfully.");
-}
-
 in_addr_t Server::convertIpAddress(const std::string &str)
 {
 	std::vector<std::string> octets;
@@ -191,7 +185,6 @@ in_addr_t Server::convertIpAddress(const std::string &str)
 
 		addr |= static_cast<in_addr_t>(octet) << ((3 - i) * 8);
     }
-
     return htonl(addr);
 }
 
