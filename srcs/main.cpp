@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 09:13:48 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 09:30:04 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int main(int ac, char **av, char **env)
 
 	_env = env;
 	signal(SIGINT, signalHandler);
+	signal(SIGQUIT, SIG_IGN);
 
 	try {
 		for (int i = 0; i < serverBlockCount; i++) {
