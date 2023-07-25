@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 10:28:14 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 12:11:10 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ class Connection
 		void handlePOST(Client& client);
 		void handleDELETE(Client& client);
 
-		std::string getFilePath(const Client &client, const Location *location);
 		Location *findLocationForUri(const std::string& uri, const std::vector<Location>& locations);
 		void executeCGI(Client &client, Location *location);
 
@@ -85,7 +84,8 @@ class Connection
 		void checkFdStatus(void);
 		bool isAlive(Client &client, bool isAlive);
 		void closeClientSockets(void);
-		std::string getFilePath(const Client &client);
+		std::string getFilePath(Client &client);
+		std::string getFilePath(Client &client, Location *location);
 };
 
 #endif

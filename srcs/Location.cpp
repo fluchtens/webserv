@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:40 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/20 17:55:23 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 11:27:34 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -331,10 +331,12 @@ const std::string &Location::getCgiPath(void) const
 
 bool Location::isMethodAllowed(std::string method) const
 {
-	for (std::vector<std::string>::const_iterator it = _allow.begin(); it != _allow.end(); it++)
-	{
-		if (*it == method)
+	std::vector<std::string>::const_iterator it = this->_allow.begin();
+	while (it != this->_allow.end()) {
+		if (*it == method) {
 			return (true);
+		}
+		it++;
 	}
 	return (false);
 }

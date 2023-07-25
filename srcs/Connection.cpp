@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 10:35:55 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 12:40:26 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,23 +184,6 @@ void Connection::handleDELETE(Client& client)
 		createHttpResponse(client, 200, "text/html");
 		sendHttpResponse(client);
 	}
-}
-
-std::string Connection::getFilePath(const Client &client,const Location *location)
-{
-	std::string basePath = location->getRoot();
-	std::string filePath = client._server.getRoot() + basePath + "/" + location->getIndex();
-	return filePath;
-}
-
-Location *Connection::findLocationForUri(const std::string& uri, const std::vector<Location>& locations)
-{
-	for (size_t i = 0; i < locations.size(); i++)
-	{
-		if (uri.find(locations[i].getUrl()) == 0)
-			return (const_cast<Location*>(&locations[i]));
-	}
-	return (nullptr);
 }
 
 void Connection::executeCGI(Client &client, Location *location)
@@ -458,64 +441,81 @@ bool Connection::getRequest(Client& client)
 	return (true);
 }
 
+Location *Connection::findLocationForUri(const std::string& uri, const std::vector<Location>& locations)
+{
+	for (size_t i = 0; i < locations.size(); i++) {
+		if (uri.find(locations[i].getUrl()) == 0) {
+			return (const_cast<Location*>(&locations[i]));
+		}
+	}
+	return (nullptr);
+}
+
+Location *findLocation(Client &client)
+{
+	for (size_t i = 0; i < client._location.size(); i++) {
+		if (client._location[i].getUrl() == client._uri) {
+			std::cout << client._location[i].getUrl() << std::endl;
+			return &(client._location[i]);
+		}
+	}
+	return (nullptr);
+}
+
 bool Connection::hanglGetLocation(Client &client)
 {
-	//Location and GET
-	Location *location = findLocationForUri(client._uri, client._location);
-	if (location)
-	{
-		if (!(location->getCgiPath().empty()))
-		{
-			executeCGI(client, location);
-			return (true);
-		}
+	Location *location = findLocation(client);
+	if (!location) {
+		return (false);
+	}
 
-		
-		if (!(location->isMethodAllowed("GET")))
-		{
-			std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._socketFd << std::endl;
-			sendHttpErrorResponse(client, 405);
-			return (true);
-		}
+	if (!location->getCgiPath().empty()) {
+		executeCGI(client, location);
+		return (true);
+	}
 
-		if (location->getAutoIndex())
-		{
-			std::cout << location->getPath();
-			startAutoIndex(client, location->getPath());
-			return (true);
-		}
-		std::string filePath = getFilePath(client, location);
-		std::cout << "path : " << filePath << std::endl;
-		std::ifstream file(filePath, std::ios::in | std::ios::binary);
-		
-		if (file.is_open() && location->getReturn().empty())
-		{
-			std::string line;
-			while (getline(file, line))
-    		{
-				client._bodyResp.append(line + "\n");
-    		    line.clear();
-    		}
+	if (!location->isMethodAllowed("GET")) {
+		printHttpError("GET Method Not Allowed", 405);
+		sendHttpErrorResponse(client, 405);
+		return (true);
+	}
+
+	if (location->getAutoIndex()) {
+		std::cout << location->getPath();
+		startAutoIndex(client, location->getPath());
+		return (true);
+	}
+
+	std::string filePath = getFilePath(client, location);
+	std::ifstream file(filePath);
+	if (!file.is_open()) {
+		printHttpError("Not Found", 404);
+		sendHttpErrorResponse(client, 404);
+	} else {
+		if (location->getReturn().empty()) {
+			std::string content, line;
+			while (std::getline(file, line)) {
+				content += line;
+				if (!file.eof()) {
+					content += "\n";
+				}
+			}
+			client._bodyResp = content;
 			createHttpResponse(client, 200, this->_mimeTypes.getType(filePath));
 			sendHttpResponse(client);
 		}
-		else if (!(location->getReturn().empty()))
-		{
+		else if (!location->getReturn().empty()) {
+			std::cout << "prout\n";
 			client._response.append("HTTP/1.1 301 Moved Permanently\r\n");
 			client._response.append("Location: " + location->getReturn() + "\r\n\r\n");
 			client._respSize = client._response.size();
+			std::cout << "resp: " << client._response << std::endl;
 			sendHttpResponse(client);
 		}
-		else
-		{
-			std::cerr << "\033[0;31mError : 404 Not Found from client:\033[0m " << client._socketFd << std::endl;
-			sendHttpErrorResponse(client, 404);
-		}
-		
-		file.close();
-		return (true);
+	
 	}
-	return (false);
+	file.close();
+	return (true);
 }
 
 /* ************************************************************************** */
@@ -564,12 +564,23 @@ void Connection::closeClientSockets()
 	}
 }
 
-std::string Connection::getFilePath(const Client &client)
+std::string Connection::getFilePath(Client &client)
 {
 	std::string root = client._config.getRoot();
 	std::string path = root + client._uri;
 	if (path.back() == '/') {
 		path += client._config.getIndex();
 	}
+	return (path);
+}
+
+std::string Connection::getFilePath(Client &client, Location *location)
+{
+	std::string root = location->getRoot();
+	std::string path = client._server.getRoot() + root;
+	if (root != "/") {
+		path += "/";
+	}
+	path += location->getIndex();
 	return (path);
 }
