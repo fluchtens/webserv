@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 07:38:05 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 10:22:17 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <netinet/tcp.h>
 # include "Server.hpp"
 # include "Client.hpp"
+# include "MimeTypes.hpp"
 # include "HTTP.hpp"
 # include "Autoindex.hpp"
 # include "Cgi.hpp"
@@ -57,14 +58,13 @@ class Connection
 		void handleDELETE(Client& client);
 
 		std::string getFilePath(const Client &client, const Location *location);
-		std::string getMimeType(const std::string& filePath);
 		Location *findLocationForUri(const std::string& uri, const std::vector<Location>& locations);
 		void executeCGI(Client &client, Location *location);
 
 	private :
 		std::vector<Server *> _servers;
 		std::vector<Client> _client;
-		std::map<std::string, std::string> _mimeTypes;
+		MimeTypes _testSaucisse;
 		fd_set _setReads;
 		fd_set _setWrite;
 		fd_set _setErrors;
@@ -81,7 +81,6 @@ class Connection
 		bool getRequest(Client& client);
 		bool hanglGetLocation(Client &client);
 		/* Utils */
-		void initCommonMimeTypes(void);
 		void addToFdSet(int fd, fd_set &fds);
 		void checkFdStatus(void);
 		bool isAlive(Client &client, bool isAlive);

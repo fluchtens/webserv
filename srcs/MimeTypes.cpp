@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 19:19:08 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 19:21:22 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 10:16:12 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,4 +124,22 @@ void MimeTypes::initCommonMimeTypes(void)
 	this->_mimeTypes.insert(std::make_pair(".3gp", "video/3gpp"));
 	this->_mimeTypes.insert(std::make_pair(".3g2", "video/3gpp2"));
 	this->_mimeTypes.insert(std::make_pair(".7z", "application/x-7z-compressed"));
+}
+
+/* ************************************************************************** */
+/*                          Public Member functions                           */
+/* ************************************************************************** */
+
+const std::string MimeTypes::getType(const std::string &filePath) const
+{
+	size_t dotPos = filePath.find_last_of('.');
+	if (dotPos == std::string::npos) {
+		return ("application/octet-stream");
+	}
+	std::string extension = filePath.substr(dotPos);
+	std::map<std::string, std::string>::const_iterator it = this->_mimeTypes.find(extension);
+	if (it != this->_mimeTypes.end()) {
+		return (it->second);
+	}
+	return ("application/octet-stream");
 }

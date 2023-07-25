@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 19:14:32 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 10:27:14 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ Connection::Connection(std::vector<Server*>& servers) : _servers(servers), _high
 	this->_highestFd = 0;
 	this->_timeout.tv_sec = 3;
 	this->_timeout.tv_usec = 0;
-	this->initCommonMimeTypes();
 }
 
 Connection::Connection(const Connection &rhs)
@@ -49,7 +48,6 @@ Connection &Connection::operator=(const Connection &rhs)
 		this->_setErrors = rhs._setErrors;
 		this->_highestFd = rhs._highestFd;
 		this->_timeout = rhs._timeout;
-		this->_mimeTypes = rhs._mimeTypes;
 	}
 	return (*this);
 }
@@ -110,14 +108,14 @@ void Connection::handlePOST(Client& client)
 		startPos += contentTypeHeader.length();
 		endPos = client._requestStr.str().find("\r\n", startPos);
 		std::string contentType = client._requestStr.str().substr(startPos, endPos - startPos);
-		for (std::map<std::string, std::string>::iterator it = _mimeTypes.begin(); (*it).second == contentType; it++)
-		{
-			if (it == _mimeTypes.end())
-			{
-				sendHttpErrorResponse(client, 400);
-				return;
-			}
-		}
+		// for (std::map<std::string, std::string>::iterator it = _mimeTypes.begin(); (*it).second == contentType; it++)
+		// {
+		// 	if (it == _mimeTypes.end())
+		// 	{
+		// 		sendHttpErrorResponse(client, 400);
+		// 		return;
+		// 	}
+		// }
 
 		// Trouver le début des données du fichier
 		std::string body(client._bodyReq.str());
@@ -186,15 +184,6 @@ void Connection::handleDELETE(Client& client)
 		createHttpResponse(client, 200, "text/html");
 		sendHttpResponse(client);
 	}
-}
-
-std::string Connection::getMimeType(const std::string& filePath)
-{
-   	std::string fileExtension = filePath.substr(filePath.find_last_of('.'));
-   	if (_mimeTypes.find(fileExtension) != _mimeTypes.end())
-		return _mimeTypes[fileExtension];
-	else
-		return "application/octet-stream"; // Type MIME par défaut ?? ou "text/plain"
 }
 
 std::string Connection::getFilePath(const Client &client,const Location *location)
@@ -462,7 +451,7 @@ bool Connection::getRequest(Client& client)
 			client._bodyResp = content;
 			client._respSize = 0;
 			file.close();
-			createHttpResponse(client, 200, getMimeType(client._filePath));
+			createHttpResponse(client, 200, this->_testSaucisse.getType(client._filePath));
 		}
 	}
 	sendHttpResponse(client);
@@ -507,7 +496,7 @@ bool Connection::hanglGetLocation(Client &client)
 				client._bodyResp.append(line + "\n");
     		    line.clear();
     		}
-			createHttpResponse(client, 200, getMimeType(filePath));
+			createHttpResponse(client, 200, this->_testSaucisse.getType(filePath));
 			sendHttpResponse(client);
 		}
 		else if (!(location->getReturn().empty()))
@@ -532,85 +521,6 @@ bool Connection::hanglGetLocation(Client &client)
 /* ************************************************************************** */
 /*                                    Utils                                   */
 /* ************************************************************************** */
-
-void Connection::initCommonMimeTypes(void)
-{
-	this->_mimeTypes.insert(std::make_pair(".aac", "audio/aac"));
-	this->_mimeTypes.insert(std::make_pair(".abw", "application/x-abiword"));
-	this->_mimeTypes.insert(std::make_pair(".arc", "application/x-freearc"));
-	this->_mimeTypes.insert(std::make_pair(".avif", "image/avif"));
-	this->_mimeTypes.insert(std::make_pair(".avi", "video/x-msvideo"));
-	this->_mimeTypes.insert(std::make_pair(".azw", "application/vnd.amazon.ebook"));
-	this->_mimeTypes.insert(std::make_pair(".bin", "application/octet-stream"));
-	this->_mimeTypes.insert(std::make_pair(".bmp", "image/bmp"));
-	this->_mimeTypes.insert(std::make_pair(".bz", "application/x-bzip"));
-	this->_mimeTypes.insert(std::make_pair(".bz2", "application/x-bzip2"));
-	this->_mimeTypes.insert(std::make_pair(".cda", "application/x-cdf"));
-	this->_mimeTypes.insert(std::make_pair(".csh", "application/x-csh"));
-	this->_mimeTypes.insert(std::make_pair(".css", "text/css"));
-	this->_mimeTypes.insert(std::make_pair(".csv", "text/csv"));
-	this->_mimeTypes.insert(std::make_pair(".doc", "application/msword"));
-	this->_mimeTypes.insert(std::make_pair(".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
-	this->_mimeTypes.insert(std::make_pair(".eot", "application/vnd.ms-fontobject"));
-	this->_mimeTypes.insert(std::make_pair(".epub", "application/epub+zip"));
-	this->_mimeTypes.insert(std::make_pair(".gz", "application/gzip"));
-	this->_mimeTypes.insert(std::make_pair(".gif", "image/gif"));
-	this->_mimeTypes.insert(std::make_pair(".html", "text/html"));
-	this->_mimeTypes.insert(std::make_pair(".ico", "image/vnd.microsoft.icon"));
-	this->_mimeTypes.insert(std::make_pair(".ics", "text/calendar"));
-	this->_mimeTypes.insert(std::make_pair(".jar", "application/java-archive"));
-	this->_mimeTypes.insert(std::make_pair(".jpeg", "image/jpeg"));
-	this->_mimeTypes.insert(std::make_pair(".jpg", "image/jpeg"));
-	this->_mimeTypes.insert(std::make_pair(".js", "text/javascript"));
-	this->_mimeTypes.insert(std::make_pair(".json", "application/json"));
-	this->_mimeTypes.insert(std::make_pair(".jsonld", "application/ld+json"));
-	this->_mimeTypes.insert(std::make_pair(".mid", "audio/midi"));
-	this->_mimeTypes.insert(std::make_pair(".midi", "audio/midi"));
-	this->_mimeTypes.insert(std::make_pair(".mjs", "text/javascript"));
-	this->_mimeTypes.insert(std::make_pair(".mp3", "audio/mpeg"));
-	this->_mimeTypes.insert(std::make_pair(".mp4", "video/mp4"));
-	this->_mimeTypes.insert(std::make_pair(".mpeg", "video/mpeg"));
-	this->_mimeTypes.insert(std::make_pair(".mpkg", "application/vnd.apple.installer+xml"));
-	this->_mimeTypes.insert(std::make_pair(".odp", "application/vnd.oasis.opendocument.presentation"));
-	this->_mimeTypes.insert(std::make_pair(".ods", "application/vnd.oasis.opendocument.spreadsheet"));
-	this->_mimeTypes.insert(std::make_pair(".odt", "application/vnd.oasis.opendocument.text"));
-	this->_mimeTypes.insert(std::make_pair(".oga", "audio/ogg"));
-	this->_mimeTypes.insert(std::make_pair(".ogv", "video/ogg"));
-	this->_mimeTypes.insert(std::make_pair(".ogx", "application/ogg"));
-	this->_mimeTypes.insert(std::make_pair(".opus", "audio/opus"));
-	this->_mimeTypes.insert(std::make_pair(".otf", "font/otf"));
-	this->_mimeTypes.insert(std::make_pair(".png", "image/png"));
-	this->_mimeTypes.insert(std::make_pair(".pdf", "application/pdf"));
-	this->_mimeTypes.insert(std::make_pair(".php", "application/x-httpd-php"));
-	this->_mimeTypes.insert(std::make_pair(".ppt", "application/vnd.ms-powerpoint"));
-	this->_mimeTypes.insert(std::make_pair(".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation"));
-	this->_mimeTypes.insert(std::make_pair(".rar", "application/vnd.rar"));
-	this->_mimeTypes.insert(std::make_pair(".rtf", "application/rtf"));
-	this->_mimeTypes.insert(std::make_pair(".sh", "application/x-sh"));
-	this->_mimeTypes.insert(std::make_pair(".svg", "image/svg+xml"));
-	this->_mimeTypes.insert(std::make_pair(".tar", "application/x-tar"));
-	this->_mimeTypes.insert(std::make_pair(".tif", "image/tiff"));
-	this->_mimeTypes.insert(std::make_pair(".tiff", "image/tiff"));
-	this->_mimeTypes.insert(std::make_pair(".ts", "video/mp2t"));
-	this->_mimeTypes.insert(std::make_pair(".ttf", "font/ttf"));
-	this->_mimeTypes.insert(std::make_pair(".txt", "text/plain"));
-	this->_mimeTypes.insert(std::make_pair(".vsd", "application/vnd.visio"));
-	this->_mimeTypes.insert(std::make_pair(".wav", "audio/wav"));
-	this->_mimeTypes.insert(std::make_pair(".weba", "audio/webm"));
-	this->_mimeTypes.insert(std::make_pair(".webm", "video/webm"));
-	this->_mimeTypes.insert(std::make_pair(".webp", "image/webp"));
-	this->_mimeTypes.insert(std::make_pair(".woff", "font/woff"));
-	this->_mimeTypes.insert(std::make_pair(".woff2", "font/woff2"));
-	this->_mimeTypes.insert(std::make_pair(".xhtml", "application/xhtml+xml"));
-	this->_mimeTypes.insert(std::make_pair(".xls", "application/vnd.ms-excel"));
-	this->_mimeTypes.insert(std::make_pair(".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-	this->_mimeTypes.insert(std::make_pair(".xml", "application/xml"));
-	this->_mimeTypes.insert(std::make_pair(".xul", "application/vnd.mozilla.xul+xml"));
-	this->_mimeTypes.insert(std::make_pair(".zip", "application/zip"));
-	this->_mimeTypes.insert(std::make_pair(".3gp", "video/3gpp"));
-	this->_mimeTypes.insert(std::make_pair(".3g2", "video/3gpp2"));
-	this->_mimeTypes.insert(std::make_pair(".7z", "application/x-7z-compressed"));
-}
 
 void Connection::addToFdSet(int fd, fd_set &fds)
 {
