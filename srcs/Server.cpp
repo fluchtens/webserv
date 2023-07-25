@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 09:18:44 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 20:14:06 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,17 @@
 /*                           Constructor Destructor                           */
 /* ************************************************************************** */
 
-Server::Server(Parser *server)
+Server::Server(Parser *server) : _cfg(server), _location(_cfg->getLocation())
 {
 	// std::cout << "Server constructor called" << std::endl;
-	this->_cfg = server;
 	this->_maxConnection = 100;
-	this->_location = this->_cfg->getLocation();
 	this->_nbrLocation = this->_cfg->getNbrLocation();
 	this->creatSocket();
 	this->bindSocket();
 	this->listenTCP();
 }
 
-Server::Server(const Server &rhs)
+Server::Server(const Server &rhs) : _cfg(rhs._cfg), _location(rhs._location)
 {
 	// std::cout << "Server copy constructor called" << std::endl;
 	*this = rhs;

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 09:30:04 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 20:12:31 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,9 @@ int main(int ac, char **av, char **env)
 
 		creatFileDeleteMethod();
 
-		Connection connection(ws.servers);
+		ws.connection = new Connection(ws.servers);
 		while (true) {
-			connection.start();
+			ws.connection->start();
 		}
 	}
 	catch (std::exception &e) {

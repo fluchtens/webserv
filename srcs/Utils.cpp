@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 15:05:18 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 19:56:47 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void printHttpError(const std::string &str, const int &code)
 
 void printWarning(const std::string &str)
 {
-	std::cout << CLR_YELLOW << "Warning: ERR" << str << "." << CLR_RESET << std::endl;
+	std::cout << CLR_YELLOW << "Warning: " << str << "." << CLR_RESET << std::endl;
 }
 
 void signalHandler(int signal)
@@ -43,13 +43,16 @@ void signalHandler(int signal)
 
 void deleteServers(void)
 {
-	for (size_t i = 0; i < ws.configs.size(); i++) {
-		delete ws.configs[i];
+	if (ws.connection) {
+    	delete ws.connection;
 	}
 	for (size_t i = 0; i < ws.servers.size(); i++) {
         close(ws.servers[i]->getSocket());
         delete ws.servers[i];
     }
+	for (size_t i = 0; i < ws.configs.size(); i++) {
+		delete ws.configs[i];
+	}
 }
 
 bool isValidInputArgs(int ac, char **av, std::string &cfgFilePath)

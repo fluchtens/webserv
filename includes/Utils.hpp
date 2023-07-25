@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.hpp                                          :+:      :+:    :+:   */
+/*   Utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:42:51 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 09:12:33 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 20:02:29 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@
 # include <iostream>
 # include <fstream>
 # include <vector>
-# include "Parser.hpp"
-# include "Server.hpp"
-# include "Connection.hpp"
 # include "WebServ.hpp"
 
 extern char **_env;

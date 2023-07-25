@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 09:18:30 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 20:02:57 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class Server
 		int _maxConnection;
 		int _serverFd;
 		sockaddr_in _address;
-		std::vector<Location> _location;
+		std::vector<Location> &_location;
 		size_t _nbrLocation;
 
 		void creatSocket(void);

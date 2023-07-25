@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:59:23 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 19:13:02 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 20:13:50 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ Client &Client::operator=(const Client &rhs)
 
 Client::~Client(void)
 {
+	// std::cout << "Client destructor called" << std::endl;
 	return ;
 }
 
