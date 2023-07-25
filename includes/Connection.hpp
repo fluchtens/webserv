@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 10:22:17 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 10:28:14 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ class Connection
 	private :
 		std::vector<Server *> _servers;
 		std::vector<Client> _client;
-		MimeTypes _testSaucisse;
+		MimeTypes _mimeTypes;
 		fd_set _setReads;
 		fd_set _setWrite;
 		fd_set _setErrors;

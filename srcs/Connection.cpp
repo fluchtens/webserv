@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 10:27:14 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/25 10:28:14 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -451,7 +451,7 @@ bool Connection::getRequest(Client& client)
 			client._bodyResp = content;
 			client._respSize = 0;
 			file.close();
-			createHttpResponse(client, 200, this->_testSaucisse.getType(client._filePath));
+			createHttpResponse(client, 200, this->_mimeTypes.getType(client._filePath));
 		}
 	}
 	sendHttpResponse(client);
@@ -496,7 +496,7 @@ bool Connection::hanglGetLocation(Client &client)
 				client._bodyResp.append(line + "\n");
     		    line.clear();
     		}
-			createHttpResponse(client, 200, this->_testSaucisse.getType(filePath));
+			createHttpResponse(client, 200, this->_mimeTypes.getType(filePath));
 			sendHttpResponse(client);
 		}
 		else if (!(location->getReturn().empty()))
