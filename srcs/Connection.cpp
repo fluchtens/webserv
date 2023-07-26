@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 08:41:12 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 08:49:06 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,16 @@ void Connection::handlePOST(Client& client)
 	else {
 		executeCGI(client, location);
 	}
+}
+
+Location *Connection::findLocationForUri(const std::string& uri, const std::vector<Location>& locations)
+{
+	for (size_t i = 0; i < locations.size(); i++) {
+		if (uri.find(locations[i].getUrl()) == 0) {
+			return (const_cast<Location*>(&locations[i]));
+		}
+	}
+	return (nullptr);
 }
 
 void Connection::handleDELETE(Client& client)
@@ -311,7 +321,7 @@ void Connection::traitement(void)
 		}
 
 		if (FD_ISSET(it->_socketFd, &this->_setReads)) {
-			if (this->receiveClientRequest(*it)) {
+			if (this->parseClientRequest(*it)) {
 				it->_requestPars = true;
 				FD_SET(it->_socketFd, &this->_setWrite);
 			}
@@ -340,7 +350,7 @@ void Connection::start(void)
 /*                                  Requests                                  */
 /* ************************************************************************** */
 
-bool Connection::receiveClientRequest(Client &client)
+bool Connection::parseClientRequest(Client &client)
 {
 	int maxReadBytes = 1024;
 	char buffer[maxReadBytes];
@@ -383,6 +393,10 @@ bool Connection::receiveClientRequest(Client &client)
    	return (true);
 }
 
+/* ************************************************************************** */
+/*                                  Responses                                 */
+/* ************************************************************************** */
+
 bool Connection::handleReponse(Client &client)
 {
 	bool ret = true;
@@ -407,7 +421,7 @@ bool Connection::handleReponse(Client &client)
 
 bool Connection::getRequest(Client& client)
 {
-	if (hanglGetLocation(client)) {
+	if (getRequestLocation(client)) {
 		return (true);
 	}
 	
@@ -441,29 +455,9 @@ bool Connection::getRequest(Client& client)
 	return (true);
 }
 
-Location *Connection::findLocationForUri(const std::string& uri, const std::vector<Location>& locations)
+bool Connection::getRequestLocation(Client &client)
 {
-	for (size_t i = 0; i < locations.size(); i++) {
-		if (uri.find(locations[i].getUrl()) == 0) {
-			return (const_cast<Location*>(&locations[i]));
-		}
-	}
-	return (nullptr);
-}
-
-Location *findLocation(Client &client)
-{
-	for (size_t i = 0; i < client._location.size(); i++) {
-		if (client._location[i].getUrl() == client._uri) {
-			return &(client._location[i]);
-		}
-	}
-	return (nullptr);
-}
-
-bool Connection::hanglGetLocation(Client &client)
-{
-	Location *location = findLocation(client);
+	Location *location = getLocation(client);
 	if (!location) {
 		return (false);
 	}
@@ -582,4 +576,14 @@ std::string Connection::getFilePath(Client &client, Location *location)
 	}
 	path += location->getIndex();
 	return (path);
+}
+
+Location *Connection::getLocation(Client &client)
+{
+	for (size_t i = 0; i < client._location.size(); i++) {
+		if (client._location[i].getUrl() == client._uri) {
+			return &(client._location[i]);
+		}
+	}
+	return (nullptr);
 }

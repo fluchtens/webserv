@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 08:42:10 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 08:48:26 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,11 @@ class Connection
 		void acceptSockets(void);
 		void traitement(void);
 		/* Requests */
-		bool receiveClientRequest(Client &client);
+		bool parseClientRequest(Client &client);
+		/* Responses */
 		bool handleReponse(Client &client);
 		bool getRequest(Client& client);
-		bool hanglGetLocation(Client &client);
+		bool getRequestLocation(Client &client);
 		/* Utils */
 		void addToFdSet(int fd, fd_set &fds);
 		void checkFdStatus(void);
@@ -85,6 +86,7 @@ class Connection
 		void closeClientSockets(void);
 		std::string getFilePath(Client &client);
 		std::string getFilePath(Client &client, Location *location);
+		Location *getLocation(Client &client);
 };
 
 #endif
