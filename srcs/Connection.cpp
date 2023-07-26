@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 09:33:16 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 12:02:36 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -433,6 +433,21 @@ bool Connection::getRequest(Client& client)
 
 	if (client._respSize == 0) {
 		client._filePath = this->getFilePath(client);
+		printWarning(client._filePath);
+
+		DIR *dir = opendir(client._filePath.c_str());
+		if (dir) {
+			struct dirent *ent;
+			while ((ent = readdir(dir))) {
+				if (ent->d_type == DT_DIR) {
+					this->_httpResponse.createAutoIndex(client, client._filePath);
+					this->_httpResponse.create(client, 200, "text/html");
+					this->_httpResponse.sendResponse(client);
+					return (true);
+				}
+			}
+		}
+
 		std::ifstream file(client._filePath);
 		if (!file.is_open()) {
 			printHttpError("Not Found", 404);

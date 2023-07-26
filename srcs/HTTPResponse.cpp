@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 10:00:33 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 13:33:51 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,16 @@ int HttpResponse::createAutoIndex(Client &client, std::string path)
 		return (1);
 	}
 
+	std::string relativePath = path;
+	std::string root = client._server.getRoot();
+	size_t pos = relativePath.find(root);
+	if (pos == 0) {
+        relativePath.erase(0, root.length());
+		if (path[0] == '/') {
+            path.erase(0, 1);
+        }
+	}
+
 	std::string htmlContent = "<!DOCTYPE html>\r\n";
 	htmlContent += "<html lang=\"en\">\r\n";
 	htmlContent += "<head>\r\n";
@@ -93,7 +103,8 @@ int HttpResponse::createAutoIndex(Client &client, std::string path)
 
 	struct dirent *ent;
 	while ((ent = readdir(dir))) {
-		htmlContent += "\t<li><a href=\"" + std::string(ent->d_name) + "\">" + std::string(ent->d_name) + "</a></li>\r\n";
+		std::string name = std::string(ent->d_name);
+		htmlContent += "\t<li><a href=\"" + relativePath + "/" + name + "\">" + name + "</a></li>\r\n";
 	}
 
 	htmlContent += "\t</ul>\r\n";
