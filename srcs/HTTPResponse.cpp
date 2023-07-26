@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 13:33:51 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 16:13:09 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 HttpResponse::HttpResponse(void)
 {
 	// std::cout << "HttpResponse default constructor called" << std::endl;
+	this->initErrorCodes();
 }
 
 HttpResponse::~HttpResponse(void)
@@ -142,43 +143,12 @@ void HttpResponse::sendResponse(Client &client)
 	}
 }
 
-static const std::string getErrorMessage(int &errorCode)
-{
-	std::string errorMessage;
-
-	switch (errorCode)
-	{
-		case 400:
-			errorMessage = "Bad Request";
-			break;
-		case 404:
-			errorMessage = "Not Found";
-			break;
-		case 405:
-			errorMessage = "Method Not Allowed";
-			break;
-		case 413:
-			errorMessage = "Payload Too Large";
-			break;
-		case 414:
-			errorMessage = "URI Too Long";
-			break;
-		case 500:
-			errorMessage = "Internal Server Error";
-			break;
-		default:
-			errorMessage = "Unknown Error";
-			break ;
-	}
-	return (errorMessage);
-}
-
 void HttpResponse::sendError(Client &client, int errorCode)
 {
 	std::string errorMessage, response, htmlContent;
 	std::string errorPagePath, errorPageContent;
 
-	errorMessage = getErrorMessage(errorCode);
+	errorMessage = this->getErrorMessage(errorCode);
 
 	htmlContent += "<!DOCTYPE html>\r\n";
 	htmlContent += "<html lang=\"en\">\r\n";
@@ -192,11 +162,11 @@ void HttpResponse::sendError(Client &client, int errorCode)
 
 	errorPagePath = client._config.getErrorPage(errorCode);
 	if (errorPagePath.empty()) {
-		htmlContent += "\t<h1>Error " + std::to_string(errorCode) + ": " + errorMessage + "</h1>\r\n";
+		htmlContent += "\t<h1>" + std::to_string(errorCode) + " " + errorMessage + "</h1>\r\n";
 	} else {
 		std::ifstream file(client._config.getRoot() + errorPagePath);
 		if (!file.is_open()) {
-			htmlContent += "\t<h1>Error " + std::to_string(errorCode) + ": " + errorMessage + "</h1>\r\n";
+			htmlContent += "\t<h1>" + std::to_string(errorCode) + " " + errorMessage + "</h1>\r\n";
 		} else {
 			std::string line;
 			while (std::getline(file, line)) {
@@ -225,4 +195,62 @@ void HttpResponse::sendError(Client &client, int errorCode)
 		printError("send() failed");
 		client._isAlive = false;
 	}
+}
+
+/* ************************************************************************** */
+/*                                    Utils                                   */
+/* ************************************************************************** */
+
+void HttpResponse::initErrorCodes(void)
+{
+	this->_errorCodes.insert(std::make_pair(400, "Bad Request"));
+	this->_errorCodes.insert(std::make_pair(401, "Unauthorized"));
+	this->_errorCodes.insert(std::make_pair(402, "Payment Required"));
+	this->_errorCodes.insert(std::make_pair(403, "Forbidden"));
+	this->_errorCodes.insert(std::make_pair(404, "Not Found"));
+	this->_errorCodes.insert(std::make_pair(405, "Method Not Allowed"));
+	this->_errorCodes.insert(std::make_pair(406, "Not Acceptable"));
+	this->_errorCodes.insert(std::make_pair(407, "Proxy Authentication Required"));
+	this->_errorCodes.insert(std::make_pair(408, "Request Timeout"));
+	this->_errorCodes.insert(std::make_pair(409, "Conflict"));
+	this->_errorCodes.insert(std::make_pair(410, "Gone"));
+	this->_errorCodes.insert(std::make_pair(411, "Length Required"));
+	this->_errorCodes.insert(std::make_pair(412, "Precondition Failed"));
+	this->_errorCodes.insert(std::make_pair(413, "Payload Too Large"));
+	this->_errorCodes.insert(std::make_pair(414, "URI Too Long"));
+	this->_errorCodes.insert(std::make_pair(415, "Unsupported Media Type"));
+	this->_errorCodes.insert(std::make_pair(416, "Range Not Satisfiable"));
+	this->_errorCodes.insert(std::make_pair(417, "Expectation Failed"));
+	this->_errorCodes.insert(std::make_pair(418, "I'm a teapot"));
+	this->_errorCodes.insert(std::make_pair(421, "Misdirected Request"));
+	this->_errorCodes.insert(std::make_pair(422, "Unprocessable Entity"));
+	this->_errorCodes.insert(std::make_pair(423, "Locked"));
+	this->_errorCodes.insert(std::make_pair(424, "Failed Dependency"));
+	this->_errorCodes.insert(std::make_pair(425, "Too Early"));
+	this->_errorCodes.insert(std::make_pair(426, "Upgrade Required"));
+	this->_errorCodes.insert(std::make_pair(428, "Precondition Required"));
+	this->_errorCodes.insert(std::make_pair(429, "Too Many Requests"));
+	this->_errorCodes.insert(std::make_pair(431, "Request Header Fields Too Large"));
+	this->_errorCodes.insert(std::make_pair(451, "Unavailable For Legal Reasons"));
+	this->_errorCodes.insert(std::make_pair(500, "Internal Server Error"));
+	this->_errorCodes.insert(std::make_pair(501, "Not Implemented"));
+	this->_errorCodes.insert(std::make_pair(502, "Bad Gateway"));
+	this->_errorCodes.insert(std::make_pair(503, "Service Unavailable"));
+	this->_errorCodes.insert(std::make_pair(504, "Gateway Timeout"));
+	this->_errorCodes.insert(std::make_pair(505, "HTTP Version Not Supported"));
+	this->_errorCodes.insert(std::make_pair(506, "Variant Also Negotiates"));
+	this->_errorCodes.insert(std::make_pair(507, "Insufficient Storage"));
+	this->_errorCodes.insert(std::make_pair(508, "Loop Detected"));
+	this->_errorCodes.insert(std::make_pair(510, "Not Extended"));
+	this->_errorCodes.insert(std::make_pair(511, "Network Authentication Required"));
+	this->_errorCodes.insert(std::make_pair(-1, "Something is wrong"));
+}
+
+std::string HttpResponse::getErrorMessage(int errorCode) const
+{
+	std::map<int, std::string>::const_iterator it = this->_errorCodes.find(errorCode);
+	if (it != this->_errorCodes.end()) {
+		return (it->second);
+	}
+	return ("");
 }

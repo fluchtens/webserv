@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 08:54:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 09:35:15 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 16:11:08 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ class HttpResponse
 		void sendError(Client &client, int errorCode);
 
 	private :
+		std::map<int, std::string> _errorCodes;
+
+		void initErrorCodes(void);
+		std::string getErrorMessage(int errorCode) const;
 };
 
 #endif

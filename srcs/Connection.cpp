@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 12:02:36 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 15:57:20 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -440,9 +440,11 @@ bool Connection::getRequest(Client& client)
 			struct dirent *ent;
 			while ((ent = readdir(dir))) {
 				if (ent->d_type == DT_DIR) {
-					this->_httpResponse.createAutoIndex(client, client._filePath);
-					this->_httpResponse.create(client, 200, "text/html");
-					this->_httpResponse.sendResponse(client);
+					// this->_httpResponse.createAutoIndex(client, client._filePath);
+					// this->_httpResponse.create(client, 200, "text/html");
+					// this->_httpResponse.sendResponse(client);
+					printHttpError("Forbidden", 403);
+					this->_httpResponse.sendError(client, 403);
 					return (true);
 				}
 			}
