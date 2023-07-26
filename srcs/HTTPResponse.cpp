@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 16:13:09 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 16:18:00 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,11 +162,11 @@ void HttpResponse::sendError(Client &client, int errorCode)
 
 	errorPagePath = client._config.getErrorPage(errorCode);
 	if (errorPagePath.empty()) {
-		htmlContent += "\t<h1>" + std::to_string(errorCode) + " " + errorMessage + "</h1>\r\n";
+		htmlContent += "\t<center><h1>" + std::to_string(errorCode) + " " + errorMessage + "</h1></center>\r\n";
 	} else {
 		std::ifstream file(client._config.getRoot() + errorPagePath);
 		if (!file.is_open()) {
-			htmlContent += "\t<h1>" + std::to_string(errorCode) + " " + errorMessage + "</h1>\r\n";
+			htmlContent += "\t<center><h1>" + std::to_string(errorCode) + " " + errorMessage + "</h1></center>\r\n";
 		} else {
 			std::string line;
 			while (std::getline(file, line)) {
@@ -178,6 +178,7 @@ void HttpResponse::sendError(Client &client, int errorCode)
 			file.close();
 		}
 	}
+	htmlContent += "\t<hr><center>webserv</center>\r\n";
 	htmlContent += "</body>\r\n";
 	htmlContent += "</html>";
 
