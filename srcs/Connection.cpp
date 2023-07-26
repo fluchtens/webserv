@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 15:57:20 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 20:09:03 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -421,7 +421,7 @@ bool Connection::handleReponse(Client &client)
 
 bool Connection::getRequest(Client& client)
 {
-	if (getRequestLocation(client)) {
+	if (this->getRequestLocation(client)) {
 		return (true);
 	}
 	
@@ -433,16 +433,12 @@ bool Connection::getRequest(Client& client)
 
 	if (client._respSize == 0) {
 		client._filePath = this->getFilePath(client);
-		printWarning(client._filePath);
 
 		DIR *dir = opendir(client._filePath.c_str());
 		if (dir) {
 			struct dirent *ent;
 			while ((ent = readdir(dir))) {
 				if (ent->d_type == DT_DIR) {
-					// this->_httpResponse.createAutoIndex(client, client._filePath);
-					// this->_httpResponse.create(client, 200, "text/html");
-					// this->_httpResponse.sendResponse(client);
 					printHttpError("Forbidden", 403);
 					this->_httpResponse.sendError(client, 403);
 					return (true);
@@ -474,7 +470,7 @@ bool Connection::getRequest(Client& client)
 
 bool Connection::getRequestLocation(Client &client)
 {
-	Location *location = getLocation(client);
+	Location *location = this->getLocation(client);
 	if (!location) {
 		return (false);
 	}
@@ -490,39 +486,32 @@ bool Connection::getRequestLocation(Client &client)
 		return (true);
 	}
 
-	if (location->getAutoIndex()) {
-		// startAutoIndex(client, location->getPath());
-		if (this->_httpResponse.createAutoIndex(client, location->getPath()) != 0) {
-			printHttpError("Not Found", 404);
-			this->_httpResponse.sendError(client, 404);
-		} else {
-			this->_httpResponse.create(client, 200, "text/html");
-			this->_httpResponse.sendResponse(client);
+	std::string filePath = this->getFilePath(client, location);
+	std::ifstream file(filePath);
+	if (!file.is_open()) {
+		if (location->getAutoIndex()) {
+			this->_httpResponse.createAutoIndex(client, this->getAbsolutePath(client, location));
+			return (true);
 		}
+		printHttpError("Forbidden", 403);
+		this->_httpResponse.sendError(client, 403);
 		return (true);
 	}
 
-	std::string filePath = getFilePath(client, location);
-	std::ifstream file(filePath);
-	if (!file.is_open()) {
-		printHttpError("Not Found", 404);
-		this->_httpResponse.sendError(client, 404);
-	} else {
-		if (location->getReturn().empty()) {
-			std::string content, line;
-			while (std::getline(file, line)) {
-				content += line;
-				if (!file.eof()) {
-					content += "\n";
-				}
+	if (location->getReturn().empty()) {
+		std::string content, line;
+		while (std::getline(file, line)) {
+			content += line;
+			if (!file.eof()) {
+				content += "\n";
 			}
-			client._bodyResp = content;
-			this->_httpResponse.create(client, 200, this->_mimeTypes.getType(filePath));
-			this->_httpResponse.sendResponse(client);
-		} else {
-			this->_httpResponse.createRedirection(client, location);
-			this->_httpResponse.sendResponse(client);
 		}
+		client._bodyResp = content;
+		this->_httpResponse.create(client, 200, this->_mimeTypes.getType(filePath));
+		this->_httpResponse.sendResponse(client);
+	} else {
+		this->_httpResponse.createRedirection(client, location);
+		this->_httpResponse.sendResponse(client);
 	}
 	file.close();
 	return (true);
@@ -576,24 +565,38 @@ void Connection::closeClientSockets()
 
 std::string Connection::getFilePath(Client &client)
 {
-	std::string root = client._config.getRoot();
-	std::string path = root + client._uri;
-	if (path.back() == '/') {
-		path += client._config.getIndex();
+	std::string serverRoot = client._config.getRoot();
+	std::string index = serverRoot + client._uri;
+	if (client._uri == "/") {
+		index += client._config.getIndex();
 	}
-	return (path);
+	return (index);
 }
 
 std::string Connection::getFilePath(Client &client, Location *location)
 {
-	std::string root = location->getRoot();
-	std::string path = client._server.getRoot() + root;
-	if (root != "/") {
-		path += "/";
+	std::string serverRoot = client._server.getRoot();
+	std::string locationRoot = location->getRoot();
+	std::string index = serverRoot + locationRoot;
+	if (locationRoot != "/") {
+		index += "/";
 	}
-	path += location->getIndex();
-	return (path);
+	if (!location->getIndex().empty()) {
+		index += location->getIndex();
+	} else {
+		index += client._server.getIndex();
+	}
+	return (index);
 }
+
+std::string Connection::getAbsolutePath(Client &client, Location *location)
+{
+	std::string serverRoot = client._server.getRoot();
+	std::string locationRoot = location->getRoot();
+	std::string absolutePath = serverRoot + locationRoot;
+	return (absolutePath);
+}
+
 
 Location *Connection::getLocation(Client &client)
 {

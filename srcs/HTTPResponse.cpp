@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 16:18:00 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 19:46:09 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,13 @@ void HttpResponse::createRedirection(Client &client, Location *location)
 	client._response = response;
 }
 
-int HttpResponse::createAutoIndex(Client &client, std::string path)
+void HttpResponse::createAutoIndex(Client &client, std::string path)
 {
 	DIR *dir = opendir(path.c_str());
 	if (!dir) {
-		return (1);
+		printHttpError("Not Found", 404);
+		this->sendError(client, 404);
+		return ;
 	}
 
 	std::string relativePath = path;
@@ -114,7 +116,8 @@ int HttpResponse::createAutoIndex(Client &client, std::string path)
 
 	closedir(dir);
 	client._bodyResp = htmlContent;
-	return (0);
+	this->create(client, 200, "text/html");
+	this->sendResponse(client);
 }
 
 /* ************************************************************************** */

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 08:54:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 16:14:02 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 19:45:05 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class HttpResponse
 		/* Creating */
 		void create(Client &client, int statusCode, const std::string &contentType);
 		void createRedirection(Client &client, Location *location);
-		int createAutoIndex(Client &client, std::string path);
+		void createAutoIndex(Client &client, std::string path);
 		/* Sending */
 		void sendResponse(Client &client);
 		void sendError(Client &client, int errorCode);

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 11:09:36 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 19:56:07 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ class Connection
 		void closeClientSockets(void);
 		std::string getFilePath(Client &client);
 		std::string getFilePath(Client &client, Location *location);
+		std::string getAbsolutePath(Client &client, Location *location);
 		Location *getLocation(Client &client);
 };
 
