@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:59:23 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 20:13:50 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 08:31:07 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ Client::Client(Parser &config, Server &server, std::vector<Location> &location) 
 	this->_bodyResp = "";
 	this->_response = "";
 	this->_respSize = 0;
-	this->_autoIndex.clear();
 }
 
 Client::Client(const Client &rhs) : _config(rhs._config), _server(rhs._server), _location(rhs._location)
@@ -79,7 +78,6 @@ Client &Client::operator=(const Client &rhs)
 		this->_bodyResp = rhs._bodyResp;
 		this->_response = rhs._response;
 		this->_respSize = rhs._respSize;
-		this->_autoIndex = rhs._autoIndex;
 	}
 	return (*this);
 }

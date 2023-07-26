@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 15:45:08 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 08:38:01 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,39 @@ void createHttpRedirResponse(Client &client, Location *location)
 	response += "\r\n";
 	client._respSize = response.size();
 	client._response = response;
-	std::cout << "resp: " << client._response << std::endl;
+}
+
+int createAutoIndexResponse(Client &client, std::string path)
+{
+	DIR *dir = opendir(path.c_str());
+	if (!dir) {
+		return (1);
+	}
+
+	std::string htmlContent = "<!DOCTYPE html>\r\n";
+	htmlContent += "<html lang=\"en\">\r\n";
+	htmlContent += "<head>\r\n";
+	htmlContent += "\t<meta charset=\"UTF-8\">\r\n";
+	htmlContent += "\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r\n";
+	htmlContent += "\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n";
+	htmlContent += "\t<title>Index of " + path + "</title>\r\n";
+	htmlContent += "</head>\r\n";
+	htmlContent += "<body>\r\n";
+	htmlContent += "\t<h1>Index of " + path + "</h1>\r\n";
+	htmlContent += "\t<ul>\r\n";
+
+	struct dirent *ent;
+	while ((ent = readdir(dir))) {
+		htmlContent += "\t<li><a href=\"" + std::string(ent->d_name) + "\">" + std::string(ent->d_name) + "</a></li>\r\n";
+	}
+
+	htmlContent += "\t</ul>\r\n";
+	htmlContent += "</body>\r\n";
+	htmlContent += "</html>";
+
+	closedir(dir);
+	client._bodyResp = htmlContent;
+	return (0);
 }
 
 void sendHttpResponse(Client &client)

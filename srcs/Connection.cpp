@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 20:13:53 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 08:41:12 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -480,7 +480,14 @@ bool Connection::hanglGetLocation(Client &client)
 	}
 
 	if (location->getAutoIndex()) {
-		startAutoIndex(client, location->getPath());
+		// startAutoIndex(client, location->getPath());
+		if (createAutoIndexResponse(client, location->getPath()) != 0) {
+			printHttpError("Not Found", 404);
+			sendHttpErrorResponse(client, 404);
+		} else {
+			createHttpResponse(client, 200, "text/html");
+			sendHttpResponse(client);
+		}
 		return (true);
 	}
 

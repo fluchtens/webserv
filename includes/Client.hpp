@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:58:47 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 19:13:02 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 08:31:14 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ struct Client
 	std::string _bodyResp;
 	std::string _response;
 	int _respSize;
-	std::vector<std::pair<std::pair<std::string, std::string>, int> > _autoIndex;
 };
 
 #endif

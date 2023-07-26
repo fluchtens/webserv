@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 18:03:18 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 08:42:10 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@
 # include "Client.hpp"
 # include "MimeTypes.hpp"
 # include "HTTP.hpp"
-# include "AutoIndex.hpp"
 # include "Cgi.hpp"
 
 class Connection
