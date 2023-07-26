@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 09:34:16 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 10:00:33 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@
 
 HttpResponse::HttpResponse(void)
 {
-	std::cout << "HttpResponse default constructor called" << std::endl;
+	// std::cout << "HttpResponse default constructor called" << std::endl;
 }
 
 HttpResponse::~HttpResponse(void)
 {
-	std::cout << "HttpResponse destructor called" << std::endl;
+	// std::cout << "HttpResponse destructor called" << std::endl;
 }
 
 /* ************************************************************************** */
