@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:40 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 20:13:56 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 20:14:31 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ Location &Location::operator=(const Location &rhs)
 		this->_url = rhs._url;
 		this->_root = rhs._root;
 		this->_index = rhs._index;
-		this->_path = rhs._path;
 		this->_autoIndex = rhs._autoIndex;
 		this->_return = rhs._return;
 		this->_cgiScript = rhs._cgiScript;
@@ -112,9 +111,6 @@ void Location::parseLocation(std::ifstream &cfgFile)
 		}
 		else if (key == "index") {
 			parseIndex(tmp);
-		}
-		else if (key == "path") {
-			parsePath(tmp);
 		}
 		else if (key == "autoindex") {
 			parseAutoIndex(tmp);
@@ -200,14 +196,6 @@ void Location::parseIndex(const std::string &index)
 		throw (std::runtime_error("duplicate index key"));
 	}
 	this->_index = index;
-}
-
-void Location::parsePath(const std::string &path)
-{
-	if (!this->_path.empty()) {
-		throw (std::runtime_error("duplicate path key"));
-	}
-	this->_path = path;
 }
 
 void Location::parseAutoIndex(const std::string &autoIndex)
@@ -304,11 +292,6 @@ const std::string &Location::getIndex(void) const
 	return (this->_index);
 }
 
-const std::string &Location::getPath(void) const
-{
-	return (this->_path);
-}
-
 const bool &Location::getAutoIndex(void) const
 {
 	return (this->_autoIndex);
@@ -353,7 +336,6 @@ std::ostream &operator<<(std::ostream &o, const Location &rhs)
 	// o << "	- allow: " << rhs.getAllow() << std::endl;
 	o << "	- root: " << rhs.getRoot() << std::endl;
 	o << "	- index: " << rhs.getIndex() << std::endl;
-	o << "	- path: " << rhs.getPath() << std::endl;
 	o << "	- autoindex: " << rhs.getAutoIndex() << std::endl;
 	o << "	- return: " << rhs.getReturn() << std::endl;
 	o << "	- cgi_script: " << rhs.getCgiScript() << std::endl;

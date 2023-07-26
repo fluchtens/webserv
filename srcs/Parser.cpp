@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 20:14:03 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 20:13:01 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -380,17 +380,6 @@ std::string	Parser::getLocationIndex(std::string url) const
 	{
 		if(it->getUrl() == url)
 			return (it->getIndex());
-	}
-	std::cerr << "\033[1;31mgetLocationIndex : url don't exist ! \033[0m" << std::endl;
-	exit (-3);
-}
-
-std::string	Parser::getLocationPath(std::string url) const
-{
-	for(std::vector<Location>::const_iterator it = _location.begin(); it != _location.end(); it++)
-	{
-		if(it->getUrl() == url)
-			return (it->getPath());
 	}
 	std::cerr << "\033[1;31mgetLocationIndex : url don't exist ! \033[0m" << std::endl;
 	exit (-3);

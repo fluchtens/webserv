@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:59:23 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 08:31:07 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 20:13:34 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,24 +87,3 @@ Client::~Client(void)
 	// std::cout << "Client destructor called" << std::endl;
 	return ;
 }
-
-/* ************************************************************************** */
-/*                             Operators Overloads                            */
-/* ************************************************************************** */
-
-/* std::ostream &operator<<(std::ostream &o, const Client &rhs)
-{
-	// o << CLR_YELLOWB << "> Location: " << CLR_RESET << std::endl;
-	// o << CLR_YELLOW;
-	// o << "	- url: " << rhs.getUrl() << std::endl;
-	// // o << "	- allow: " << rhs.getAllow() << std::endl;
-	// o << "	- root: " << rhs.getRoot() << std::endl;
-	// o << "	- index: " << rhs.getIndex() << std::endl;
-	// o << "	- path: " << rhs.getPath() << std::endl;
-	// o << "	- autoindex: " << rhs.getAutoIndex() << std::endl;
-	// o << "	- return: " << rhs.getReturn() << std::endl;
-	// o << "	- cgi_script: " << rhs.getCgiScript() << std::endl;
-	// o << "	- cgi_path: " << rhs.getCgiPath() << std::endl;
-	// o << CLR_RESET;
-	return (o);
-} */

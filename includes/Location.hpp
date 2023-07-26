@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 11:27:31 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 20:14:27 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ class Location
 		const std::vector<std::string> &getAllow(void) const;
 		const std::string &getRoot(void) const;
 		const std::string &getIndex(void) const;
-		const std::string &getPath(void) const;
 		const bool &getAutoIndex(void) const;
 		const std::string &getReturn(void) const;
 		const std::string &getCgiScript(void) const;
@@ -44,7 +43,6 @@ class Location
 		std::vector<std::string> _allow;
 		std::string _root;
 		std::string _index;
-		std::string _path;
 		bool _autoIndex;
 		std::string _return;
 		std::string _cgiScript;
@@ -54,7 +52,6 @@ class Location
 		void parseAllowedMethods(const std::string &value, std::stringstream &ss);
 		void parseRoot(const std::string &root);
 		void parseIndex(const std::string &index);
-		void parsePath(const std::string &path);
 		void parseAutoIndex(const std::string &autoIndex);
 		void parseReturn(const std::string &ret);
 		void parseCgiScript(const std::string &cgiScript);
