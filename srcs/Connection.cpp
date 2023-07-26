@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 08:49:06 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 09:33:16 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void Connection::handlePOST(Client& client)
 	if (!location || !location->isMethodAllowed("POST"))
 	{
 		std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._socketFd << std::endl;
-		sendHttpErrorResponse(client, 405);
+		this->_httpResponse.sendError(client, 405);
 		return;
 	}
 	
@@ -81,7 +81,7 @@ void Connection::handlePOST(Client& client)
 		std::string boundary = client._headers.find(boundaryHeader)->second.erase(0, std::strlen("multipart/form-data; boundary="));
 		if (boundary.empty())
 		{
-			sendHttpErrorResponse(client, 400);
+			this->_httpResponse.sendError(client, 400);
 			return;
 		}
 
@@ -90,7 +90,7 @@ void Connection::handlePOST(Client& client)
 		std::string::size_type	filePartHeaderPos = client._requestStr.str().find(filePartHeader);
 		if (filePartHeaderPos == std::string::npos)
 		{
-			sendHttpErrorResponse(client, 400);
+			this->_httpResponse.sendError(client, 400);
 			return;
 		}
 		std::string::size_type startPos = filePartHeaderPos + filePartHeader.length();
@@ -102,7 +102,7 @@ void Connection::handlePOST(Client& client)
 		startPos = client._requestStr.str().find(contentTypeHeader, endPos);
 		if (startPos == std::string::npos)
 		{
-			sendHttpErrorResponse(client, 400);
+			this->_httpResponse.sendError(client, 400);
 			return;
 		}
 		startPos += contentTypeHeader.length();
@@ -112,7 +112,7 @@ void Connection::handlePOST(Client& client)
 		// {
 		// 	if (it == _mimeTypes.end())
 		// 	{
-		// 		sendHttpErrorResponse(client, 400);
+		// 		this->_httpResponse.sendError(client, 400);
 		// 		return;
 		// 	}
 		// }
@@ -128,7 +128,7 @@ void Connection::handlePOST(Client& client)
 		endPos -= 4;
 		if (endPos == std::string::npos)
 		{
-			sendHttpErrorResponse(client, 400);
+			this->_httpResponse.sendError(client, 400);
 			return;
 		}
 		std::string fileData = body.substr(startPos, endPos - startPos);
@@ -139,12 +139,12 @@ void Connection::handlePOST(Client& client)
 		{
 			outFile << fileData;
 			client._bodyResp = "Successfully created file";
-			createHttpResponse(client, 201, "text/html");
-			sendHttpResponse(client);
+			this->_httpResponse.create(client, 201, "text/html");
+			this->_httpResponse.sendResponse(client);
 		}
 		else 
 		{
-			sendHttpErrorResponse(client, 400);
+			this->_httpResponse.sendError(client, 400);
 			return;
 		}
 		outFile.close();
@@ -172,7 +172,7 @@ void Connection::handleDELETE(Client& client)
 	if (!location || !location->isMethodAllowed("DELETE"))
 	{
 		std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._socketFd << std::endl;
-		sendHttpErrorResponse(client, 405);
+		this->_httpResponse.sendError(client, 405);
 		return;
 	}
 
@@ -191,8 +191,8 @@ void Connection::handleDELETE(Client& client)
 	if (!(std::remove((location->getRoot() + "/" + fileName).c_str())))
 	{
 		client._bodyResp = fileName + " deleted";
-		createHttpResponse(client, 200, "text/html");
-		sendHttpResponse(client);
+		this->_httpResponse.create(client, 200, "text/html");
+		this->_httpResponse.sendResponse(client);
 	}
 }
 
@@ -208,14 +208,14 @@ void Connection::executeCGI(Client &client, Location *location)
 
 	if (pipe(cgiInput) < 0 || pipe(cgiOutput) < 0)
 	{
-		sendHttpErrorResponse(client, 500);
+		this->_httpResponse.sendError(client, 500);
 		return;
 	}
 
 	pid_t pid = fork();
 	if (pid < 0)
 	{
-		sendHttpErrorResponse(client, 500);
+		this->_httpResponse.sendError(client, 500);
 		return;
 	}
 	if (pid == 0)
@@ -229,7 +229,7 @@ void Connection::executeCGI(Client &client, Location *location)
 
 		if (execve(argv[0], argv, env) == -1)
 		{
-			sendHttpErrorResponse(client, 500);
+			this->_httpResponse.sendError(client, 500);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -257,11 +257,11 @@ void Connection::executeCGI(Client &client, Location *location)
   
 		if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
 		{
-			createHttpResponse(client, 200, "text/html");
-			sendHttpResponse(client);
+			this->_httpResponse.create(client, 200, "text/html");
+			this->_httpResponse.sendResponse(client);
 		}
 		else
-			sendHttpErrorResponse(client, 500);
+			this->_httpResponse.sendError(client, 500);
 	}
 }
 
@@ -358,7 +358,7 @@ bool Connection::parseClientRequest(Client &client)
 	if (readBytes <= 0) {
 		if (readBytes == -1) {
 			printError("recv() failed");
-			sendHttpErrorResponse(client, 500);
+			this->_httpResponse.sendError(client, 500);
 		}
 		client._isAlive = false;
 		return (false);
@@ -366,7 +366,7 @@ bool Connection::parseClientRequest(Client &client)
 
 	if (readBytes > maxReadBytes) {
 		printError("Request size exceeds the limit");
-		sendHttpErrorResponse(client, 413);
+		this->_httpResponse.sendError(client, 413);
 		return (false);
 	}
 
@@ -378,7 +378,7 @@ bool Connection::parseClientRequest(Client &client)
 	std::cout << CLR_BLUEB << buffer << CLR_RESET << std::endl;
 	client._requestStr.write(buffer, readBytes);
 	if (client._contentLenght == 0) {
-		parseHttpRequest(client);
+		this->_httpRequest.parse(client);
 		if (client._method != POST) {
 			return (true);
 		}
@@ -413,7 +413,7 @@ bool Connection::handleReponse(Client &client)
 			break;
 		default:
 			printError("Method not allowed");
-			sendHttpErrorResponse(client, 405);
+			this->_httpResponse.sendError(client, 405);
 			break;
 	}
 	return (ret);
@@ -427,7 +427,7 @@ bool Connection::getRequest(Client& client)
 	
 	if (client._uri.length() >= 100) {
 		printHttpError("Request-URI Too Long", 414);
-		sendHttpErrorResponse(client, 414);
+		this->_httpResponse.sendError(client, 414);
 		return (true);
 	}
 
@@ -436,7 +436,7 @@ bool Connection::getRequest(Client& client)
 		std::ifstream file(client._filePath);
 		if (!file.is_open()) {
 			printHttpError("Not Found", 404);
-			sendHttpErrorResponse(client, 404);
+			this->_httpResponse.sendError(client, 404);
 		} else {
 			std::string content, line;
 			while (std::getline(file, line)) {
@@ -448,8 +448,8 @@ bool Connection::getRequest(Client& client)
 			client._bodyResp = content;
 			client._respSize = 0;
 			file.close();
-			createHttpResponse(client, 200, this->_mimeTypes.getType(client._filePath));
-			sendHttpResponse(client);
+			this->_httpResponse.create(client, 200, this->_mimeTypes.getType(client._filePath));
+			this->_httpResponse.sendResponse(client);
 		}
 	}
 	return (true);
@@ -469,18 +469,18 @@ bool Connection::getRequestLocation(Client &client)
 
 	if (!location->isMethodAllowed("GET")) {
 		printHttpError("GET Method Not Allowed", 405);
-		sendHttpErrorResponse(client, 405);
+		this->_httpResponse.sendError(client, 405);
 		return (true);
 	}
 
 	if (location->getAutoIndex()) {
 		// startAutoIndex(client, location->getPath());
-		if (createAutoIndexResponse(client, location->getPath()) != 0) {
+		if (this->_httpResponse.createAutoIndex(client, location->getPath()) != 0) {
 			printHttpError("Not Found", 404);
-			sendHttpErrorResponse(client, 404);
+			this->_httpResponse.sendError(client, 404);
 		} else {
-			createHttpResponse(client, 200, "text/html");
-			sendHttpResponse(client);
+			this->_httpResponse.create(client, 200, "text/html");
+			this->_httpResponse.sendResponse(client);
 		}
 		return (true);
 	}
@@ -489,7 +489,7 @@ bool Connection::getRequestLocation(Client &client)
 	std::ifstream file(filePath);
 	if (!file.is_open()) {
 		printHttpError("Not Found", 404);
-		sendHttpErrorResponse(client, 404);
+		this->_httpResponse.sendError(client, 404);
 	} else {
 		if (location->getReturn().empty()) {
 			std::string content, line;
@@ -500,11 +500,11 @@ bool Connection::getRequestLocation(Client &client)
 				}
 			}
 			client._bodyResp = content;
-			createHttpResponse(client, 200, this->_mimeTypes.getType(filePath));
-			sendHttpResponse(client);
+			this->_httpResponse.create(client, 200, this->_mimeTypes.getType(filePath));
+			this->_httpResponse.sendResponse(client);
 		} else {
-			createHttpRedirResponse(client, location);
-			sendHttpResponse(client);
+			this->_httpResponse.createRedirection(client, location);
+			this->_httpResponse.sendResponse(client);
 		}
 	}
 	file.close();

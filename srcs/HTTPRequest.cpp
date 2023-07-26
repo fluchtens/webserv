@@ -6,14 +6,31 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 10:28:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/24 19:06:44 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 09:12:45 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "HTTP.hpp"
-#include "Utils.hpp"
+#include "HttpRequest.hpp"
 
-static void parseRequestLine(Client &client, std::stringstream &requestStream)
+/* ************************************************************************** */
+/*                           Constructor Destructor                           */
+/* ************************************************************************** */
+
+HttpRequest::HttpRequest(void)
+{
+	// std::cout << "HttpRequest default constructor called" << std::endl;
+}
+
+HttpRequest::~HttpRequest(void)
+{
+	// std::cout << "HttpRequest destructor called" << std::endl;
+}
+
+/* ************************************************************************** */
+/*                           Parsing Client Request                           */
+/* ************************************************************************** */
+
+void HttpRequest::parseRequestLine(Client &client, std::stringstream &requestStream)
 {
 	std::string line;
 
@@ -47,7 +64,7 @@ static void parseRequestLine(Client &client, std::stringstream &requestStream)
 	}
 }
 
-static void parseRequestHeader(Client &client, std::stringstream &requestStream)
+void HttpRequest::parseRequestHeader(Client &client, std::stringstream &requestStream)
 {
 	std::string line;
 
@@ -76,10 +93,10 @@ static void parseRequestHeader(Client &client, std::stringstream &requestStream)
 	}
 }
 
-void parseHttpRequest(Client &client)
+void HttpRequest::parse(Client &client)
 {
 	std::stringstream requestStream(client._requestStr.str());
 
-	parseRequestLine(client, requestStream);
-	parseRequestHeader(client, requestStream);
+	this->parseRequestLine(client, requestStream);
+	this->parseRequestHeader(client, requestStream);
 }

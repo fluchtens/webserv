@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 08:48:26 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 09:35:32 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@
 # include "Server.hpp"
 # include "Client.hpp"
 # include "MimeTypes.hpp"
-# include "HTTP.hpp"
+# include "HttpRequest.hpp"
+# include "HttpResponse.hpp"
 # include "Cgi.hpp"
 
 class Connection
@@ -63,6 +64,8 @@ class Connection
 		std::vector<Server *> _servers;
 		std::vector<Client> _client;
 		MimeTypes _mimeTypes;
+		HttpRequest _httpRequest;
+		HttpResponse _httpResponse;
 		fd_set _setReads;
 		fd_set _setWrite;
 		fd_set _setErrors;

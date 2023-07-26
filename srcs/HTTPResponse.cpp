@@ -6,14 +6,32 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 08:38:01 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/26 09:34:16 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "HTTP.hpp"
+#include "HttpResponse.hpp"
 #include "Utils.hpp"
 
-void createHttpResponse(Client &client, int statusCode, const std::string &contentType)
+/* ************************************************************************** */
+/*                           Constructor Destructor                           */
+/* ************************************************************************** */
+
+HttpResponse::HttpResponse(void)
+{
+	std::cout << "HttpResponse default constructor called" << std::endl;
+}
+
+HttpResponse::~HttpResponse(void)
+{
+	std::cout << "HttpResponse destructor called" << std::endl;
+}
+
+/* ************************************************************************** */
+/*                             Creating Responses                             */
+/* ************************************************************************** */
+
+void HttpResponse::create(Client &client, int statusCode, const std::string &contentType)
 {
 	std::string response, statusMessage;
 
@@ -45,7 +63,7 @@ void createHttpResponse(Client &client, int statusCode, const std::string &conte
 	client._response = response;
 }
 
-void createHttpRedirResponse(Client &client, Location *location)
+void HttpResponse::createRedirection(Client &client, Location *location)
 {
 	std::string response = "HTTP/1.1 301 Moved Permanently\r\n";
 	response += "Location: " + location->getReturn() + "\r\n";
@@ -54,7 +72,7 @@ void createHttpRedirResponse(Client &client, Location *location)
 	client._response = response;
 }
 
-int createAutoIndexResponse(Client &client, std::string path)
+int HttpResponse::createAutoIndex(Client &client, std::string path)
 {
 	DIR *dir = opendir(path.c_str());
 	if (!dir) {
@@ -87,13 +105,17 @@ int createAutoIndexResponse(Client &client, std::string path)
 	return (0);
 }
 
-void sendHttpResponse(Client &client)
+/* ************************************************************************** */
+/*                             Sending Responses                             */
+/* ************************************************************************** */
+
+void HttpResponse::sendResponse(Client &client)
 {
 	int err = 0;
 	socklen_t errLen = sizeof(err);
 	if (getsockopt(client._socketFd, SOL_SOCKET, SO_SNDBUF, &err, &errLen) == -1) {
 		printError("getsockopt() failed");
-		sendHttpErrorResponse(client, 500);
+		this->sendError(client, 500);
 		client._isAlive = false;
 		return ;
 	}
@@ -140,7 +162,7 @@ static const std::string getErrorMessage(int &errorCode)
 	return (errorMessage);
 }
 
-void sendHttpErrorResponse(Client &client, int errorCode)
+void HttpResponse::sendError(Client &client, int errorCode)
 {
 	std::string errorMessage, response, htmlContent;
 	std::string errorPagePath, errorPageContent;
