@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 12:52:52 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 12:53:20 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void HttpResponse::create(Client &client, int statusCode, const std::string &con
 	response += client._bodyResp;
 	client._respSize = response.size();
 	client._response = response;
-	std::cout << response << std::endl;
 }
 
 void HttpResponse::createRedirection(Client &client, Location *location)
