@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 12:27:48 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 12:52:52 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,22 +35,7 @@ HttpResponse::~HttpResponse(void)
 void HttpResponse::create(Client &client, int statusCode, const std::string &contentType)
 {
 	std::string response, statusMessage;
-
-	switch (statusCode)
-	{
-		case 200:
-			statusMessage = "OK";
-			break;
-		case 201:
-			statusMessage = "Created";
-			break;
-		case 204:
-			statusMessage = "No Content";
-			break;
-		default:
-			statusMessage = "Unknown Status";
-			break ;
-	}
+	statusMessage = this->getHttpMessage(statusCode);
 
 	response = "HTTP/1.1 " + std::to_string(statusCode) + " " + statusMessage + "\r\n";
 	if (client._cookie.empty()) {
@@ -62,6 +47,7 @@ void HttpResponse::create(Client &client, int statusCode, const std::string &con
 	response += client._bodyResp;
 	client._respSize = response.size();
 	client._response = response;
+	std::cout << response << std::endl;
 }
 
 void HttpResponse::createRedirection(Client &client, Location *location)
