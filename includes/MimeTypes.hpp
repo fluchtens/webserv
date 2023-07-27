@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 19:15:38 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 10:16:04 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 13:43:34 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ class MimeTypes
 {
 	public:
 		MimeTypes(void);
-		MimeTypes(const MimeTypes &rhs);
-		MimeTypes &operator=(const MimeTypes &rhs);
 		~MimeTypes(void);
 
 		const std::string getType(const std::string &filePath) const;

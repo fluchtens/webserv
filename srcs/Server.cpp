@@ -6,14 +6,14 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 20:28:49 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 13:50:59 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 /* ************************************************************************** */
-/*                           Constructor Destructor                           */
+/*                               Canonical form                               */
 /* ************************************************************************** */
 
 Server::Server(Parser *server) : _cfg(server), _location(_cfg->getLocation())
@@ -50,7 +50,6 @@ Server &Server::operator=(const Server &rhs)
 Server::~Server(void)
 {
 	// std::cout << "Server destructor called" << std::endl;
-	return ;
 }
 
 /* ************************************************************************** */

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 09:51:29 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 13:37:33 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,39 +17,12 @@
 /*                           Constructor Destructor                           */
 /* ************************************************************************** */
 
-Connection::Connection(void)
-{
-	// std::cout << "Connection default constructor called" << std::endl;
-	return ;
-}
-
-Connection::Connection(std::vector<Server*>& servers) : _servers(servers), _highestFd(-1)
+Connection::Connection(std::vector<Server*>& servers) : _servers(servers)
 {
 	// std::cout << "Connection constructor called" << std::endl;
 	this->_highestFd = 0;
 	this->_timeout.tv_sec = 3;
 	this->_timeout.tv_usec = 0;
-}
-
-Connection::Connection(const Connection &rhs)
-{
-	// std::cout << "Connection copy constructor called" << std::endl;
-	*this = rhs;
-}
-
-Connection &Connection::operator=(const Connection &rhs)
-{
-	// std::cout << "Connection copy assignment operator called" << std::endl;
-	if (this != &rhs) {
-		this->_servers = rhs._servers;
-		this->_client = rhs._client;
-		this->_setReads = rhs._setReads;
-		this->_setWrite = rhs._setWrite;
-		this->_setErrors = rhs._setErrors;
-		this->_highestFd = rhs._highestFd;
-		this->_timeout = rhs._timeout;
-	}
-	return (*this);
 }
 
 Connection::~Connection(void)

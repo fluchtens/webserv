@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:40 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 20:14:31 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 13:43:46 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,14 @@ Location::Location(std::ifstream &cfgFile, const std::string &url)
 {
 	// std::cout << "Location constructor called" << std::endl;
 	this->_url = url;
+	this->_allow.clear();
+	this->_root = "";
+	this->_index = "";
 	this->_autoIndex = false;
+	this->_return = "";
+	this->_cgiScript = "";
+	this->_cgiPath = "";
 	this->parseLocation(cfgFile);
-	// this->hasAllInfos();
 }
 
 Location::Location(const Location &rhs)
@@ -35,8 +40,8 @@ Location &Location::operator=(const Location &rhs)
 {
 	// std::cout << "Location copy assignment operator called" << std::endl;
 	if (this != &rhs) {
-		this->_allow = rhs._allow;
 		this->_url = rhs._url;
+		this->_allow = rhs._allow;
 		this->_root = rhs._root;
 		this->_index = rhs._index;
 		this->_autoIndex = rhs._autoIndex;
@@ -50,7 +55,6 @@ Location &Location::operator=(const Location &rhs)
 Location::~Location(void)
 {
 	// std::cout << "Location destructor called" << std::endl;
-	return ;
 }
 
 /* ************************************************************************** */
@@ -233,22 +237,6 @@ void Location::parseCgiPath(const std::string &cgiPath)
 		throw (std::runtime_error("duplicate cgi_path key"));
 	}
 	this->_cgiPath = cgiPath;
-}
-
-void Location::hasAllInfos(void)
-{
-	std::string	missingInfo;
-
-	if (!this->_allow.size())
-		missingInfo += "allow ";
-	if (this->_root.empty())
-		missingInfo += "root ";
-	if (this->_index.empty())
-		missingInfo += "index ";
-	missingInfo = this->strTrimWhiteSpaces(missingInfo);
-	if (!missingInfo.empty()) {
-		throw (std::runtime_error("location missing information (" + missingInfo + ")"));
-	}
 }
 
 bool Location::isValidMethod(const std::string &method) const

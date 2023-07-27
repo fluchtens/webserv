@@ -6,52 +6,35 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 20:13:01 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 13:46:45 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Parser.hpp"
 
 /* ************************************************************************** */
-/*                               Canonical form                               */
+/*                           Constructor Destructor                           */
 /* ************************************************************************** */
 
 Parser::Parser(std::ifstream &cfgFile)
 {
 	// std::cout << "Parser constructor called" << std::endl;
 	this->_port = -1;
+	this->_host = "";
 	this->_serverName = "default_name";
+	this->_root = "";
+	this->_index = "";
+	this->_errorPage.clear();
+	this->_location.clear();
+	this->_nbrLocation = 0;
 	this->parseCfgFile(cfgFile);
 	this->hasAllInfos();
 	this->printParsing();
 }
 
-Parser::Parser(const Parser &rhs)
-{
-	// std::cout << "Parser copy constructor called" << std::endl;
-	*this = rhs;
-}
-
-Parser &Parser::operator=(const Parser &rhs)
-{
-	// std::cout << "Parser copy assignment operator called" << std::endl;
-	if (this != &rhs) {
-		this->_port = rhs._port;
-		this->_host = rhs._host;
-		this->_serverName = rhs._serverName;
-		this->_root = rhs._root;
-		this->_index = rhs._index;
-		this->_nbrLocation = rhs._nbrLocation;
-		this->_errorPage = rhs._errorPage;
-		this->_location = rhs._location;
-	}
-	return (*this);
-}
-
 Parser::~Parser(void)
 {
 	// std::cout << "Parser destructor called" << std::endl;
-	return ;
 }
 
 /* ************************************************************************** */

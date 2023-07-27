@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:13:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 20:14:27 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 13:42:22 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ class Location
 		void parseCgiPath(const std::string &cgiPath);
 	
 		bool isValidMethod(const std::string &method) const;
-		void hasAllInfos(void);
 		std::string strTrimWhiteSpaces(const std::string &str);
 };
 

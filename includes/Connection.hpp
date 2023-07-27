@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 19:56:07 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 13:32:23 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,7 @@
 class Connection
 {
 	public :
-		Connection(void);
 		Connection(std::vector<Server *> &servers);
-		Connection(const Connection &rhs);
-		Connection &operator=(const Connection &rhs);
 		~Connection(void);
 
 		void start(void);

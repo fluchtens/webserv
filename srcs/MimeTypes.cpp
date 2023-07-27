@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 19:19:08 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 20:14:00 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 13:43:39 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,22 +20,6 @@ MimeTypes::MimeTypes(void)
 {
 	// std::cout << "MimeTypes default constructor called" << std::endl;
 	this->initCommonMimeTypes();
-	return ;
-}
-
-MimeTypes::MimeTypes(const MimeTypes &rhs)
-{
-	// std::cout << "MimeTypes copy constructor called" << std::endl;
-	*this = rhs;
-}
-
-MimeTypes &MimeTypes::operator=(const MimeTypes &rhs)
-{
-	// std::cout << "MimeTypes copy assignment operator called" << std::endl;
-	if (this != &rhs) {
-		this->_mimeTypes = rhs._mimeTypes;
-	}
-	return (*this);
 }
 
 MimeTypes::~MimeTypes(void)

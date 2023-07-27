@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:59:23 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 20:13:34 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 13:28:24 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,14 @@
 
 Client::Client(Parser &config, Server &server, std::vector<Location> &location) : _config(config), _server(server), _location(location)
 {
-	// Client life
+	// std::cout << "Client constructor called" << std::endl;
+	// Life
 	this->_isAlive = true;
-	// Client socket
+	// Socket
 	this->_socketFd = 0;
 	// std::memset(&this->_socketAddress, 0, sizeof(this->_socketAddress));
 	this->_socketAddrLen = 0;
-	// Client request
+	// Request
 	this->_requestStr.str("");
 	this->_requestPars = false;
 	this->_method = UNKNOWN;
@@ -36,7 +37,7 @@ Client::Client(Parser &config, Server &server, std::vector<Location> &location) 
 	this->_cookie = "";
 	this->_bodyReq.str("");
 	this->_bodySize = 0;
-
+	// Response
 	this->_filePath = "";
 	this->_bodyResp = "";
 	this->_response = "";
@@ -45,11 +46,13 @@ Client::Client(Parser &config, Server &server, std::vector<Location> &location) 
 
 Client::Client(const Client &rhs) : _config(rhs._config), _server(rhs._server), _location(rhs._location)
 {
+	// std::cout << "Client copy constructor called" << std::endl;
 	*this = rhs;
 }
 
 Client &Client::operator=(const Client &rhs)
 {
+	// std::cout << "Client copy assignment operator called" << std::endl;
 	if (this != &rhs) {
 		// Classes
 		this->_config = rhs._config;
