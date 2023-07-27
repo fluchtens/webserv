@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 12:53:20 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 14:18:11 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,13 @@ void HttpResponse::sendResponse(Client &client)
 		printError("send() no data sent");
 		client._isAlive = false;
 	}
+
+	std::ofstream logfile("http_response_logs.txt", std::ios::app);
+	if (!logfile.is_open()) {
+		printError("HttpResponse log file creation failed");
+	}
+	logfile << client._response;
+    logfile.close();
 }
 
 void HttpResponse::sendError(Client &client, int errorCode)

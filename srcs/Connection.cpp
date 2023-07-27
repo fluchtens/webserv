@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 13:37:33 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 14:01:06 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -348,7 +348,7 @@ bool Connection::parseClientRequest(Client &client)
 		client._bodyReq.str(std::string());
 	}
 
-	std::cout << CLR_BLUEB << buffer << CLR_RESET << std::endl;
+	// std::cout << CLR_BLUEB << buffer << CLR_RESET << std::endl;
 	client._requestStr.write(buffer, readBytes);
 	if (client._contentLenght == 0) {
 		this->_httpRequest.parse(client);

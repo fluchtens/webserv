@@ -2,3 +2,5 @@
 /srcs/temp/
 /objs/
 /webserv
+/http_request_logs.txt
+/http_response_logs.txt

@@ -6,11 +6,12 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 10:28:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 13:37:50 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 14:12:43 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HttpRequest.hpp"
+#include "Utils.hpp"
 
 /* ************************************************************************** */
 /*                           Constructor Destructor                           */
@@ -99,4 +100,11 @@ void HttpRequest::parse(Client &client)
 
 	this->parseRequestLine(client, requestStream);
 	this->parseRequestHeader(client, requestStream);
+
+	std::ofstream logfile("http_request_logs.txt", std::ios::app);
+	if (!logfile.is_open()) {
+		printError("HttpRequest log file creation failed");
+	}
+	logfile << client._requestStr.str();
+    logfile.close();
 }

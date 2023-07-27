@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 09:13:12 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 14:10:58 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ void deleteServers(void)
 	for (size_t i = 0; i < ws.configs.size(); i++) {
 		delete ws.configs[i];
 	}
+	std::remove("http_request_logs.txt");
+	std::remove("http_response_logs.txt");
 }
 
 bool isValidInputArgs(int ac, char **av, std::string &cfgFilePath)
