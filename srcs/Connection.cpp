@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 20:09:03 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 09:51:29 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -594,6 +594,9 @@ std::string Connection::getAbsolutePath(Client &client, Location *location)
 	std::string serverRoot = client._server.getRoot();
 	std::string locationRoot = location->getRoot();
 	std::string absolutePath = serverRoot + locationRoot;
+	if (absolutePath.back() == '/') {
+		absolutePath.pop_back();
+	}
 	return (absolutePath);
 }
 

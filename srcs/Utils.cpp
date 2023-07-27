@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 19:56:47 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/27 09:13:12 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void deleteServers(void)
 bool isValidInputArgs(int ac, char **av, std::string &cfgFilePath)
 {
 	if (ac != 2) {
-		printError("Usage: ./webserv config_file");
+		printError("./webserv <config_file>");
 		return (false);
 	} else {
 		if (!isValidFileExtension(static_cast<std::string>(av[1]), ".conf")) {
