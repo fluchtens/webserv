@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:42:51 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 20:02:29 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/28 15:45:55 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,6 @@ bool isValidInputArgs(int ac, char **av, std::string &cfgFilePath);
 bool isValidFileExtension(const std::string &cfgFile, const std::string &extension);
 std::string strTrimWhiteSpaces(const std::string &str);
 unsigned int countServerBlock(std::ifstream &cfgFile);
+void createTempDeleteFiles(void);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 14:10:58 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/28 15:58:23 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void deleteServers(void)
 	}
 	std::remove("http_request_logs.txt");
 	std::remove("http_response_logs.txt");
+	std::system("rm -rf ./assets/base/tmp/");
 }
 
 bool isValidInputArgs(int ac, char **av, std::string &cfgFilePath)
@@ -119,4 +120,20 @@ unsigned int countServerBlock(std::ifstream &config_file)
 	}
 	config_file.seekg(0);
 	return (count);
+}
+
+void createTempDeleteFiles(void)
+{
+	std::string folderPath = "./assets/base/tmp/";
+	mkdir(folderPath.c_str(), 0777);
+
+	for (int i = 1; i <= 5; i++) {
+		std::string filePath = folderPath + "file" + std::to_string(i) + ".txt";
+		std::string fileContent = "Content of file" + std::to_string(i) + ".txt\n";
+		std::ofstream file(filePath);
+		if (file.is_open()) {
+			file << fileContent;
+			file.close();
+		}
+	}
 }

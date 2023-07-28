@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/25 20:12:31 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/28 15:58:09 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,25 +21,6 @@
 
 char **_env;
 WebServ ws;
-
-void creatFileDeleteMethod()
-{
-	std::ofstream outFile;
-    for (int i = 1; i <= 4; ++i)
-	{
-        std::stringstream fileName;
-        fileName << "fichier" << i << ".txt";
-
-        outFile.open("./assets/example/a_supprimer/" + fileName.str(), std::ios::binary | std::ios::out);
-        if (outFile.is_open())
-		{
-            outFile << "Contenu du fichier " << i << std::endl;
-            outFile.close();
-        }
-		else
-            std::cerr << "Impossible de créer le fichier " << fileName.str() << std::endl;
-    }
-}
 
 int main(int ac, char **av, char **env)
 {
@@ -75,7 +56,7 @@ int main(int ac, char **av, char **env)
 			ws.servers.push_back(tmp);
 		}
 
-		creatFileDeleteMethod();
+		createTempDeleteFiles();
 
 		ws.connection = new Connection(ws.servers);
 		while (true) {
