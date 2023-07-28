@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:58:47 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 09:14:12 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/28 09:14:58 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ struct Client
 	std::string _query;
     std::string _httpVersion;
     std::map<std::string, std::string> _headers;
+	bool _validHost;
 	int _contentLenght;
 	std::string _cookie;
 	std::stringstream _bodyReq;

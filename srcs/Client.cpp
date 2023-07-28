@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:59:23 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 13:28:24 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/28 10:17:56 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ Client::Client(Parser &config, Server &server, std::vector<Location> &location) 
 	this->_query = "";
 	this->_httpVersion = "";
 	this->_headers.clear();
+	this->_validHost = true;
 	this->_contentLenght = 0;
 	this->_cookie = "";
 	this->_bodyReq.str("");
@@ -72,6 +73,7 @@ Client &Client::operator=(const Client &rhs)
 		this->_query = rhs._query;
 		this->_httpVersion = rhs._httpVersion;
 		this->_headers = rhs._headers;
+		this->_validHost = rhs._validHost;
 		this->_contentLenght = rhs._contentLenght;
 		this->_cookie = rhs._cookie;
 		this->_bodyReq << rhs._bodyReq.str();

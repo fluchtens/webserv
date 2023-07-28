@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 14:01:06 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/28 10:35:51 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -352,6 +352,11 @@ bool Connection::parseClientRequest(Client &client)
 	client._requestStr.write(buffer, readBytes);
 	if (client._contentLenght == 0) {
 		this->_httpRequest.parse(client);
+		if (!client._validHost) {
+			printHttpError("Forbidden", 403);
+			this->_httpResponse.sendError(client, 403);
+			return (false);
+		}
 		if (client._method != POST) {
 			return (true);
 		}

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 10:28:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 14:12:43 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/28 10:19:02 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,16 +65,30 @@ void HttpRequest::parseRequestLine(Client &client, std::stringstream &requestStr
 	}
 }
 
+void ceciestuntestpasouf(Client &client, std::string headerValue)
+{
+	std::size_t separatorPos = headerValue.find(':');
+	if (separatorPos != std::string::npos) {
+		return ;
+	};
+	if (headerValue != client._config.getServerName()) {
+		client._validHost = false;
+	}
+}
+
 void HttpRequest::parseRequestHeader(Client &client, std::stringstream &requestStream)
 {
 	std::string line;
 
 	while (std::getline(requestStream, line) && line.length() != 1) {
 		std::size_t separatorPos = line.find(':');
-
 		if (separatorPos != std::string::npos) {
 			std::string headerName = line.substr(0, separatorPos);
 			std::string headerValue = line.substr(separatorPos + 2);
+			headerValue = line.substr(separatorPos + 2, headerValue.length() - 1);
+			if (headerName == "Host") {
+				ceciestuntestpasouf(client, headerValue);
+			}
 			if (headerName == "Content-Length") {
 				client._contentLenght = std::atoi(headerValue.c_str());
 			}
