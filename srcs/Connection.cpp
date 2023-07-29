@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/29 11:56:43 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/29 17:22:38 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,98 +34,6 @@ Connection::~Connection(void)
 /* ************************************************************************** */
 /*                          Public Member functions                           */
 /* ************************************************************************** */
-
-void Connection::handlePOST(Client& client)
-{
-	// Vérification si l'URI correspond à une configuration de location
-	Location *location = findLocationForUri(client._uri, client._location);
-	if (!location || !location->isMethodAllowed("POST"))
-	{
-		std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._socketFd << std::endl;
-		this->_httpResponse.sendError(client, 405);
-		return;
-	}
-	
-	// Si pas de cgiPath, on upload les données
-	if (location->getCgiPath().empty())
-	{
-		//Recuperaton du Boundary
-		std::string boundaryHeader = "Content-Type";
-		std::string boundary = client._headers.find(boundaryHeader)->second.erase(0, std::strlen("multipart/form-data; boundary="));
-		if (boundary.empty())
-		{
-			this->_httpResponse.sendError(client, 400);
-			return;
-		}
-
-		//Recuperation du filename
-		std::string 			filePartHeader = "filename=\"";
-		std::string::size_type	filePartHeaderPos = client._requestStr.str().find(filePartHeader);
-		if (filePartHeaderPos == std::string::npos)
-		{
-			this->_httpResponse.sendError(client, 400);
-			return;
-		}
-		std::string::size_type startPos = filePartHeaderPos + filePartHeader.length();
-		std::string::size_type endPos = client._requestStr.str().find("\"", startPos);
-		std::string filename = client._requestStr.str().substr(startPos, endPos - startPos);
-	
-		//Check du content-type
-		std::string contentTypeHeader = "Content-Type: ";
-		startPos = client._requestStr.str().find(contentTypeHeader, endPos);
-		if (startPos == std::string::npos)
-		{
-			this->_httpResponse.sendError(client, 400);
-			return;
-		}
-		startPos += contentTypeHeader.length();
-		endPos = client._requestStr.str().find("\r\n", startPos);
-		std::string contentType = client._requestStr.str().substr(startPos, endPos - startPos);
-		// for (std::map<std::string, std::string>::iterator it = _mimeTypes.begin(); (*it).second == contentType; it++)
-		// {
-		// 	if (it == _mimeTypes.end())
-		// 	{
-		// 		this->_httpResponse.sendError(client, 400);
-		// 		return;
-		// 	}
-		// }
-
-		// Trouver le début des données du fichier
-		std::string body(client._bodyReq.str());
-		startPos = body.find("\r\n\r\n");
-		startPos += 4;
-
-		// Trouver la fin des données du fichier
-		boundary.replace(boundary.length(), 1, "--");
-		endPos = body.find(boundary, startPos);
-		endPos -= 4;
-		if (endPos == std::string::npos)
-		{
-			this->_httpResponse.sendError(client, 400);
-			return;
-		}
-		std::string fileData = body.substr(startPos, endPos - startPos);
-
-		std::fstream outFile;
-		outFile.open(location->getRoot() + "/" + filename, std::ios::binary | std::ios::out);
-		if (outFile.is_open())
-		{
-			outFile << fileData;
-			client._bodyResp = "Successfully created file";
-			this->_httpResponse.create(client, 201, "text/html");
-			this->_httpResponse.sendResponse(client);
-		}
-		else 
-		{
-			this->_httpResponse.sendError(client, 400);
-			return;
-		}
-		outFile.close();
-	}
-	else {
-		executeCGI(client, location);
-	}
-}
 
 Location *Connection::findLocationForUri(const std::string& uri, const std::vector<Location>& locations)
 {
@@ -352,7 +260,7 @@ bool Connection::handleReponse(Client &client)
 			ret = this->getRequest(client);
 			break;
 		case POST:
-			handlePOST(client);
+			postRequest(client);
 			break;
 		case DELETE:
 			deleteRequest(client);
@@ -492,6 +400,88 @@ void Connection::deleteRequest(Client& client)
 		this->_httpResponse.create(client, 200, "text/html");
 		this->_httpResponse.sendResponse(client);
 	}
+}
+
+void Connection::postRequest(Client& client)
+{
+	Location *location = this->getLocation(client);
+	if (!location) {
+		printHttpError("POST Method Not Allowed", 405);
+		this->_httpResponse.sendError(client, 405);
+		return ;
+	}
+
+	if (!location->isMethodAllowed("POST")) {
+		printHttpError("POST Method Not Allowed", 405);
+		this->_httpResponse.sendError(client, 405);
+		return ;
+	}
+
+	if (!location->getCgiPath().empty()) {
+		executeCGI(client, location);
+		return ;
+	}
+
+	std::string request = client._requestStr.str();
+	std::string body = client._bodyReq.str();
+
+	std::string contentTypeHeader = client._headers["Content-Type"];
+	size_t boundaryPos = contentTypeHeader.find("boundary=");
+	if (boundaryPos == std::string::npos) {
+		printHttpError("Bad Request", 400);
+		this->_httpResponse.sendError(client, 400);
+		return ;
+	}
+	boundaryPos += 9;
+	std::string boundaryValue = contentTypeHeader.substr(boundaryPos);
+
+	std::size_t fileStartPos, fileEndPos;
+	fileStartPos = client._requestStr.str().find("filename=\"");
+	if (fileStartPos == std::string::npos) {
+		printHttpError("Bad Request", 400);
+		this->_httpResponse.sendError(client, 400);
+		return ;
+	}
+	fileStartPos += 10;
+	fileEndPos = client._requestStr.str().find("\"", fileStartPos);
+	std::string fileName = client._requestStr.str().substr(fileStartPos, fileEndPos - fileStartPos);
+
+	std::size_t fileTypeStartPos, fileTypEndPos;
+	fileTypeStartPos = client._requestStr.str().find("Content-Type: ", fileEndPos);
+	if (fileTypeStartPos == std::string::npos) {
+		printHttpError("Bad Request", 400);
+		this->_httpResponse.sendError(client, 400);
+		return ;
+	}
+	fileTypeStartPos += 14;
+	fileTypEndPos = client._requestStr.str().find("\r\n", fileTypeStartPos);
+	std::string contentType = client._requestStr.str().substr(fileTypeStartPos, fileTypEndPos - fileTypeStartPos);
+
+	std::size_t bodyStartPos, bodyEndPos;
+	bodyStartPos = body.find("\r\n\r\n");
+	bodyStartPos += 4;
+
+	bodyEndPos = body.find(boundaryValue + "--", bodyStartPos);
+	bodyEndPos -= 4;
+	if (bodyEndPos == std::string::npos) {
+		printHttpError("Bad Request", 400);
+		this->_httpResponse.sendError(client, 400);
+		return ;
+	}
+
+	std::string filePath = this->getAbsolutePath(client, location) + "/" + fileName;
+	std::string fileData = body.substr(bodyStartPos, bodyEndPos - bodyStartPos);
+	std::ofstream outFile(filePath, std::ios::binary);
+	if (!outFile.is_open()) {
+		printHttpError("Bad Request", 400);
+		this->_httpResponse.sendError(client, 400);
+		return ;
+	}
+	outFile << fileData;
+	client._bodyResp = "Successfully created file";
+	this->_httpResponse.create(client, 201, "text/html");
+	this->_httpResponse.sendResponse(client);
+	outFile.close();
 }
 
 /* ************************************************************************** */

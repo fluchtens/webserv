@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/28 19:12:05 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/29 13:00:21 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ class Connection
 		/// @brief Gestion de la request parse afin de generer la reponse
 		/// @param client 
 
-		void handlePOST(Client& client);
+		void postRequest(Client& client);
 
 		Location *findLocationForUri(const std::string& uri, const std::vector<Location>& locations);
 		void executeCGI(Client &client, Location *location);
