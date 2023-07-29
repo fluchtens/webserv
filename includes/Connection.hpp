@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/29 13:00:21 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/29 17:40:36 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,22 +41,6 @@ class Connection
 
 		void start(void);
 
-		//Fonctionnement coté client
-		Client *findExistingClient(const sockaddr_in& csin);
-
-		/// @brief Check si la requete client est conforme
-		/// @param request request du client a check.
-		/// @return bool true si confrome
-		bool checkRequest(char *request);
-
-		/// @brief Gestion de la request parse afin de generer la reponse
-		/// @param client 
-
-		void postRequest(Client& client);
-
-		Location *findLocationForUri(const std::string& uri, const std::vector<Location>& locations);
-		void executeCGI(Client &client, Location *location);
-
 	private :
 		std::vector<Server *> _servers;
 		std::vector<Client> _client;
@@ -79,14 +63,17 @@ class Connection
 		bool handleReponse(Client &client);
 		bool getRequest(Client& client);
 		bool getRequestLocation(Client &client);
+		void postRequest(Client& client);
 		void deleteRequest(Client& client);
+		/* CGI */
+		void executeCGI(Client &client, Location *location);
 		/* Utils */
 		void addToFdSet(int fd, fd_set &fds);
 		void checkFdStatus(void);
 		bool isAlive(Client &client, bool isAlive);
 		void closeClientSockets(void);
-		std::string getFilePath(Client &client);
-		std::string getFilePath(Client &client, Location *location);
+		std::string getIndexPath(Client &client);
+		std::string getIndexPath(Client &client, Location *location);
 		std::string getAbsolutePath(Client &client, Location *location);
 		Location *getLocation(Client &client);
 };

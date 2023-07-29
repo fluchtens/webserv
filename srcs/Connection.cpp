@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/29 17:22:38 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/29 17:42:04 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,89 +29,6 @@ Connection::~Connection(void)
 {
 	// std::cout << "Connection destructor called" << std::endl;
 	this->closeClientSockets();
-}
-
-/* ************************************************************************** */
-/*                          Public Member functions                           */
-/* ************************************************************************** */
-
-Location *Connection::findLocationForUri(const std::string& uri, const std::vector<Location>& locations)
-{
-	for (size_t i = 0; i < locations.size(); i++) {
-		if (uri.find(locations[i].getUrl()) == 0) {
-			return (const_cast<Location*>(&locations[i]));
-		}
-	}
-	return (nullptr);
-}
-
-void Connection::executeCGI(Client &client, Location *location)
-{
-	Cgi cgi(client, location);
-	char **argv = cgi.arg(client);
-	char **env = cgi.getenv();
-	//char **argv = cgi.arg(client);
-
-	int cgiInput[2];  // Pipe envoyer les données POST au script CGI
-	int cgiOutput[2]; // Pipe pour lire la sortie du script CGI
-
-	if (pipe(cgiInput) < 0 || pipe(cgiOutput) < 0)
-	{
-		this->_httpResponse.sendError(client, 500);
-		return;
-	}
-
-	pid_t pid = fork();
-	if (pid < 0)
-	{
-		this->_httpResponse.sendError(client, 500);
-		return;
-	}
-	if (pid == 0)
-	{
-		signal(SIGPIPE, signalHandler);
-		close(cgiInput[1]);
-		close(cgiOutput[0]);
-
-		dup2(cgiInput[0], STDIN_FILENO);
-		dup2(cgiOutput[1], STDOUT_FILENO);
-
-		if (execve(argv[0], argv, env) == -1)
-		{
-			this->_httpResponse.sendError(client, 500);
-			exit(EXIT_FAILURE);
-		}
-	}
-	else
-	{
-		close(cgiInput[0]);
-		close(cgiOutput[1]);
-
-		write(cgiInput[1], client._requestStr.str().c_str(), client._requestStr.str().length());
-		close(cgiInput[1]);
-
-		// Lire la sortie du script CGI depuis le pipe de sortie
-		char buffer[4096];
-		ssize_t bytesRead;
-		while ((bytesRead = read(cgiOutput[0], buffer, sizeof(buffer) - 1)) > 0)
-		{
-			buffer[bytesRead] = '\0';
-			client._bodyResp += buffer;
-		}
-		close(cgiOutput[0]);
-
-		int status;
-		waitpid(pid, &status, 0);
-
-  
-		if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-		{
-			this->_httpResponse.create(client, 200, "text/html");
-			this->_httpResponse.sendResponse(client);
-		}
-		else
-			this->_httpResponse.sendError(client, 500);
-	}
 }
 
 /* ************************************************************************** */
@@ -182,7 +99,7 @@ void Connection::traitement(void)
 			}
 		}
 
-		if (!isAlive(*it, it->_isAlive)) {
+		if (!this->isAlive(*it, it->_isAlive)) {
 			it = this->_client.erase(it);
 		}
 	}
@@ -260,10 +177,10 @@ bool Connection::handleReponse(Client &client)
 			ret = this->getRequest(client);
 			break;
 		case POST:
-			postRequest(client);
+			this->postRequest(client);
 			break;
 		case DELETE:
-			deleteRequest(client);
+			this->deleteRequest(client);
 			break;
 		default:
 			printError("Method not allowed");
@@ -286,7 +203,7 @@ bool Connection::getRequest(Client& client)
 	}
 
 	if (client._respSize == 0) {
-		client._filePath = this->getFilePath(client);
+		client._filePath = this->getIndexPath(client);
 
 		DIR *dir = opendir(client._filePath.c_str());
 		if (dir) {
@@ -329,18 +246,18 @@ bool Connection::getRequestLocation(Client &client)
 		return (false);
 	}
 
-	if (!location->getCgiPath().empty()) {
-		executeCGI(client, location);
-		return (true);
-	}
-
 	if (!location->isMethodAllowed("GET")) {
 		printHttpError("GET Method Not Allowed", 405);
 		this->_httpResponse.sendError(client, 405);
 		return (true);
 	}
 
-	std::string filePath = this->getFilePath(client, location);
+	if (!location->getCgiPath().empty()) {
+		this->executeCGI(client, location);
+		return (true);
+	}
+
+	std::string filePath = this->getIndexPath(client, location);
 	std::ifstream file(filePath);
 	if (!file.is_open()) {
 		if (location->getAutoIndex()) {
@@ -371,37 +288,6 @@ bool Connection::getRequestLocation(Client &client)
 	return (true);
 }
 
-void Connection::deleteRequest(Client& client)
-{
-	Location *location = this->getLocation(client);
-	if (!location) {
-		printHttpError("DELETE Method Not Allowed", 405);
-		this->_httpResponse.sendError(client, 405);
-		return ;
-	}
-
-	if (!location->isMethodAllowed("DELETE")) {
-		printHttpError("DELETE Method Not Allowed", 405);
-		this->_httpResponse.sendError(client, 405);
-		return ;
-	}
-
-	std::stringstream ss(client._requestStr.str());
-	std::string line, fileName;
-	while (std::getline(ss, line)) {
-		if (line.find("{\"filename\":") != std::string::npos) {
-			fileName = line.substr(13, line.length() - 13 - 2);
-		}
-	}
-
-	std::string filePath = this->getAbsolutePath(client, location) + "/" + fileName;
-	if (!std::remove(filePath.c_str())) {
-		client._bodyResp = fileName + " successfully deleted.";
-		this->_httpResponse.create(client, 200, "text/html");
-		this->_httpResponse.sendResponse(client);
-	}
-}
-
 void Connection::postRequest(Client& client)
 {
 	Location *location = this->getLocation(client);
@@ -418,7 +304,7 @@ void Connection::postRequest(Client& client)
 	}
 
 	if (!location->getCgiPath().empty()) {
-		executeCGI(client, location);
+		this->executeCGI(client, location);
 		return ;
 	}
 
@@ -484,6 +370,110 @@ void Connection::postRequest(Client& client)
 	outFile.close();
 }
 
+void Connection::deleteRequest(Client& client)
+{
+	Location *location = this->getLocation(client);
+	if (!location) {
+		printHttpError("DELETE Method Not Allowed", 405);
+		this->_httpResponse.sendError(client, 405);
+		return ;
+	}
+
+	if (!location->isMethodAllowed("DELETE")) {
+		printHttpError("DELETE Method Not Allowed", 405);
+		this->_httpResponse.sendError(client, 405);
+		return ;
+	}
+
+	std::stringstream ss(client._requestStr.str());
+	std::string line, fileName;
+	while (std::getline(ss, line)) {
+		if (line.find("{\"filename\":") != std::string::npos) {
+			fileName = line.substr(13, line.length() - 13 - 2);
+		}
+	}
+
+	std::string filePath = this->getAbsolutePath(client, location) + "/" + fileName;
+	if (!std::remove(filePath.c_str())) {
+		client._bodyResp = fileName + " successfully deleted.";
+		this->_httpResponse.create(client, 200, "text/html");
+		this->_httpResponse.sendResponse(client);
+	}
+}
+
+/* ************************************************************************** */
+/*                                     CGI                                    */
+/* ************************************************************************** */
+
+void Connection::executeCGI(Client &client, Location *location)
+{
+	Cgi cgi(client, location);
+	char **argv = cgi.arg(client);
+	char **env = cgi.getenv();
+	//char **argv = cgi.arg(client);
+
+	int cgiInput[2];  // Pipe envoyer les données POST au script CGI
+	int cgiOutput[2]; // Pipe pour lire la sortie du script CGI
+
+	if (pipe(cgiInput) < 0 || pipe(cgiOutput) < 0)
+	{
+		this->_httpResponse.sendError(client, 500);
+		return;
+	}
+
+	pid_t pid = fork();
+	if (pid < 0)
+	{
+		this->_httpResponse.sendError(client, 500);
+		return;
+	}
+	if (pid == 0)
+	{
+		signal(SIGPIPE, signalHandler);
+		close(cgiInput[1]);
+		close(cgiOutput[0]);
+
+		dup2(cgiInput[0], STDIN_FILENO);
+		dup2(cgiOutput[1], STDOUT_FILENO);
+
+		if (execve(argv[0], argv, env) == -1)
+		{
+			this->_httpResponse.sendError(client, 500);
+			exit(EXIT_FAILURE);
+		}
+	}
+	else
+	{
+		close(cgiInput[0]);
+		close(cgiOutput[1]);
+
+		write(cgiInput[1], client._requestStr.str().c_str(), client._requestStr.str().length());
+		close(cgiInput[1]);
+
+		// Lire la sortie du script CGI depuis le pipe de sortie
+		char buffer[4096];
+		ssize_t bytesRead;
+		while ((bytesRead = read(cgiOutput[0], buffer, sizeof(buffer) - 1)) > 0)
+		{
+			buffer[bytesRead] = '\0';
+			client._bodyResp += buffer;
+		}
+		close(cgiOutput[0]);
+
+		int status;
+		waitpid(pid, &status, 0);
+
+  
+		if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
+		{
+			this->_httpResponse.create(client, 200, "text/html");
+			this->_httpResponse.sendResponse(client);
+		}
+		else
+			this->_httpResponse.sendError(client, 500);
+	}
+}
+
 /* ************************************************************************** */
 /*                                    Utils                                   */
 /* ************************************************************************** */
@@ -530,7 +520,7 @@ void Connection::closeClientSockets()
 	}
 }
 
-std::string Connection::getFilePath(Client &client)
+std::string Connection::getIndexPath(Client &client)
 {
 	std::string serverRoot = client._config.getRoot();
 	std::string index = serverRoot + client._uri;
@@ -540,9 +530,9 @@ std::string Connection::getFilePath(Client &client)
 	return (index);
 }
 
-std::string Connection::getFilePath(Client &client, Location *location)
+std::string Connection::getIndexPath(Client &client, Location *location)
 {
-	std::string serverRoot = client._server.getRoot();
+	std::string serverRoot = client._config.getRoot();
 	std::string locationRoot = location->getRoot();
 	std::string index = serverRoot + locationRoot;
 	if (locationRoot != "/") {
@@ -551,14 +541,14 @@ std::string Connection::getFilePath(Client &client, Location *location)
 	if (!location->getIndex().empty()) {
 		index += location->getIndex();
 	} else {
-		index += client._server.getIndex();
+		index += client._config.getIndex();
 	}
 	return (index);
 }
 
 std::string Connection::getAbsolutePath(Client &client, Location *location)
 {
-	std::string serverRoot = client._server.getRoot();
+	std::string serverRoot = client._config.getRoot();
 	std::string locationRoot = location->getRoot();
 	std::string absolutePath = serverRoot + locationRoot;
 	if (absolutePath.back() == '/') {

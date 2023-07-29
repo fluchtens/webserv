@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/28 07:34:44 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/29 17:42:51 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void HttpResponse::createAutoIndex(Client &client, std::string path)
 	}
 
 	std::string relativePath = path;
-	std::string root = client._server.getRoot();
+	std::string root = client._config.getRoot();
 	size_t pos = relativePath.find(root);
 	if (pos == 0) {
         relativePath.erase(0, root.length());
