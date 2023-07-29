@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/29 11:44:58 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/29 11:56:43 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -465,16 +465,15 @@ bool Connection::getRequestLocation(Client &client)
 
 void Connection::deleteRequest(Client& client)
 {
-	std::cout << "uri: " << client._uri << std::endl;
 	Location *location = this->getLocation(client);
 	if (!location) {
-		printHttpError("DELETE Method Not Allowed 1", 405);
+		printHttpError("DELETE Method Not Allowed", 405);
 		this->_httpResponse.sendError(client, 405);
 		return ;
 	}
 
 	if (!location->isMethodAllowed("DELETE")) {
-		printHttpError("DELETE Method Not Allowed 2", 405);
+		printHttpError("DELETE Method Not Allowed", 405);
 		this->_httpResponse.sendError(client, 405);
 		return ;
 	}
