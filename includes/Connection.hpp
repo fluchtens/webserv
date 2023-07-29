@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 13:32:23 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/28 19:12:05 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ class Connection
 		/// @param client 
 
 		void handlePOST(Client& client);
-		void handleDELETE(Client& client);
 
 		Location *findLocationForUri(const std::string& uri, const std::vector<Location>& locations);
 		void executeCGI(Client &client, Location *location);
@@ -80,6 +79,7 @@ class Connection
 		bool handleReponse(Client &client);
 		bool getRequest(Client& client);
 		bool getRequestLocation(Client &client);
+		void deleteRequest(Client& client);
 		/* Utils */
 		void addToFdSet(int fd, fd_set &fds);
 		void checkFdStatus(void);

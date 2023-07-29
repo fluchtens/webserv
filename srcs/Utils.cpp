@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/28 15:58:23 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/29 11:01:35 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,10 @@ void deleteServers(void)
 	}
 	std::remove("http_request_logs.txt");
 	std::remove("http_response_logs.txt");
-	std::system("rm -rf ./assets/base/tmp/");
+	for (int i = 1; i <= 3; i++) {
+		std::string filePath = "./assets/base/file" + std::to_string(i) + ".txt";
+		std::remove(filePath.c_str());
+	}
 }
 
 bool isValidInputArgs(int ac, char **av, std::string &cfgFilePath)
@@ -124,11 +127,8 @@ unsigned int countServerBlock(std::ifstream &config_file)
 
 void createTempDeleteFiles(void)
 {
-	std::string folderPath = "./assets/base/tmp/";
-	mkdir(folderPath.c_str(), 0777);
-
-	for (int i = 1; i <= 5; i++) {
-		std::string filePath = folderPath + "file" + std::to_string(i) + ".txt";
+	for (int i = 1; i <= 3; i++) {
+		std::string filePath = "./assets/base/file" + std::to_string(i) + ".txt";
 		std::string fileContent = "Content of file" + std::to_string(i) + ".txt\n";
 		std::ofstream file(filePath);
 		if (file.is_open()) {

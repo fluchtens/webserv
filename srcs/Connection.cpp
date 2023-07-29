@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/28 10:35:51 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/07/29 11:44:58 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,38 +135,6 @@ Location *Connection::findLocationForUri(const std::string& uri, const std::vect
 		}
 	}
 	return (nullptr);
-}
-
-void Connection::handleDELETE(Client& client)
-{
-	// Vérification si l'URI correspond à une configuration de location
-	std::cout << "uri: " << client._uri << std::endl;
-	Location *location = findLocationForUri(client._uri, client._location);
-	if (!location || !location->isMethodAllowed("DELETE"))
-	{
-		std::cerr << "\033[0;31mError : 405 Method Not Allowed from client:\033[0m " << client._socketFd << std::endl;
-		this->_httpResponse.sendError(client, 405);
-		return;
-	}
-
-	//On recupere le nom du fichier dans la rquete
-	std::istringstream	requestStream(client._requestStr.str());
-	std::string			fileName;
-	std::string			line;
-	while (std::getline(requestStream, line))
-	{
-		size_t separator = line.find("\"file\":");
-		if (separator != std::string::npos)
-			fileName = line.substr(separator + 8, line.size() - 11);
-	}
-	
-	//On supprime le fichier
-	if (!(std::remove((location->getRoot() + "/" + fileName).c_str())))
-	{
-		client._bodyResp = fileName + " deleted";
-		this->_httpResponse.create(client, 200, "text/html");
-		this->_httpResponse.sendResponse(client);
-	}
 }
 
 void Connection::executeCGI(Client &client, Location *location)
@@ -387,7 +355,7 @@ bool Connection::handleReponse(Client &client)
 			handlePOST(client);
 			break;
 		case DELETE:
-			handleDELETE(client);
+			deleteRequest(client);
 			break;
 		default:
 			printError("Method not allowed");
@@ -493,6 +461,38 @@ bool Connection::getRequestLocation(Client &client)
 	}
 	file.close();
 	return (true);
+}
+
+void Connection::deleteRequest(Client& client)
+{
+	std::cout << "uri: " << client._uri << std::endl;
+	Location *location = this->getLocation(client);
+	if (!location) {
+		printHttpError("DELETE Method Not Allowed 1", 405);
+		this->_httpResponse.sendError(client, 405);
+		return ;
+	}
+
+	if (!location->isMethodAllowed("DELETE")) {
+		printHttpError("DELETE Method Not Allowed 2", 405);
+		this->_httpResponse.sendError(client, 405);
+		return ;
+	}
+
+	std::stringstream ss(client._requestStr.str());
+	std::string line, fileName;
+	while (std::getline(ss, line)) {
+		if (line.find("{\"filename\":") != std::string::npos) {
+			fileName = line.substr(13, line.length() - 13 - 2);
+		}
+	}
+
+	std::string filePath = this->getAbsolutePath(client, location) + "/" + fileName;
+	if (!std::remove(filePath.c_str())) {
+		client._bodyResp = fileName + " successfully deleted.";
+		this->_httpResponse.create(client, 200, "text/html");
+		this->_httpResponse.sendResponse(client);
+	}
 }
 
 /* ************************************************************************** */
