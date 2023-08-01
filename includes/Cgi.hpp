@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 10:08:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/01 11:36:33 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/01 14:30:43 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ class Cgi
 		Cgi(Client &client, Location *location);
 		~Cgi(void);
 
-		char **arg(Client &client);
-		char **getenv() const;
+		char **getArgs(void);
+		char **getEnv(void);
 
 	private:
 		std::string _cgiScript;

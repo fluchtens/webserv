@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/29 17:42:04 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/01 14:30:19 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -408,9 +408,9 @@ void Connection::deleteRequest(Client& client)
 void Connection::executeCGI(Client &client, Location *location)
 {
 	Cgi cgi(client, location);
-	char **argv = cgi.arg(client);
-	char **env = cgi.getenv();
-	//char **argv = cgi.arg(client);
+
+	char **av = cgi.getArgs();
+	char **env = cgi.getEnv();
 
 	int cgiInput[2];  // Pipe envoyer les données POST au script CGI
 	int cgiOutput[2]; // Pipe pour lire la sortie du script CGI
@@ -436,7 +436,7 @@ void Connection::executeCGI(Client &client, Location *location)
 		dup2(cgiInput[0], STDIN_FILENO);
 		dup2(cgiOutput[1], STDOUT_FILENO);
 
-		if (execve(argv[0], argv, env) == -1)
+		if (execve(av[0], av, env) == -1)
 		{
 			this->_httpResponse.sendError(client, 500);
 			exit(EXIT_FAILURE);
