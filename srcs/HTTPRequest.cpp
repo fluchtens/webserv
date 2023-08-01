@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 10:28:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/29 15:48:37 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/01 11:32:25 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,17 +65,6 @@ void HttpRequest::parseRequestLine(Client &client, std::stringstream &requestStr
 	}
 }
 
-void ceciestuntestpasouf(Client &client, std::string headerValue)
-{
-	std::size_t separatorPos = headerValue.find(':');
-	if (separatorPos != std::string::npos) {
-		return ;
-	};
-	if (headerValue != client._config.getServerName()) {
-		client._validHost = false;
-	}
-}
-
 void HttpRequest::parseRequestHeader(Client &client, std::stringstream &requestStream)
 {
 	std::string line;
@@ -87,7 +76,7 @@ void HttpRequest::parseRequestHeader(Client &client, std::stringstream &requestS
 			std::string headerValue = line.substr(separatorPos + 2);
 			headerValue = line.substr(separatorPos + 2, headerValue.length() - 1);
 			if (headerName == "Host") {
-				ceciestuntestpasouf(client, headerValue);
+				this->checkIsValidHost(client, headerValue);
 			}
 			if (headerName == "Content-Length") {
 				client._contentLenght = std::atoi(headerValue.c_str());
@@ -121,4 +110,19 @@ void HttpRequest::parse(Client &client)
 	}
 	logfile << client._requestStr.str();
     logfile.close();
+}
+
+/* ************************************************************************** */
+/*                                    Utils                                   */
+/* ************************************************************************** */
+
+void HttpRequest::checkIsValidHost(Client &client, std::string headerValue)
+{
+	std::size_t separatorPos = headerValue.find(':');
+	if (separatorPos != std::string::npos) {
+		return ;
+	};
+	if (headerValue != client._config.getServerName()) {
+		client._validHost = false;
+	}
 }

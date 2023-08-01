@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/29 17:28:04 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/01 09:33:45 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 #include "Server.hpp"
 #include "WebServ.hpp"
 
-char **_env;
 WebServ ws;
 
 int main(int ac, char **av, char **env)
@@ -41,9 +40,9 @@ int main(int ac, char **av, char **env)
 		return (1);
 	}
 
-	_env = env;
 	signal(SIGINT, signalHandler);
 	signal(SIGQUIT, SIG_IGN);
+	ws.env = env;
 
 	try {
 		for (int i = 0; i < serverBlockCount; i++) {

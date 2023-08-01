@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:42:51 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/28 15:45:55 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/01 09:33:28 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <vector>
 # include "WebServ.hpp"
 
-extern char **_env;
 extern WebServ ws;
 
 /* Errors */

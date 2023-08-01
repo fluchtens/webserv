@@ -6,15 +6,14 @@
 #    By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/16 16:17:24 by fluchten          #+#    #+#              #
-#    Updated: 2023/07/26 08:41:49 by fluchten         ###   ########.fr        #
+#    Updated: 2023/08/01 10:09:29 by fluchten         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = webserv
 
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98 #${FSANITIZE}
-FSANITIZE = -fsanitize=address -g
+CFLAGS = -Wall -Wextra -Werror -std=c++98 #-fsanitize=address -g
 RM = rm -rf
 
 INCS_DIR = includes
@@ -24,7 +23,8 @@ OBJS_DIR = objs
 INCS_DIRS = $(shell find $(INCS_DIR) -type d)
 INCS = $(addprefix -I, $(INCS_DIRS))
 
-SRCS =	Client.cpp \
+SRCS =	Cgi.cpp \
+		Client.cpp \
 		Connection.cpp \
 		HTTPRequest.cpp \
 		HTTPResponse.cpp \
@@ -33,8 +33,7 @@ SRCS =	Client.cpp \
 		MimeTypes.cpp \
 		Parser.cpp \
 		Server.cpp \
-		Utils.cpp \
-		temp/Cgi.cpp
+		Utils.cpp
 
 OBJS = $(addprefix ${OBJS_DIR}/, ${SRCS:%.cpp=%.o})
 
@@ -42,7 +41,7 @@ all: ${NAME}
 
 ${OBJS_DIR}/%.o: ${SRCS_DIR}/%.cpp
 	@mkdir -p ${@D}
-	${CC} ${CFLAGS} ${INCS} -c $< -o $@
+	${CC} ${CFLAGS} ${INCS} -I srcs -c $< -o $@
 
 ${NAME}: ${OBJS}
 	${CC} ${CFLAGS} ${OBJS} -o ${NAME}
@@ -56,3 +55,5 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
+
+# .SILENT:

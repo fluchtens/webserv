@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/26 08:54:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/26 09:12:55 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/01 11:31:52 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class HttpRequest
 	private :
 		void parseRequestLine(Client &client, std::stringstream &requestStream);
 		void parseRequestHeader(Client &client, std::stringstream &requestStream);
+		void checkIsValidHost(Client &client, std::string headerValue);
 };
 
 #endif

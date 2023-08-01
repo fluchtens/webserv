@@ -1,30 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   WebServ.hpp                                        :+:      :+:    :+:   */
+/*   Cgi.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/25 07:56:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/01 09:16:01 by fluchten         ###   ########.fr       */
+/*   Created: 2023/08/01 10:08:02 by fluchten          #+#    #+#             */
+/*   Updated: 2023/08/01 11:36:33 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef WEBSERV_HPP
-# define WEBSERV_HPP
+#ifndef CGI_HPP
+#define CGI_HPP
 
-# include "Parser.hpp"
-# include "Server.hpp"
+# include "Client.hpp"
 # include "Connection.hpp"
+# include "WebServ.hpp"
 
-class Connection;
-
-struct WebServ
+class Cgi
 {
-	std::vector<Parser *> configs;
-	std::vector<Server *> servers;
-	Connection *connection;
-	char **env;
+	public:
+		Cgi(Client &client, Location *location);
+		~Cgi(void);
+
+		char **arg(Client &client);
+		char **getenv() const;
+
+	private:
+		std::string _cgiScript;
+		std::string _cgiPath;
+		std::map<std::string, std::string> _envCgi;
 };
+
+std::ostream &operator<<(std::ostream &o, const Cgi &rhs);
 
 #endif
