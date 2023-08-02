@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/29 17:42:51 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/02 20:30:39 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,12 +155,14 @@ void HttpResponse::sendError(Client &client, int errorCode)
 	htmlContent += "</head>\r\n";
 	htmlContent += "<body>\r\n";
 
+	bool invalidFile = false;
 	errorPagePath = client._config.getErrorPage(errorCode);
 	if (errorPagePath.empty()) {
 		htmlContent += "\t<center><h1>" + std::to_string(errorCode) + " " + errorMessage + "</h1></center>\r\n";
 	} else {
 		std::ifstream file(client._config.getRoot() + errorPagePath);
 		if (!file.is_open()) {
+			invalidFile = true;
 			htmlContent += "\t<center><h1>" + std::to_string(errorCode) + " " + errorMessage + "</h1></center>\r\n";
 		} else {
 			std::string line;
@@ -179,7 +181,7 @@ void HttpResponse::sendError(Client &client, int errorCode)
 
 	response = "HTTP/1.1 " + std::to_string(errorCode) + " " + errorMessage + "\r\n";
 	response += "Content-Type: text/html\r\n";
-	if (errorPagePath.empty()) {
+	if (errorPagePath.empty() || invalidFile) {
 		response += "Content-Length: " + std::to_string(htmlContent.length()) + "\r\n\r\n";
 		response += htmlContent;
 	} else {
