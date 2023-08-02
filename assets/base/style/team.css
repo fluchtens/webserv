@@ -1,0 +1,11 @@
+main h1 {
+	text-align: center;
+}
+
+main div {
+	text-align: center;
+}
+
+main div img {
+	max-width: 50%;
+}
