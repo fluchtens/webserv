@@ -1,0 +1,44 @@
+#oopss {
+	position: fixed;
+	left: 0px;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	line-height: 1.5em;
+	z-index: 9999;
+}
+
+#oopss #error-text {
+	font-size: 40px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-family: 'Shabnam', Tahoma, sans-serif;
+	color: #d9dae2;
+}
+
+#oopss #error-text img {
+	margin: 85px auto 20px;
+	height: 342px;
+}
+
+#oopss #error-text p {
+	position: relative;
+	font-size: 3.3em;
+	font-weight: 900;
+	margin-top: 50px;
+}
+  
+@font-face {
+	font-family: Shabnam;
+	src: url("https://cdn.rawgit.com/ahmedhosna95/upload/ba6564f8/fonts/Shabnam/Shabnam-Bold.eot");
+	src: url("https://cdn.rawgit.com/ahmedhosna95/upload/ba6564f8/fonts/Shabnam/Shabnam-Bold.eot?#iefix") format("embedded-opentype"), url("https://cdn.rawgit.com/ahmedhosna95/upload/ba6564f8/fonts/Shabnam/Shabnam-Bold.woff") format("woff"), url("https://cdn.rawgit.com/ahmedhosna95/upload/ba6564f8/fonts/Shabnam/Shabnam-Bold.woff2") format("woff2"), url("https://cdn.rawgit.com/ahmedhosna95/upload/ba6564f8/fonts/Shabnam/Shabnam-Bold.ttf") format("truetype");
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: Shabnam;
+	src: url("https://cdn.rawgit.com/ahmedhosna95/upload/ba6564f8/fonts/Shabnam/Shabnam.eot");
+	src: url("https://cdn.rawgit.com/ahmedhosna95/upload/ba6564f8/fonts/Shabnam/Shabnam.eot?#iefix") format("embedded-opentype"), url("https://cdn.rawgit.com/ahmedhosna95/upload/ba6564f8/fonts/Shabnam/Shabnam.woff") format("woff"), url("https://cdn.rawgit.com/ahmedhosna95/upload/ba6564f8/fonts/Shabnam/Shabnam.woff2") format("woff2"), url("https://cdn.rawgit.com/ahmedhosna95/upload/ba6564f8/fonts/Shabnam/Shabnam.ttf") format("truetype");
+	font-weight: normal;
+}

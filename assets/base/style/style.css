@@ -3,7 +3,7 @@ body {
 	background-color: #24273f;
 }
 
-.nav_bar {
+.header {
 	background-color: #161931;
 	height : 60px;
 	display: flex;
@@ -40,6 +40,12 @@ body {
     text-decoration: none;
     font-size: 17px;
     margin-right: 20px;
+}
+
+.main_title {
+	color: #d9dae2;
+	font-family: "Ubuntu", sans-serif;
+	font-size: 50px;
 }
 
 .footer {
