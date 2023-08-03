@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 13:50:59 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/03 11:23:07 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,41 +64,6 @@ const int &Server::getSocket(void) const
 Server &Server::getServer(void)
 {
 	return (*this);
-}
-
-const int &Server::getPort(void) const
-{
-	return (this->_cfg->getPort());
-}
-
-const std::string &Server::getHost(void) const
-{
-	return (this->_cfg->getHost());
-}
-
-const std::string &Server::getServerName(void) const
-{
-	return (this->_cfg->getServerName());
-}
-
-const std::string &Server::getRoot(void) const
-{
-	return (this->_cfg->getRoot());
-}
-
-const std::string &Server::getIndex(void) const
-{
-	return (this->_cfg->getIndex());
-}
-
-const std::string Server::getErrorPage(int code) const
-{
-	return (this->_cfg->getErrorPage(code));
-}
-
-size_t Server::getNbrLocation(void) const
-{
-	return (this->_cfg->getNbrLocation());
 }
 
 Parser &Server::getConfig(void)

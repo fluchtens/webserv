@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 13:50:27 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/03 11:23:09 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,6 @@ class Server
 
 		const int &getSocket(void) const;
 		Server &getServer(void);
-		const std::string &getHost(void) const;
-		const int &getPort(void) const;
-		const std::string &getServerName(void) const;
-		const std::string &getRoot(void) const;
-		const std::string &getIndex(void) const;
-		const std::string getErrorPage(int code) const;
-		size_t getNbrLocation(void) const;
 		Parser &getConfig(void);
 		std::vector<Location> &getLocation(void);
 
