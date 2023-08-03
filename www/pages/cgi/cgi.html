@@ -27,12 +27,12 @@
 	</header>
 
 	<main>
-		<div class="cgi">
+		<div class="weather">
 			<h1>CGI GET</h1>
-			<form action="/cgi_get" method="get">
-				<label for="login">Enter your login:</label>
-				<input type="text" class="login" id="login" name="login"><br><br>
-				<input type="submit" value="Start" class="envoyer">
+			<form action="/cgi_weather" method="get">
+				<label for="city">Enter the name of a city to obtain its weather forecast:</label>
+				<input type="text" name="city"><br><br>
+				<input type="submit" value="Start">
 			</form>
 		</div>
 	</main>

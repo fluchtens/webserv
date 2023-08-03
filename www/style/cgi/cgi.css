@@ -7,32 +7,32 @@ main {
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.cgi h1 {
+.weather h1 {
 	color: #333;
 	font-family: "Ubuntu", sans-serif;
 	font-size: 35px;
 	text-align: center;
 }
 
-.cgi form {
+.weather form {
 	display: flex;
 	flex-direction: column;
 }
 
-.cgi label {
+.weather label {
 	color: #555;
 	font-family: "Ubuntu", sans-serif;
 	margin-bottom: 10px;
 	font-weight: bold;
 }
 
-.cgi input[type="text"] {
+.weather input[type="text"] {
 	font-family: "Ubuntu", sans-serif;
 	padding: 5px;
 	margin-bottom: 10px;
 }
 
-.cgi input[type="submit"] {
+.weather input[type="submit"] {
 	background-color: #8c49e3;
 	color: #fff;
 	font-family: "Ubuntu", sans-serif;
@@ -43,6 +43,6 @@ main {
 	transition: background-color 0.2s ease;
 }
 
-.cgi input[type="submit"]:hover {
+.weather input[type="submit"]:hover {
 	background-color: #44406d;
 }

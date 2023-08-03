@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/03 11:14:10 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/03 20:10:07 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,11 +143,6 @@ bool Connection::parseClientRequest(Client &client)
 			this->_httpResponse.sendError(client, 403);
 			return (false);
 		}
-		// if (client._bodyReq.str().size() > 300) {
-		// 	printError("Request size exceeds the limit");
-		// 	this->_httpResponse.sendError(client, 413);
-		// 	return (false);
-		// }
 		if (client._method != POST) {
 			return (true);
 		}
@@ -460,6 +455,7 @@ void Connection::executeCGI(Client &client, Location *location)
 			client._bodyResp.append(buffer, readBytes);
 		}
 		close(cgiOutput[0]);
+		std::cout << client._bodyResp << std::endl;
 
 		int status;
 		waitpid(pid, &status, 0);
