@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:13:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/03 11:06:53 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/03 11:33:44 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,7 @@ class Parser
 		const int &getMaxBodySize(void) const;
 		const std::string getErrorPages(void) const;
 		const std::string getErrorPage(int code) const;
-
-		std::string getLocationUrl(size_t size) const;
-		std::vector<std::string> getLocationAllow(std::string url) const;
-		std::string getLocationRoot(std::string url) const;
-		std::string getLocationIndex(std::string url) const;
-		std::string getLocationPath(std::string url) const;
-		bool getLocationAutoIndex(std::string url) const;
-		std::string getLocationReturn(std::string url) const;
-		std::vector<Location> &getLocation();
-		size_t getNbrLocation() const;
+		std::vector<Location> &getLocation(void);
 
 	private:
 		int _port;
@@ -55,7 +46,6 @@ class Parser
 		int _maxBodySize;
 		std::map<int, std::string> _errorPage;
 		std::vector<Location> _location;
-		size_t _nbrLocation;
 
 		void parseCfgFile(std::ifstream &cfgFile);
 		void parsePort(const std::string &port);

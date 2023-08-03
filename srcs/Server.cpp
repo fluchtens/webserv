@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 17:36:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/03 11:23:07 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/03 11:35:13 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,10 @@
 /*                               Canonical form                               */
 /* ************************************************************************** */
 
-Server::Server(Parser *server) : _cfg(server), _location(_cfg->getLocation())
+Server::Server(Parser *config) : _cfg(config), _location(_cfg->getLocation())
 {
 	// std::cout << "Server constructor called" << std::endl;
 	this->_maxConnection = 100;
-	this->_nbrLocation = this->_cfg->getNbrLocation();
 	this->creatSocket();
 	this->configSocket();
 	this->bindSocket();
@@ -42,7 +41,6 @@ Server &Server::operator=(const Server &rhs)
 		this->_serverFd = rhs._serverFd;
 		this->_address = rhs._address;
 		this->_location = rhs._location;
-		this->_nbrLocation = rhs._nbrLocation;
 	}
 	return (*this);
 }

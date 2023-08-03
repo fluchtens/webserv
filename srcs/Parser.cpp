@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/03 11:07:08 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/03 11:34:23 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ Parser::Parser(std::ifstream &cfgFile)
 	this->_maxBodySize = -1;
 	this->_errorPage.clear();
 	this->_location.clear();
-	this->_nbrLocation = 0;
 	this->parseCfgFile(cfgFile);
 	this->hasAllInfos();
 	this->printParsing();
@@ -250,7 +249,6 @@ void Parser::parseLocation(std::ifstream &cfgFile, const std::string &url)
 	{
 		std::vector<Location>::const_iterator it = _location.end();
 		_location.insert(it, tmp);
-		_nbrLocation += 1;
 	}
 }
 
@@ -352,76 +350,6 @@ const std::string Parser::getErrorPage(int code) const
 		return (it->second);
 	}
 	return ("");
-}
-
-std::string	Parser::getLocationUrl(size_t pos) const
-{
-	if (pos >= _location.size())
-	{
-		std::cerr << "\033[1;31mgetLocationUrl : Bad size !\033[0m" << std::endl;
-		exit (-4);
-	} 
-	return (_location[pos].getUrl());
-}
-
-std::vector<std::string>	Parser::getLocationAllow(std::string url) const
-{
-	for(std::vector<Location>::const_iterator it = _location.begin(); it != _location.end(); it++)
-	{
-		if(it->getUrl() == url)
-			return (it->getAllow());
-	}
-	std::cerr << "\033[1;31mgetLocationAllow : url don't exist ! \033[0m" << std::endl;
-	exit (-3);
-}
-
-std::string	Parser::getLocationRoot(std::string url) const
-{
-	for(std::vector<Location>::const_iterator it = _location.begin(); it != _location.end(); it++)
-	{
-		if(it->getUrl() == url)
-			return (it->getRoot());
-	}
-	std::cerr << "\033[1;31mgetLocationRoot : url don't exist ! \033[0m" << std::endl;
-	exit (-3);
-}
-
-std::string	Parser::getLocationIndex(std::string url) const
-{
-	for(std::vector<Location>::const_iterator it = _location.begin(); it != _location.end(); it++)
-	{
-		if(it->getUrl() == url)
-			return (it->getIndex());
-	}
-	std::cerr << "\033[1;31mgetLocationIndex : url don't exist ! \033[0m" << std::endl;
-	exit (-3);
-}
-
-bool	Parser::getLocationAutoIndex(std::string url) const
-{
-	for(std::vector<Location>::const_iterator it = _location.begin(); it != _location.end(); it++)
-	{
-		if(it->getUrl() == url)
-			return (it->getAutoIndex());
-	}
-	std::cerr << "\033[1;31mgetLocationIndex : url don't exist ! \033[0m" << std::endl;
-	exit (-3);
-}
-
-std::string	Parser::getLocationReturn(std::string url) const
-{
-	for(std::vector<Location>::const_iterator it = _location.begin(); it != _location.end(); it++)
-	{
-		if(it->getUrl() == url)
-			return (it->getReturn());
-	}
-	std::cerr << "\033[1;31mgetLocationReturn : url don't exist ! \033[0m" << std::endl;
-	exit (-3);
-}
-
-size_t	Parser::getNbrLocation(void) const
-{
-	return (this->_nbrLocation);
 }
 
 std::vector<Location> &Parser::getLocation(void)
