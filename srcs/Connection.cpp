@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/02 13:21:30 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/03 10:52:43 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,18 +130,11 @@ bool Connection::parseClientRequest(Client &client)
 		return (false);
 	}
 
-	if (readBytes > maxReadBytes) {
-		printError("Request size exceeds the limit");
-		this->_httpResponse.sendError(client, 413);
-		return (false);
-	}
-
 	if (client._contentLenght == 0 && client._requestStr.str().empty() == 0) {
 		client._requestStr.str(std::string());
 		client._bodyReq.str(std::string());
 	}
 
-	// std::cout << CLR_BLUEB << buffer << CLR_RESET << std::endl;
 	client._requestStr.write(buffer, readBytes);
 	if (client._contentLenght == 0) {
 		this->_httpRequest.parse(client);
@@ -150,6 +143,11 @@ bool Connection::parseClientRequest(Client &client)
 			this->_httpResponse.sendError(client, 403);
 			return (false);
 		}
+		// if (client._bodyReq.str().size() > 300) {
+		// 	printError("Request size exceeds the limit");
+		// 	this->_httpResponse.sendError(client, 413);
+		// 	return (false);
+		// }
 		if (client._method != POST) {
 			return (true);
 		}
@@ -308,6 +306,13 @@ void Connection::postRequest(Client& client)
 		return ;
 	}
 
+	std::cout << client._bodySize << std::endl;
+	if (client._bodySize > 2048576) {
+		printError("Request size exceeds the limit");
+		this->_httpResponse.sendError(client, 413);
+		return ;
+	}
+
 	std::string request = client._requestStr.str();
 	std::string body = client._bodyReq.str();
 
@@ -322,26 +327,26 @@ void Connection::postRequest(Client& client)
 	std::string boundaryValue = contentTypeHeader.substr(boundaryPos);
 
 	std::size_t fileStartPos, fileEndPos;
-	fileStartPos = client._requestStr.str().find("filename=\"");
+	fileStartPos = request.find("filename=\"");
 	if (fileStartPos == std::string::npos) {
 		printHttpError("Bad Request", 400);
 		this->_httpResponse.sendError(client, 400);
 		return ;
 	}
 	fileStartPos += 10;
-	fileEndPos = client._requestStr.str().find("\"", fileStartPos);
-	std::string fileName = client._requestStr.str().substr(fileStartPos, fileEndPos - fileStartPos);
+	fileEndPos = request.find("\"", fileStartPos);
+	std::string fileName = request.substr(fileStartPos, fileEndPos - fileStartPos);
 
 	std::size_t fileTypeStartPos, fileTypEndPos;
-	fileTypeStartPos = client._requestStr.str().find("Content-Type: ", fileEndPos);
+	fileTypeStartPos = request.find("Content-Type: ", fileEndPos);
 	if (fileTypeStartPos == std::string::npos) {
 		printHttpError("Bad Request", 400);
 		this->_httpResponse.sendError(client, 400);
 		return ;
 	}
 	fileTypeStartPos += 14;
-	fileTypEndPos = client._requestStr.str().find("\r\n", fileTypeStartPos);
-	std::string contentType = client._requestStr.str().substr(fileTypeStartPos, fileTypEndPos - fileTypeStartPos);
+	fileTypEndPos = request.find("\r\n", fileTypeStartPos);
+	std::string contentType = request.substr(fileTypeStartPos, fileTypEndPos - fileTypeStartPos);
 
 	std::size_t bodyStartPos, bodyEndPos;
 	bodyStartPos = body.find("\r\n\r\n");
@@ -568,5 +573,5 @@ Location *Connection::getLocation(Client &client)
 			return &(client._location[i]);
 		}
 	}
-	return (nullptr);
+	return (NULL);
 }

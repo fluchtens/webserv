@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 10:07:53 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/01 14:31:26 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/03 10:00:58 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,9 @@ Cgi::Cgi(Client &client, Location *location)
 		}
 	}
 	else if (client._method == GET) {
-		this->_envCgi["QUERY_STRING"] = client._query.substr(1, client._query.size());
+		if (!client._query.empty()) {
+			this->_envCgi["QUERY_STRING"] = client._query.substr(1, client._query.size());
+		}
 		this->_envCgi["REQUEST_METHOD"] = "GET";
 	}
 	this->_envCgi["PATH_INFO"] = this->_cgiScript;
@@ -70,7 +72,7 @@ char **Cgi::getArgs(void)
 	av[1] = new char[this->_cgiScript.size() + 1];
 	std::strcpy(av[1], this->_cgiScript.c_str());
 
-	av[2] = nullptr;
+	av[2] = NULL;
 	return (av);
 }
 
@@ -87,6 +89,6 @@ char **Cgi::getEnv(void)
 		it++;
 		i++;
 	}
-	env[i] = nullptr;
+	env[i] = NULL;
 	return (env);
 }
