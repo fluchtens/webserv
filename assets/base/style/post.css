@@ -1,0 +1,47 @@
+main {
+	max-width: 600px;
+	margin: 100px auto;
+	padding: 20px;
+	background-color: #d9dae2;
+	border-radius: 5px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.upload h1 {
+	color: #333;
+	font-family: "Ubuntu", sans-serif;
+	font-size: 35px;
+	text-align: center;
+}
+
+.upload form {
+	display: flex;
+	flex-direction: column;
+}
+
+.upload label {
+	color: #555;
+	font-family: "Ubuntu", sans-serif;
+	margin-bottom: 10px;
+	font-weight: bold;
+}
+
+.upload input[type="file"] {
+	font-family: "Ubuntu", sans-serif;
+	margin-bottom: 15px;
+}
+
+.upload input[type="submit"] {
+	background-color: #8c49e3;
+	color: #fff;
+	font-family: "Ubuntu", sans-serif;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.upload input[type="submit"]:hover {
+	background-color: #44406d;
+}
