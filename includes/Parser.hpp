@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/03 10:13:09 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 13:44:20 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/03 11:06:53 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class Parser
 		const std::string &getServerName(void) const;
 		const std::string &getRoot(void) const;
 		const std::string &getIndex(void) const;
+		const int &getMaxBodySize(void) const;
 		const std::string getErrorPages(void) const;
 		const std::string getErrorPage(int code) const;
 
@@ -51,6 +52,7 @@ class Parser
 		std::string _serverName;
 		std::string _root;
 		std::string _index;
+		int _maxBodySize;
 		std::map<int, std::string> _errorPage;
 		std::vector<Location> _location;
 		size_t _nbrLocation;
@@ -61,6 +63,7 @@ class Parser
 		void parseServerName(const std::string &serverName);
 		void parseRoot(const std::string &root);
 		void parseIndex(const std::string &index);
+		void parseMaxBodySize(const std::string &maxBoySize);
 		void parseErrorPage(const std::string &error, const std::string &page);
 		void parseLocation(std::ifstream &cfgFile, const std::string &url);
 

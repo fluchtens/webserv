@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 13:46:45 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/03 11:07:08 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Parser::Parser(std::ifstream &cfgFile)
 	this->_serverName = "default_name";
 	this->_root = "";
 	this->_index = "";
+	this->_maxBodySize = -1;
 	this->_errorPage.clear();
 	this->_location.clear();
 	this->_nbrLocation = 0;
@@ -106,6 +107,9 @@ void Parser::parseCfgFile(std::ifstream &cfgFile)
 			}
 			else if (key == "index") {
 				this->parseIndex(tmp);
+			}
+			else if (key == "max_body_size") {
+				this->parseMaxBodySize(tmp);
 			}
 			else if (key == "error_page") {
 				std::string path;
@@ -197,6 +201,24 @@ void Parser::parseIndex(const std::string &index)
 	this->_index = index;
 }
 
+void Parser::parseMaxBodySize(const std::string &maxBoySize)
+{
+	if (this->_maxBodySize != -1) {
+		throw (std::runtime_error("duplicate max_body_size key"));
+	}
+	for (size_t i = 0; i < maxBoySize.length(); i++) {
+		if (!std::isdigit(maxBoySize[i])) {
+			throw (std::runtime_error("max body size contains non-digital characters"));
+		}
+	}
+	std::stringstream ss(maxBoySize);
+	unsigned int nb;
+	ss >> nb;
+	if (ss.fail())
+		throw (std::runtime_error("invalid max body size number"));
+	this->_maxBodySize = nb;
+}
+
 void Parser::parseErrorPage(const std::string &error, const std::string &page)
 {
 	for (size_t i = 0; i < error.length(); i++) {
@@ -241,11 +263,13 @@ void Parser::hasAllInfos(void)
 	if (this->_host.empty())
 		missingInfo += "host ";
 	if (this->_serverName.empty())
-		missingInfo += "serverName ";
+		missingInfo += "server_name ";
 	if (this->_root.empty())
 		missingInfo += "root ";
 	if (this->_index.empty())
 		missingInfo += "index ";
+	if (this->_maxBodySize < 0)
+		missingInfo += "max_body_size ";
 	missingInfo = this->strTrimWhiteSpaces(missingInfo);
 	if (!missingInfo.empty()) {
 		throw (std::runtime_error("server missing information (" + missingInfo + ")"));
@@ -299,6 +323,11 @@ const std::string &Parser::getRoot(void) const
 const std::string &Parser::getIndex(void) const
 {
 	return (this->_index);
+}
+
+const int &Parser::getMaxBodySize(void) const
+{
+	return (this->_maxBodySize);
 }
 
 const std::string Parser::getErrorPages(void) const

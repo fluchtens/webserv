@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/03 10:52:43 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/03 11:14:10 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,8 +306,7 @@ void Connection::postRequest(Client& client)
 		return ;
 	}
 
-	std::cout << client._bodySize << std::endl;
-	if (client._bodySize > 2048576) {
+	if (client._bodySize > client._config.getMaxBodySize()) {
 		printError("Request size exceeds the limit");
 		this->_httpResponse.sendError(client, 413);
 		return ;
