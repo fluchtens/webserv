@@ -42,29 +42,30 @@ body {
     margin-right: 20px;
 }
 
-.main_title {
+.title {
 	color: #d9dae2;
 	font-family: "Ubuntu", sans-serif;
-	font-size: 50px;
 }
 
-.footer {
-	background-color: #161931;
-	height: 20px;
-	position: fixed;
-	bottom: 0px;
-	width: 100%;
+.title h1 {
+	font-size: 75px;
+	text-align: center;
+	margin-bottom: 10px;
 }
 
-main {
-	margin: 150px;
+.title h2 {
+	font-size: 30px;
+	text-align: center;
+	margin-top: 10px;
 }
 
 .icons {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-top: 50px;
+	margin-top: 200px;
+	margin-left: 200px;
+	margin-right: 200px; 
 }
 
 .icons a {
@@ -76,6 +77,14 @@ main {
 }
 
 .icons img {
-	width: 200px;
-	height: 200px;
+	width: 175px;
+	height: 175px;
+}
+
+.footer {
+	background-color: #161931;
+	height: 20px;
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
 }
