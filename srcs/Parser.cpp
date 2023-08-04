@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/03 11:34:23 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/04 07:54:10 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,18 +238,16 @@ void Parser::parseErrorPage(const std::string &error, const std::string &page)
 
 void Parser::parseLocation(std::ifstream &cfgFile, const std::string &url)
 {
-	size_t i = 0;
 	Location tmp(cfgFile, url);
 
-	while (i != _location.size() && _location[i].getUrl() != url)
-		i++;
-	if (i != _location.size())
-		_location[i] = tmp;
-	else
-	{
-		std::vector<Location>::const_iterator it = _location.end();
-		_location.insert(it, tmp);
+	std::vector<Location>::const_iterator it = this->_location.begin();
+	while (it != this->_location.end()) {
+		if (it->getUrl() == url) {
+			throw (std::runtime_error("duplicate location"));
+		}
+		it++;
 	}
+	this->_location.push_back(tmp);
 }
 
 void Parser::hasAllInfos(void)
