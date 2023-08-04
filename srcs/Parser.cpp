@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/04 07:54:10 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/04 08:04:43 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,6 +232,11 @@ void Parser::parseErrorPage(const std::string &error, const std::string &page)
 		throw (std::runtime_error("invalid error page code number"));
 	if (page.empty()) {
 		throw (std::runtime_error("empty path error page"));
+	}
+
+	std::map<int, std::string>::const_iterator it = this->_errorPage.find(nb);
+	if (it != this->_errorPage.end()) {
+		throw (std::runtime_error("duplicate error page"));
 	}
 	this->_errorPage.insert(make_pair(nb, page));
 }
