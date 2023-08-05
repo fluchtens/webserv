@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/02 20:30:39 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/05 20:11:19 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,16 +111,23 @@ void HttpResponse::createAutoIndex(Client &client, std::string path)
 
 void HttpResponse::sendResponse(Client &client)
 {
-	int err = 0;
-	socklen_t errLen = sizeof(err);
-	if (getsockopt(client._socketFd, SOL_SOCKET, SO_SNDBUF, &err, &errLen) == -1) {
-		printError("getsockopt() failed");
-		this->sendError(client, 500);
-		client._isAlive = false;
-		return ;
-	}
+	int optval = 0;
+    socklen_t optlen = sizeof(optval);
+    if (getsockopt(client._socketFd, SOL_SOCKET, SO_SNDBUF, &optval, &optlen) == -1 || optval <= 0) {
+        printError("getsockopt() failed");
+    	this->sendError(client, 500);
+        client._isAlive = false;
+        return ;
+    }
 
-	ssize_t sentBytes = send(client._socketFd, client._response.c_str(), client._respSize, 0);
+	ssize_t remainingSize = client._respSize - client._sentSize;
+
+	const char* bodyData = client._response.c_str() + client._sentSize;
+    ssize_t bodySize = std::min(remainingSize, static_cast<ssize_t>(optval));
+    std::string response(bodyData, bodySize);
+
+	ssize_t sentBytes = send(client._socketFd, response.c_str(), response.size(), 0);
+    client._sentSize += sentBytes;
 	if (sentBytes == -1) {
 		printError("send() failed");
 		client._isAlive = false;

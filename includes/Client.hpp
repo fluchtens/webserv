@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:58:47 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/28 09:14:58 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/05 20:11:19 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ struct Client
 	std::string _bodyResp;
 	std::string _response;
 	int _respSize;
+	int _sentSize;
 };
 
 #endif

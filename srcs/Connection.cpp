@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/03 20:10:07 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/05 20:11:19 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,7 @@ bool Connection::getRequest(Client& client)
 		if (!file.is_open()) {
 			printHttpError("Not Found", 404);
 			this->_httpResponse.sendError(client, 404);
+			return (true);
 		} else {
 			std::string content, line;
 			while (std::getline(file, line)) {
@@ -224,10 +225,14 @@ bool Connection::getRequest(Client& client)
 			}
 			client._bodyResp = content;
 			client._respSize = 0;
+			client._sentSize = 0;
 			file.close();
 			this->_httpResponse.create(client, 200, this->_mimeTypes.getType(client._filePath));
-			this->_httpResponse.sendResponse(client);
 		}
+	}
+	this->_httpResponse.sendResponse(client);
+	if (client._sentSize < client._respSize) {
+		return (false);
 	}
 	return (true);
 }
