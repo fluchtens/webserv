@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 10:07:53 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/03 10:00:58 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/06 10:10:34 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ Cgi::Cgi(Client &client, Location *location)
 	this->_envCgi["HTTP_USER_AGENT"] = client._headers["User-Agent"];
 	this->_envCgi["GETEWAY_INTERFACE"] = "CGI/1.0";
 	this->_envCgi["SERVER_NAME"] = client._config.getServerName();
+	this->_envCgi["SERVER_ADDR"] = client._config.getHost();
 	this->_envCgi["SERVER_PORT"] = std::to_string(client._config.getPort());
 	this->_envCgi["SERVER_PROTOCOL"] = client._httpVersion;
 	this->_envCgi["SERVER_SOFTWARE"] = "webserv/1.0";
