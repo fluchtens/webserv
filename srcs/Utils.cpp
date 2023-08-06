@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/06 10:58:39 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/06 11:17:31 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,10 +101,8 @@ unsigned int countServerBlock(std::ifstream &config_file)
 	std::string line;
 	int count = 0;
 
-	while (!config_file.eof())
-	{
-		getline(config_file, line);
-	
+	while (getline(config_file, line))
+	{	
 		std::stringstream ss;
 		std::string key;
 		std::string value;
@@ -117,6 +115,7 @@ unsigned int countServerBlock(std::ifstream &config_file)
 			count++;
 		}
 	}
+	config_file.clear();
 	config_file.seekg(0);
 	return (count);
 }
