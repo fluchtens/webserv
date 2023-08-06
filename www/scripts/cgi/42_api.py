@@ -8,11 +8,9 @@ import datetime
 import sys
 from requests_oauthlib import OAuth2Session
 
-
 IDS=[
     ("u-s4t2ud-4c150f08adb6bfe1fcec95f1e89c29c57466fb64a84190e8e848547974a1682e", "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")
 ]
-
 
 def get_access_token():
     base_url = "https://api.intra.42.fr"
@@ -28,7 +26,7 @@ def get_access_token():
     access_token = response_json["access_token"]
     return access_token
 
-def get_42mulhouse_users(access_token, filters={}):
+def get_19_campus_user(access_token, filters={}):
     total_users = []
     users = [1]
     params = {
@@ -78,7 +76,7 @@ def get_all_correction(user_id):
 if __name__ == "__main__":
     filters = {"filter[login]":"fluchten"}
     access_token = get_access_token()
-    total_users = get_42mulhouse_users(access_token, filters)
+    total_users = get_19_campus_user(access_token, filters)
     if (len(total_users) == 0):
         print("No users found")
         exit(0)
