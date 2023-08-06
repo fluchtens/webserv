@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/05 20:11:19 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/06 11:42:48 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,12 @@ void Connection::acceptSockets(void)
 			newClient._socketAddrLen = sizeof(newClient._socketAddress);
 			newClient._socketFd = accept((*it)->getSocket(), (sockaddr*)&newClient._socketAddress, &newClient._socketAddrLen);
 			if (newClient._socketFd == -1) {
-				throw (std::runtime_error("accept() failed"));
+				printError("accept() failed");
+				continue ;
 			}
 			if (fcntl(newClient._socketFd, F_SETFL, O_NONBLOCK) < 0) {
-				throw (std::runtime_error("fcntl() failed"));
+				printError("fcntl() failed");
 			}
-			// std::cout << "> New connection on socket " << newClient._socketFd << " on port " << (*it)->getPort() << std::endl;
 			this->_client.push_back(newClient);
 		}
 	}
@@ -497,10 +497,12 @@ void Connection::checkFdStatus(void)
 {
 	int selectReady = select(this->_highestFd + 1, &this->_setReads, &this->_setWrite, &this->_setErrors, &this->_timeout);
 	if (selectReady == -1) {
-		throw (std::runtime_error("select() failed"));
+		printError("select() failed");
+		for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
+			(*it)._isAlive = false;
+		}
 	}
 	else if (selectReady == 0) {
-		// printError("select() timeout");
 		for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
 			(*it)._isAlive = false;
 		}
@@ -523,7 +525,6 @@ bool Connection::isAlive(Client &client, bool isAlive)
 void Connection::closeClientSockets()
 {
 	for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
-		std::cout << "> Closing client sockets" << std::endl;
 		close(it->_socketFd);
 	}
 }

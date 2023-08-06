@@ -6,13 +6,15 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 10:08:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/01 14:30:43 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/06 11:28:02 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CGI_HPP
 #define CGI_HPP
 
+# include <iostream>
+# include <map>
 # include "Client.hpp"
 # include "Connection.hpp"
 # include "WebServ.hpp"

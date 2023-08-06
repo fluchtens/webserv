@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/29 17:40:36 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/06 11:28:19 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 # include <netinet/in.h>
 # include <netinet/tcp.h>
 # include <dirent.h>
-# include "Colors.hpp"
 # include "Server.hpp"
 # include "Client.hpp"
 # include "MimeTypes.hpp"

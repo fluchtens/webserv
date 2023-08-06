@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 10:07:53 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/06 10:10:34 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/06 11:27:13 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,6 @@ Cgi::Cgi(Client &client, Location *location)
 		this->_envCgi["CONTENT_LENGTH"] = std::to_string(client._contentLenght);
 		this->_envCgi["CONTENT_TYPE"] = client._headers["Content-Type"];
 		this->_envCgi["REQUEST_METHOD"] = "POST";
-		for (size_t i = 0; ws.env[i]; i++) {
-			std::string line = ws.env[i];
-			size_t separator = line.find("=");
-			if (separator != std::string::npos) {
-				std::string headerName = line.substr(0, separator);
-				std::string headerValue = line.substr(separator + 1, line.size() - separator - 1);
-				this->_envCgi[headerName] = headerValue;
-			}
-		}
 	}
 	else if (client._method == GET) {
 		if (!client._query.empty()) {
