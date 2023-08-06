@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 10:28:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/03 10:22:01 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/06 10:58:07 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,12 +104,12 @@ void HttpRequest::parse(Client &client)
 	this->parseRequestLine(client, requestStream);
 	this->parseRequestHeader(client, requestStream);
 
-	std::ofstream logfile("http_request_logs.txt", std::ios::app);
-	if (!logfile.is_open()) {
-		printError("HttpRequest log file creation failed");
-	}
-	logfile << client._requestStr.str();
-    logfile.close();
+	// std::ofstream logfile("http_request_logs.txt", std::ios::app);
+	// if (!logfile.is_open()) {
+	// 	printError("HttpRequest log file creation failed");
+	// }
+	// logfile << client._requestStr.str();
+    // logfile.close();
 }
 
 /* ************************************************************************** */

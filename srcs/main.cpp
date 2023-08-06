@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/01 09:33:45 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/06 10:58:46 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,6 @@ int main(int ac, char **av, char **env)
 			Server *tmp = new Server(ws.configs[i]);
 			ws.servers.push_back(tmp);
 		}
-
-		// createTempDeleteFiles();
 
 		ws.connection = new Connection(ws.servers);
 		while (true) {
