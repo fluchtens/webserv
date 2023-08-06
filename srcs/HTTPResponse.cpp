@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/06 10:58:11 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/06 21:14:29 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ void HttpResponse::createAutoIndex(Client &client, std::string path)
 {
 	DIR *dir = opendir(path.c_str());
 	if (!dir) {
-		printHttpError("Not Found", 404);
 		this->sendError(client, 404);
 		return ;
 	}

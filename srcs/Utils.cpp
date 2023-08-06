@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/06 11:17:31 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/06 21:14:40 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,6 @@
 void printError(const std::string &str)
 {
 	std::cerr << CLR_RED << "Error: " << str << "." << CLR_RESET << std::endl;
-}
-
-void printHttpError(const std::string &str, const int &code)
-{
-	std::cerr << CLR_RED << "Error " << code <<  ": " << str << CLR_RESET << std::endl;
 }
 
 void printWarning(const std::string &str)

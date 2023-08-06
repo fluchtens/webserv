@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/06 11:42:48 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/06 21:15:12 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,6 @@ bool Connection::parseClientRequest(Client &client)
 	if (client._contentLenght == 0) {
 		this->_httpRequest.parse(client);
 		if (!client._validHost) {
-			printHttpError("Forbidden", 403);
 			this->_httpResponse.sendError(client, 403);
 			return (false);
 		}
@@ -176,7 +175,6 @@ bool Connection::handleReponse(Client &client)
 			this->deleteRequest(client);
 			break;
 		default:
-			printError("Method not allowed");
 			this->_httpResponse.sendError(client, 405);
 			break;
 	}
@@ -189,8 +187,7 @@ bool Connection::getRequest(Client& client)
 		return (true);
 	}
 	
-	if (client._uri.length() >= 100) {
-		printHttpError("Request-URI Too Long", 414);
+	if (client._uri.length() >= 1024) {
 		this->_httpResponse.sendError(client, 414);
 		return (true);
 	}
@@ -203,7 +200,6 @@ bool Connection::getRequest(Client& client)
 			struct dirent *ent;
 			while ((ent = readdir(dir))) {
 				if (ent->d_type == DT_DIR) {
-					printHttpError("Forbidden", 403);
 					this->_httpResponse.sendError(client, 403);
 					return (true);
 				}
@@ -212,7 +208,6 @@ bool Connection::getRequest(Client& client)
 
 		std::ifstream file(client._filePath);
 		if (!file.is_open()) {
-			printHttpError("Not Found", 404);
 			this->_httpResponse.sendError(client, 404);
 			return (true);
 		} else {
@@ -245,7 +240,6 @@ bool Connection::getRequestLocation(Client &client)
 	}
 
 	if (!location->isMethodAllowed("GET")) {
-		printHttpError("GET Method Not Allowed", 405);
 		this->_httpResponse.sendError(client, 405);
 		return (true);
 	}
@@ -262,7 +256,6 @@ bool Connection::getRequestLocation(Client &client)
 			this->_httpResponse.createAutoIndex(client, this->getAbsolutePath(client, location));
 			return (true);
 		}
-		printHttpError("Forbidden", 403);
 		this->_httpResponse.sendError(client, 403);
 		return (true);
 	}
@@ -290,13 +283,11 @@ void Connection::postRequest(Client& client)
 {
 	Location *location = this->getLocation(client);
 	if (!location) {
-		printHttpError("POST Method Not Allowed", 405);
 		this->_httpResponse.sendError(client, 405);
 		return ;
 	}
 
 	if (!location->isMethodAllowed("POST")) {
-		printHttpError("POST Method Not Allowed", 405);
 		this->_httpResponse.sendError(client, 405);
 		return ;
 	}
@@ -307,7 +298,6 @@ void Connection::postRequest(Client& client)
 	}
 
 	if (client._bodySize > client._config.getMaxBodySize()) {
-		printError("Request size exceeds the limit");
 		this->_httpResponse.sendError(client, 413);
 		return ;
 	}
@@ -318,7 +308,6 @@ void Connection::postRequest(Client& client)
 	std::string contentTypeHeader = client._headers["Content-Type"];
 	size_t boundaryPos = contentTypeHeader.find("boundary=");
 	if (boundaryPos == std::string::npos) {
-		printHttpError("Bad Request", 400);
 		this->_httpResponse.sendError(client, 400);
 		return ;
 	}
@@ -328,7 +317,6 @@ void Connection::postRequest(Client& client)
 	std::size_t fileStartPos, fileEndPos;
 	fileStartPos = request.find("filename=\"");
 	if (fileStartPos == std::string::npos) {
-		printHttpError("Bad Request", 400);
 		this->_httpResponse.sendError(client, 400);
 		return ;
 	}
@@ -339,7 +327,6 @@ void Connection::postRequest(Client& client)
 	std::size_t fileTypeStartPos, fileTypEndPos;
 	fileTypeStartPos = request.find("Content-Type: ", fileEndPos);
 	if (fileTypeStartPos == std::string::npos) {
-		printHttpError("Bad Request", 400);
 		this->_httpResponse.sendError(client, 400);
 		return ;
 	}
@@ -354,7 +341,6 @@ void Connection::postRequest(Client& client)
 	bodyEndPos = body.find(boundaryValue + "--", bodyStartPos);
 	bodyEndPos -= 4;
 	if (bodyEndPos == std::string::npos) {
-		printHttpError("Bad Request", 400);
 		this->_httpResponse.sendError(client, 400);
 		return ;
 	}
@@ -363,7 +349,6 @@ void Connection::postRequest(Client& client)
 	std::string fileData = body.substr(bodyStartPos, bodyEndPos - bodyStartPos);
 	std::ofstream outFile(filePath, std::ios::binary);
 	if (!outFile.is_open()) {
-		printHttpError("Bad Request", 400);
 		this->_httpResponse.sendError(client, 400);
 		return ;
 	}
@@ -378,13 +363,11 @@ void Connection::deleteRequest(Client& client)
 {
 	Location *location = this->getLocation(client);
 	if (!location) {
-		printHttpError("DELETE Method Not Allowed", 405);
 		this->_httpResponse.sendError(client, 405);
 		return ;
 	}
 
 	if (!location->isMethodAllowed("DELETE")) {
-		printHttpError("DELETE Method Not Allowed", 405);
 		this->_httpResponse.sendError(client, 405);
 		return ;
 	}
