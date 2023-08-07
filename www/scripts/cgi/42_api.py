@@ -11,7 +11,7 @@ from urllib.parse import parse_qs
 from requests_oauthlib import OAuth2Session
 
 IDS=[
-	("u-s4t2ud-61f2f422f36ca4fd911ccae1167187ecf1a7d8cf77867ee2639037acd438ba9a", "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")
+	("u-s4t2ud-4c150f08adb6bfe1fcec95f1e89c29c57466fb64a84190e8e848547974a1682e", "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")
 ]
 
 def get_access_token():
@@ -93,7 +93,6 @@ if __name__ == "__main__":
 	filters = {"filter[login]": login}
 	access_token = get_access_token()
 	total_users = get_19_campus_user(access_token, filters)
-
 	if len(total_users) == 0:
 		sys.stdout.write("No users found.")
 		sys.exit(0)
