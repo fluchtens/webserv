@@ -71,9 +71,15 @@ def get_all_correction(user_id):
 	headers = {
 		"Authorization": f"Bearer {access_token}"
 	}
-	x=requests.get(f"https://api.intra.42.fr/v2/users/{user_id}/scale_teams/", headers=headers, params={"page[size]":100})
-	data_json = x.json()
-	return data_json
+	page = 1
+	pgdata = [None]
+	total_data = []
+	while (len(pgdata) != 0):
+		x=requests.get(f"https://api.intra.42.fr/v2/users/{user_id}/scale_teams/", headers=headers, params={"page[size]":100, "page[number]":page})
+		pgdata = x.json()
+		total_data += pgdata
+		page += 1
+	return total_data
 
 if __name__ == "__main__":
 	query_string = os.environ.get('QUERY_STRING', '')
@@ -81,18 +87,15 @@ if __name__ == "__main__":
 	login = query_params.get('login', [''])[0]
 
 	if not login:
-		sys.stdout.write("Erreur: Paramètre 'login' manquant dans la query_string.")
-		sys.exit(1)
+		sys.stdout.write("No users found.")
+		sys.exit(0)
 
 	filters = {"filter[login]": login}
 	access_token = get_access_token()
 	total_users = get_19_campus_user(access_token, filters)
-
 	if len(total_users) == 0:
 		sys.stdout.write("No users found.")
 		sys.exit(0)
-
-	# print(total_users[0]["id"])
 	user_id = total_users[0]["id"]
 	data_json = get_all_correction(user_id)
 	corrected_users = find_corrected_users(data_json, user_id)
