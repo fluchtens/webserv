@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/06 11:28:19 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/07 16:30:42 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ class Connection
 		HttpResponse _httpResponse;
 		fd_set _setReads;
 		fd_set _setWrite;
-		fd_set _setErrors;
 		int _highestFd;
 		timeval _timeout;
 

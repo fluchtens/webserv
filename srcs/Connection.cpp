@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/07 16:26:10 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/07 16:31:30 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void Connection::initConnection(void)
 {
 	FD_ZERO(&this->_setReads);
 	FD_ZERO(&this->_setWrite);
-	FD_ZERO(&this->_setErrors);
 
 	for (std::vector<Server *>::iterator it = this->_servers.begin(); it != this->_servers.end(); it++) {
 		this->addToFdSet((*it)->getSocket(), this->_setReads);
@@ -51,7 +50,6 @@ void Connection::initConnection(void)
 		} else {
 			this->addToFdSet(it->_socketFd, this->_setWrite);
 		}
-		this->addToFdSet(it->_socketFd, this->_setErrors);
 	}
 	this->checkFdStatus();
 }
@@ -80,11 +78,6 @@ void Connection::traitement(void)
 {
 	for (std::vector<Client>::iterator it = this->_client.begin(); it < this->_client.end(); it++)
 	{
-		if (FD_ISSET(it->_socketFd, &this->_setErrors)) {
-			printWarning("Ahahahah");
-			it->_isAlive = false;
-		}
-
 		if (FD_ISSET(it->_socketFd, &this->_setReads)) {
 			if (this->parseClientRequest(*it)) {
 				it->_requestPars = true;
@@ -477,7 +470,7 @@ void Connection::addToFdSet(int fd, fd_set &fds)
 
 void Connection::checkFdStatus(void)
 {
-	int selectReady = select(this->_highestFd + 1, &this->_setReads, &this->_setWrite, &this->_setErrors, &this->_timeout);
+	int selectReady = select(this->_highestFd + 1, &this->_setReads, &this->_setWrite, 0, &this->_timeout);
 	if (selectReady == -1) {
 		printError("select() failed");
 		for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
@@ -498,7 +491,6 @@ bool Connection::isAlive(Client &client, bool isAlive)
 	}
 	FD_CLR(client._socketFd, &this->_setReads);
 	FD_CLR(client._socketFd, &this->_setWrite);
-	FD_CLR(client._socketFd, &this->_setErrors);
 	shutdown(client._socketFd, SHUT_RDWR);
 	close(client._socketFd);
 	return (false);
