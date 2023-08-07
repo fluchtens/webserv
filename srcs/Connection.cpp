@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/07 16:31:30 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/07 17:31:16 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ Connection::Connection(std::vector<Server*>& servers) : _servers(servers)
 Connection::~Connection(void)
 {
 	// std::cout << "Connection destructor called" << std::endl;
-	this->closeClientSockets();
+	for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
+		close(it->_socketFd);
+	}
 }
 
 /* ************************************************************************** */
@@ -37,8 +39,7 @@ Connection::~Connection(void)
 
 void Connection::initConnection(void)
 {
-	FD_ZERO(&this->_setReads);
-	FD_ZERO(&this->_setWrite);
+	this->initFdSet();
 
 	for (std::vector<Server *>::iterator it = this->_servers.begin(); it != this->_servers.end(); it++) {
 		this->addToFdSet((*it)->getSocket(), this->_setReads);
@@ -51,6 +52,7 @@ void Connection::initConnection(void)
 			this->addToFdSet(it->_socketFd, this->_setWrite);
 		}
 	}
+
 	this->checkFdStatus();
 }
 
@@ -60,16 +62,16 @@ void Connection::acceptSockets(void)
 	{
 		if (FD_ISSET((*it)->getSocket(), &this->_setReads))
 		{
-			Client newClient((*it)->getConfig(), (*it)->getServer(), (*it)->getLocation());
-			newClient._socketFd = accept((*it)->getSocket(), reinterpret_cast<sockaddr *>(&newClient._socketAddress), &newClient._socketAddrLen);
-			if (newClient._socketFd == -1) {
+			Client client((*it)->getConfig(), (*it)->getServer(), (*it)->getLocation());
+			client._socketFd = accept((*it)->getSocket(), reinterpret_cast<sockaddr *>(&client._socketAddress), &client._socketAddrLen);
+			if (client._socketFd == -1) {
 				printError("accept() failed");
 				continue ;
 			}
-			if (fcntl(newClient._socketFd, F_SETFL, O_NONBLOCK) < 0) {
+			if (fcntl(client._socketFd, F_SETFL, O_NONBLOCK) < 0) {
 				printError("fcntl() failed");
 			}
-			this->_client.push_back(newClient);
+			this->_client.push_back(client);
 		}
 	}
 }
@@ -91,7 +93,8 @@ void Connection::traitement(void)
 			}
 		}
 
-		if (!this->isAlive(*it, it->_isAlive)) {
+		if (!it->_isAlive) {
+			this->closeClientSocket(*it);
 			it = this->_client.erase(it);
 		}
 	}
@@ -116,8 +119,8 @@ bool Connection::parseClientRequest(Client &client)
 	if (readBytes <= 0) {
 		if (readBytes == -1) {
 			printError("recv() failed");
-			this->_httpResponse.sendError(client, 500);
 		}
+		this->_httpResponse.sendError(client, 500);
 		client._isAlive = false;
 		return (false);
 	}
@@ -425,17 +428,17 @@ void Connection::executeCGI(Client &client, Location *location)
 		write(cgiInput[1], client._requestStr.str().c_str(), client._requestStr.str().length());
 		close(cgiInput[1]);
 
-		char buffer[4096];
+		char buffer[1024];
 		ssize_t readBytes;
 		while ((readBytes = read(cgiOutput[0], buffer, sizeof(buffer)))) {
-			if (readBytes == -1) {
+			if (readBytes == 0 || readBytes == -1) {
 				this->_httpResponse.sendError(client, 500);
 				return ;
 			}
 			client._bodyResp.append(buffer, readBytes);
 		}
 		close(cgiOutput[0]);
-		std::cout << client._bodyResp << std::endl;
+		// std::cout << client._bodyResp << std::endl;
 
 		int status;
 		waitpid(pid, &status, 0);
@@ -461,6 +464,12 @@ void Connection::executeCGI(Client &client, Location *location)
 /*                                    Utils                                   */
 /* ************************************************************************** */
 
+void Connection::initFdSet(void)
+{
+	FD_ZERO(&this->_setReads);
+	FD_ZERO(&this->_setWrite);
+}
+
 void Connection::addToFdSet(int fd, fd_set &fds)
 {
 	FD_SET(fd, &fds);
@@ -484,23 +493,12 @@ void Connection::checkFdStatus(void)
 	}
 }
 
-bool Connection::isAlive(Client &client, bool isAlive)
+void Connection::closeClientSocket(Client &client)
 {
-	if (isAlive) {
-		return (true);
-	}
 	FD_CLR(client._socketFd, &this->_setReads);
 	FD_CLR(client._socketFd, &this->_setWrite);
 	shutdown(client._socketFd, SHUT_RDWR);
 	close(client._socketFd);
-	return (false);
-}
-
-void Connection::closeClientSockets()
-{
-	for (std::vector<Client>::iterator it = this->_client.begin(); it != this->_client.end(); it++) {
-		close(it->_socketFd);
-	}
 }
 
 std::string Connection::getIndexPath(Client &client)

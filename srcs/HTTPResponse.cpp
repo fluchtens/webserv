@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/07 08:34:23 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/07 17:48:00 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,12 +133,12 @@ void HttpResponse::sendResponse(Client &client)
 		client._isAlive = false;
 	}
 
-	// std::ofstream logfile("http_response_logs.txt", std::ios::app);
-	// if (!logfile.is_open()) {
-	// 	printError("HttpResponse log file creation failed");
-	// }
-	// logfile << client._response + "\n\n";
-    // logfile.close();
+	std::ofstream logfile("http_response_logs.txt", std::ios::app);
+	if (!logfile.is_open()) {
+		printError("HttpResponse log file creation failed");
+	}
+	logfile << client._response + "\n\n";
+    logfile.close();
 }
 
 void HttpResponse::sendError(Client &client, int errorCode)
@@ -192,10 +192,22 @@ void HttpResponse::sendError(Client &client, int errorCode)
 		response += errorPageContent;
 	}
 
-	if (send(client._socketFd, response.c_str(), response.length(), 0) == -1) {
+	ssize_t sentBytes = send(client._socketFd, response.c_str(), response.length(), 0);
+	if (sentBytes == -1) {
 		printError("send() failed");
 		client._isAlive = false;
 	}
+	else if (sentBytes == 0) {
+		printError("send() no data sent");
+		client._isAlive = false;
+	}
+
+	std::ofstream logfile("http_response_logs.txt", std::ios::app);
+	if (!logfile.is_open()) {
+		printError("HttpResponse log file creation failed");
+	}
+	logfile << response + "\n\n";
+    logfile.close();
 }
 
 /* ************************************************************************** */

@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:22 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/07 16:30:42 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/07 17:03:20 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,10 @@ class Connection
 		/* CGI */
 		void executeCGI(Client &client, Location *location);
 		/* Utils */
+		void initFdSet(void);
 		void addToFdSet(int fd, fd_set &fds);
 		void checkFdStatus(void);
-		bool isAlive(Client &client, bool isAlive);
-		void closeClientSockets(void);
+		void closeClientSocket(Client &client);
 		std::string getIndexPath(Client &client);
 		std::string getIndexPath(Client &client, Location *location);
 		std::string getAbsolutePath(Client &client, Location *location);
