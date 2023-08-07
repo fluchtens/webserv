@@ -89,7 +89,7 @@ if __name__ == "__main__":
 	total_users = get_19_campus_user(access_token, filters)
 
 	if len(total_users) == 0:
-		sys.stdout.write("Aucun utilisateur trouvé.")
+		sys.stdout.write("No users found.")
 		sys.exit(0)
 
 	# print(total_users[0]["id"])
