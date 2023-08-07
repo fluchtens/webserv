@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:58:47 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/07 08:34:45 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/07 16:20:11 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ struct Client
 	bool _isAlive;
 	/* Socket */
 	int _socketFd;
-	sockaddr_storage _socketAddress;
+	sockaddr_in _socketAddress;
 	socklen_t _socketAddrLen;
 	/* Request */
 	std::stringstream _requestStr;

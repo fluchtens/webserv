@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/06 21:15:12 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/07 16:26:10 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,7 @@ void Connection::acceptSockets(void)
 		if (FD_ISSET((*it)->getSocket(), &this->_setReads))
 		{
 			Client newClient((*it)->getConfig(), (*it)->getServer(), (*it)->getLocation());
-			std::memset(&newClient._socketAddress, 0, sizeof(newClient._socketAddress));
-			newClient._socketAddrLen = sizeof(newClient._socketAddress);
-			newClient._socketFd = accept((*it)->getSocket(), (sockaddr*)&newClient._socketAddress, &newClient._socketAddrLen);
+			newClient._socketFd = accept((*it)->getSocket(), reinterpret_cast<sockaddr *>(&newClient._socketAddress), &newClient._socketAddrLen);
 			if (newClient._socketFd == -1) {
 				printError("accept() failed");
 				continue ;
@@ -83,6 +81,7 @@ void Connection::traitement(void)
 	for (std::vector<Client>::iterator it = this->_client.begin(); it < this->_client.end(); it++)
 	{
 		if (FD_ISSET(it->_socketFd, &this->_setErrors)) {
+			printWarning("Ahahahah");
 			it->_isAlive = false;
 		}
 

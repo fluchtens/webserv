@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:59:23 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/07 08:34:32 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/07 16:25:04 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ Client::Client(Parser &config, Server &server, std::vector<Location> &location) 
 	this->_isAlive = true;
 	// Socket
 	this->_socketFd = 0;
-	// std::memset(&this->_socketAddress, 0, sizeof(this->_socketAddress));
-	this->_socketAddrLen = 0;
+	std::memset(&this->_socketAddress, 0, sizeof(this->_socketAddress));
+	this->_socketAddrLen = sizeof(this->_socketAddress);
 	// Request
 	this->_requestStr.str("");
 	this->_requestPars = false;
