@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 10:07:53 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/06 11:27:13 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/07 08:34:41 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ Cgi::Cgi(Client &client, Location *location)
 	this->_envCgi["HTTP_ACCEPT_LANGUAGE"] = client._headers["Accept-Language"];
 	this->_envCgi["HTTP_ACCEPT_ENCODING"] = client._headers["Accept-Encoding"];
 	this->_envCgi["HTTP_ACCEPT_CHARSET"] = client._headers["Accept-Charset"];
-	this->_envCgi["HTTP_COOKIE"] = client._cookie;
 	this->_envCgi["HTTP_USER_AGENT"] = client._headers["User-Agent"];
 	this->_envCgi["GETEWAY_INTERFACE"] = "CGI/1.0";
 	this->_envCgi["SERVER_NAME"] = client._config.getServerName();

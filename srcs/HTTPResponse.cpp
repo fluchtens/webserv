@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/06 21:14:29 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/07 08:34:23 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,6 @@ void HttpResponse::create(Client &client, int statusCode, const std::string &con
 	statusMessage = this->getHttpMessage(statusCode);
 
 	response = "HTTP/1.1 " + std::to_string(statusCode) + " " + statusMessage + "\r\n";
-	if (client._cookie.empty()) {
-		response += "Set-Cookie: delicieux_cookie=choco\r\n";
-	}
 	response += "Content-Type: " + contentType + "\r\n";
 	response += "Content-Length: " + std::to_string(client._bodyResp.size()) + "\r\n";
 	response += "\r\n";

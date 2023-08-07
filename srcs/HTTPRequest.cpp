@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 10:28:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/06 10:58:07 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/07 08:34:26 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,6 @@ void HttpRequest::parseRequestHeader(Client &client, std::stringstream &requestS
 			}
 			if (headerName == "Content-Length") {
 				client._contentLenght = std::atoi(headerValue.c_str());
-			}
-			else if (headerName == "Cookie") {
-				client._cookie = headerValue;
 			}
 			client._headers.insert(std::make_pair(headerName, headerValue));
 		}
