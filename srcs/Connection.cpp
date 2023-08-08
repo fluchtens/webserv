@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/08 14:16:55 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 18:15:54 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ bool Connection::parseClientRequest(Client &client)
 		client._bodyReq.str(std::string());
 	}
 
-	client._requestStr.write(buffer, readBytes);
+	client._requestStr << buffer;
 	if (client._contentLenght == 0) {
 		this->_httpRequest.parse(client);
 		if (!client._validHost) {
@@ -141,7 +141,7 @@ bool Connection::parseClientRequest(Client &client)
 			return (true);
 		}
 	} else {
-		client._bodyReq.write(buffer, readBytes);
+		client._bodyReq << buffer;
 		client._bodySize += readBytes;
 	}
 	
@@ -433,7 +433,12 @@ void Connection::executeCGI(Client &client, Location *location)
 		close(cgiInput[0]);
 		close(cgiOutput[1]);
 
-		write(cgiInput[1], client._requestStr.str().c_str(), client._requestStr.str().length());
+		ssize_t bytesWritten = write(cgiInput[1], client._requestStr.str().c_str(), client._requestStr.str().length());
+		if (bytesWritten <= 0) {
+			this->_httpResponse.sendError(client, 500);
+			cgi.exit(av, env);
+			return ;
+		}
 		close(cgiInput[1]);
 
 		char buffer[1024];
