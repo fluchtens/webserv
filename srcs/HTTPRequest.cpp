@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 10:28:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/07 17:44:50 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 10:37:29 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,8 +117,31 @@ void HttpRequest::checkIsValidHost(Client &client, std::string headerValue)
 {
 	std::size_t separatorPos = headerValue.find(':');
 	if (separatorPos != std::string::npos) {
+		std::string host = headerValue.substr(0, separatorPos);
+		std::string portStr = headerValue.substr(separatorPos + 1);
+		if (host.empty() || portStr.empty()) {
+			client._validHost = false;
+			return ;
+		}
+		if (host != "localhost" && host != client._config.getHost() && host != client._config.getServerName()) {
+			client._validHost = false;
+			return ;
+		}
+		for (size_t i = 0; i < portStr.length(); i++) {
+			if (!std::isdigit(portStr[i])) {
+				client._validHost = false;
+				return ;
+			}
+		}
+		std::stringstream ss(portStr);
+		int port;
+		ss >> port;
+		if (ss.fail() || port != client._config.getPort()) {
+			client._validHost = false;
+			return ;
+		}
 		return ;
-	};
+	}
 	if (headerValue != client._config.getServerName()) {
 		client._validHost = false;
 	}
