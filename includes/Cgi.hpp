@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 10:08:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/08 12:17:55 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 14:15:17 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,15 @@ class Cgi
 
 		char **getArgs(void);
 		char **getEnv(void);
-		void freeCharArray(char **array);
+		void exit(char **av, char **env);
 
 	private:
 		std::string _cgiScript;
 		std::string _cgiPath;
 		std::map<std::string, std::string> _envCgi;
+
+		void createEnvironmentVariables(Client &client);
+		void freeCharArray(char **array);
 };
 
 std::ostream &operator<<(std::ostream &o, const Cgi &rhs);

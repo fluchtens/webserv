@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 10:07:53 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/08 13:03:26 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 14:15:03 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,20 @@ Cgi::Cgi(Client &client, Location *location)
 	// std::cout << "Cgi constructor called" << std::endl;
 	this->_cgiScript = location->getCgiScript();
 	this->_cgiPath = location->getCgiPath();
+	this->createEnvironmentVariables(client);
+}
 
+Cgi::~Cgi(void)
+{
+	// std::cout << "Cgi destructor called" << std::endl;
+}
+
+/* ************************************************************************** */
+/*                         CGI Environment variables                          */
+/* ************************************************************************** */
+
+void Cgi::createEnvironmentVariables(Client &client)
+{
 	if (client._method == POST) {
 		this->_envCgi["CONTENT_LENGTH"] = convToString(client._contentLenght);
 		this->_envCgi["CONTENT_TYPE"] = client._headers["Content-Type"];
@@ -48,10 +61,9 @@ Cgi::Cgi(Client &client, Location *location)
 	this->_envCgi["SERVER_SOFTWARE"] = "webserv/1.0";
 }
 
-Cgi::~Cgi(void)
-{
-	// std::cout << "Cgi destructor called" << std::endl;
-}
+/* ************************************************************************** */
+/*                                Create Array                                */
+/* ************************************************************************** */
 
 char **Cgi::getArgs(void)
 {
@@ -84,10 +96,21 @@ char **Cgi::getEnv(void)
 	return (env);
 }
 
+/* ************************************************************************** */
+/*                                    Utils                                   */
+/* ************************************************************************** */
+
 void Cgi::freeCharArray(char **array)
 {
 	for (size_t i = 0; array[i] != NULL; i++) {
 		delete [] array[i];
 	}
 	delete [] array;
+}
+
+void Cgi::exit(char **av, char **env)
+{
+	this->freeCharArray(av);
+	this->freeCharArray(env);
+	signal(SIGINT, signalHandler);
 }

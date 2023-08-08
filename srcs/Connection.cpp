@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/08 12:21:08 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 14:16:55 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -399,33 +399,33 @@ void Connection::executeCGI(Client &client, Location *location)
 	int cgiInput[2];
 	int cgiOutput[2];
 
+	signal(SIGINT, SIG_IGN);
+
 	if (pipe(cgiInput) == -1 || pipe(cgiOutput) == -1) {
 		this->_httpResponse.sendError(client, 500);
-		cgi.freeCharArray(av);
-		cgi.freeCharArray(env);
+		cgi.exit(av, env);
 		return ;
 	}
 
 	pid_t pid = fork();
 	if (pid == -1) {
 		this->_httpResponse.sendError(client, 500);
-		cgi.freeCharArray(av);
-		cgi.freeCharArray(env);
+		cgi.exit(av, env);
 		return ;
 	}
 	else if (pid == 0) {
-		signal(SIGPIPE, signalHandler);
 		close(cgiInput[1]);
 		close(cgiOutput[0]);
 
 		dup2(cgiInput[0], STDIN_FILENO);
 		dup2(cgiOutput[1], STDOUT_FILENO);
 
+		signal(SIGINT, SIG_DFL);
+
 		if (execve(av[0], av, env) == -1) {
 			printError("execve() failed");
 			this->_httpResponse.sendError(client, 500);
-			cgi.freeCharArray(av);
-			cgi.freeCharArray(env);
+			cgi.exit(av, env);
 			return ;
 		}
 	}
@@ -441,8 +441,7 @@ void Connection::executeCGI(Client &client, Location *location)
 		while ((readBytes = read(cgiOutput[0], buffer, sizeof(buffer)))) {
 			if (readBytes <= 0) {
 				this->_httpResponse.sendError(client, 500);
-				cgi.freeCharArray(av);
-				cgi.freeCharArray(env);
+				cgi.exit(av, env);
 				return ;
 			}
 			client._bodyResp.append(buffer, readBytes);
@@ -457,19 +456,16 @@ void Connection::executeCGI(Client &client, Location *location)
 			if (exitStatus == 0) {
 				this->_httpResponse.create(client, 200, "text/html");
 				this->_httpResponse.sendResponse(client);
-				cgi.freeCharArray(av);
-				cgi.freeCharArray(env);
+				cgi.exit(av, env);
 				return ;
 			} else {
 				this->_httpResponse.sendError(client, 500);
-				cgi.freeCharArray(av);
-				cgi.freeCharArray(env);
+				cgi.exit(av, env);
 				return ;
 			}
 		} else {
 			this->_httpResponse.sendError(client, 500);
-			cgi.freeCharArray(av);
-			cgi.freeCharArray(env);
+			cgi.exit(av, env);
 			return ;
 		}
 	}

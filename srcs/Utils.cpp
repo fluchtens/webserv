@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:41:56 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/08 13:01:31 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 14:19:51 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,10 @@ void printWarning(const std::string &str)
 
 void signalHandler(int signal)
 {
-    if (signal == SIGINT){
+    if (signal == SIGINT) {
     	std::cout << "SIGINT signal received. Program is shutting down..." << std::endl;
 		deleteServers();
-		exit(1);
-	}
-	else if (signal == SIGPIPE) {
-		std::cout << "Received SIGPIPE signal. Program is shutting down..." << std::endl;
-		deleteServers();
-		exit(1);
+		exit(0);
 	}
 }
 
