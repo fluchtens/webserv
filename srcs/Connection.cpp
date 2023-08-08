@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/07 17:31:16 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 09:35:27 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -431,14 +431,13 @@ void Connection::executeCGI(Client &client, Location *location)
 		char buffer[1024];
 		ssize_t readBytes;
 		while ((readBytes = read(cgiOutput[0], buffer, sizeof(buffer)))) {
-			if (readBytes == 0 || readBytes == -1) {
+			if (readBytes <= 0) {
 				this->_httpResponse.sendError(client, 500);
 				return ;
 			}
 			client._bodyResp.append(buffer, readBytes);
 		}
 		close(cgiOutput[0]);
-		// std::cout << client._bodyResp << std::endl;
 
 		int status;
 		waitpid(pid, &status, 0);
@@ -497,7 +496,6 @@ void Connection::closeClientSocket(Client &client)
 {
 	FD_CLR(client._socketFd, &this->_setReads);
 	FD_CLR(client._socketFd, &this->_setWrite);
-	shutdown(client._socketFd, SHUT_RDWR);
 	close(client._socketFd);
 }
 
