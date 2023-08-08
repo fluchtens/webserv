@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 10:08:02 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/06 11:28:02 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 12:17:55 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class Cgi
 
 		char **getArgs(void);
 		char **getEnv(void);
+		void freeCharArray(char **array);
 
 	private:
 		std::string _cgiScript;

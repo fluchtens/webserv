@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 10:07:53 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/07 08:34:41 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 12:17:23 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,12 @@ char **Cgi::getEnv(void)
 	}
 	env[i] = NULL;
 	return (env);
+}
+
+void Cgi::freeCharArray(char **array)
+{
+	for (size_t i = 0; array[i] != NULL; i++) {
+		delete [] array[i];
+	}
+	delete [] array;
 }
