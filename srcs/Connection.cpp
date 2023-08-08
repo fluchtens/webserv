@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/08 09:35:27 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 11:29:21 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,7 +303,9 @@ void Connection::postRequest(Client& client)
 	std::string contentTypeHeader = client._headers["Content-Type"];
 	size_t boundaryPos = contentTypeHeader.find("boundary=");
 	if (boundaryPos == std::string::npos) {
-		this->_httpResponse.sendError(client, 400);
+		client._bodyResp = client._bodyReq.str();
+		this->_httpResponse.create(client, 200, "text/plain");
+		this->_httpResponse.sendResponse(client);
 		return ;
 	}
 	boundaryPos += 9;

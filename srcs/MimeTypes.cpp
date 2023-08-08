@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/24 19:19:08 by fluchten          #+#    #+#             */
-/*   Updated: 2023/07/27 13:43:39 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 11:26:12 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,12 +118,12 @@ const std::string MimeTypes::getType(const std::string &filePath) const
 {
 	size_t dotPos = filePath.find_last_of('.');
 	if (dotPos == std::string::npos) {
-		return ("application/octet-stream");
+		return ("text/plain");
 	}
 	std::string extension = filePath.substr(dotPos);
 	std::map<std::string, std::string>::const_iterator it = this->_mimeTypes.find(extension);
 	if (it != this->_mimeTypes.end()) {
 		return (it->second);
 	}
-	return ("application/octet-stream");
+	return ("text/plain");
 }
