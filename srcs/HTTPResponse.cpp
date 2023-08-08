@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/23 11:42:21 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/07 17:48:00 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 13:03:26 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ void HttpResponse::create(Client &client, int statusCode, const std::string &con
 	std::string response, statusMessage;
 	statusMessage = this->getHttpMessage(statusCode);
 
-	response = "HTTP/1.1 " + std::to_string(statusCode) + " " + statusMessage + "\r\n";
+	response = "HTTP/1.1 " + convToString(statusCode) + " " + statusMessage + "\r\n";
 	response += "Content-Type: " + contentType + "\r\n";
-	response += "Content-Length: " + std::to_string(client._bodyResp.size()) + "\r\n";
+	response += "Content-Length: " + convToString(client._bodyResp.size()) + "\r\n";
 	response += "\r\n";
 	response += client._bodyResp;
 	client._respSize = response.size();
@@ -154,19 +154,19 @@ void HttpResponse::sendError(Client &client, int errorCode)
 	htmlContent += "\t<meta charset=\"UTF-8\">\r\n";
 	htmlContent += "\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r\n";
 	htmlContent += "\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n";
-	htmlContent += "\t<title>" + std::to_string(errorCode) + " " + errorMessage + "</title>\r\n";
+	htmlContent += "\t<title>" + convToString(errorCode) + " " + errorMessage + "</title>\r\n";
 	htmlContent += "</head>\r\n";
 	htmlContent += "<body>\r\n";
 
 	bool invalidFile = false;
 	errorPagePath = client._config.getErrorPage(errorCode);
 	if (errorPagePath.empty()) {
-		htmlContent += "\t<center><h1>" + std::to_string(errorCode) + " " + errorMessage + "</h1></center>\r\n";
+		htmlContent += "\t<center><h1>" + convToString(errorCode) + " " + errorMessage + "</h1></center>\r\n";
 	} else {
 		std::ifstream file(client._config.getRoot() + errorPagePath);
 		if (!file.is_open()) {
 			invalidFile = true;
-			htmlContent += "\t<center><h1>" + std::to_string(errorCode) + " " + errorMessage + "</h1></center>\r\n";
+			htmlContent += "\t<center><h1>" + convToString(errorCode) + " " + errorMessage + "</h1></center>\r\n";
 		} else {
 			std::string line;
 			while (std::getline(file, line)) {
@@ -182,13 +182,13 @@ void HttpResponse::sendError(Client &client, int errorCode)
 	htmlContent += "</body>\r\n";
 	htmlContent += "</html>";
 
-	response = "HTTP/1.1 " + std::to_string(errorCode) + " " + errorMessage + "\r\n";
+	response = "HTTP/1.1 " + convToString(errorCode) + " " + errorMessage + "\r\n";
 	response += "Content-Type: text/html\r\n";
 	if (errorPagePath.empty() || invalidFile) {
-		response += "Content-Length: " + std::to_string(htmlContent.length()) + "\r\n\r\n";
+		response += "Content-Length: " + convToString(htmlContent.length()) + "\r\n\r\n";
 		response += htmlContent;
 	} else {
-		response += "Content-Length: " + std::to_string(errorPageContent.length()) + "\r\n\r\n";
+		response += "Content-Length: " + convToString(errorPageContent.length()) + "\r\n\r\n";
 		response += errorPageContent;
 	}
 

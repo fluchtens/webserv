@@ -6,11 +6,12 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 12:22:01 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/06 11:18:01 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 13:04:15 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Parser.hpp"
+#include "Utils.hpp"
 
 /* ************************************************************************** */
 /*                           Constructor Destructor                           */
@@ -336,7 +337,7 @@ const std::string Parser::getErrorPages(void) const
 	std::string errorPages;
 	std::map<int, std::string>::const_iterator it = this->_errorPage.begin();
 	while (it != this->_errorPage.end()) {
-		errorPages += "	- " + std::to_string(it->first) + ": " + it->second;
+		errorPages += "	- " + convToString(it->first) + ": " + it->second;
 		if (++it != this->_errorPage.end()) {
 			errorPages += "\n";
 		}

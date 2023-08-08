@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/27 19:42:51 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/06 21:14:36 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 13:02:18 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@
 # include "WebServ.hpp"
 
 extern WebServ ws;
+
+template <typename T>
+std::string convToString(const T &value) {
+    std::ostringstream oss;
+    oss << value;
+    return (oss.str());
+}
 
 /* Errors */
 void printError(const std::string &str);

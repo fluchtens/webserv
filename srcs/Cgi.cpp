@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/01 10:07:53 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/08 12:17:23 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/08 13:03:26 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ Cgi::Cgi(Client &client, Location *location)
 	this->_cgiPath = location->getCgiPath();
 
 	if (client._method == POST) {
-		this->_envCgi["CONTENT_LENGTH"] = std::to_string(client._contentLenght);
+		this->_envCgi["CONTENT_LENGTH"] = convToString(client._contentLenght);
 		this->_envCgi["CONTENT_TYPE"] = client._headers["Content-Type"];
 		this->_envCgi["REQUEST_METHOD"] = "POST";
 	}
@@ -43,7 +43,7 @@ Cgi::Cgi(Client &client, Location *location)
 	this->_envCgi["GETEWAY_INTERFACE"] = "CGI/1.0";
 	this->_envCgi["SERVER_NAME"] = client._config.getServerName();
 	this->_envCgi["SERVER_ADDR"] = client._config.getHost();
-	this->_envCgi["SERVER_PORT"] = std::to_string(client._config.getPort());
+	this->_envCgi["SERVER_PORT"] = convToString(client._config.getPort());
 	this->_envCgi["SERVER_PROTOCOL"] = client._httpVersion;
 	this->_envCgi["SERVER_SOFTWARE"] = "webserv/1.0";
 }
