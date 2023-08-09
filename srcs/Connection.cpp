@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/08 18:15:54 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/09 10:26:15 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,8 @@ bool Connection::parseClientRequest(Client &client)
 		client._bodyReq.str(std::string());
 	}
 
-	client._requestStr << buffer;
+	std::string tmp(buffer, readBytes);
+	client._requestStr << tmp;
 	if (client._contentLenght == 0) {
 		this->_httpRequest.parse(client);
 		if (!client._validHost) {
@@ -141,7 +142,8 @@ bool Connection::parseClientRequest(Client &client)
 			return (true);
 		}
 	} else {
-		client._bodyReq << buffer;
+		std::string tmp(buffer, readBytes);
+		client._bodyReq << tmp;
 		client._bodySize += readBytes;
 	}
 	
