@@ -1,5 +1,5 @@
 # webserv
-HTTP server written in C++ made for 42.
+HTTP server written from scratch in C++98.
 
 ### Installation :
 - Clone the repository.
