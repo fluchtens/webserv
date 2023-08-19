@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 17:59:23 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/07 16:25:04 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/19 14:23:41 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,13 @@ Client &Client::operator=(const Client &rhs)
 		this->_config = rhs._config;
 		this->_server = rhs._server;
 		this->_location = rhs._location;
-		// Client life
+		// Life
 		this->_isAlive = rhs._isAlive;
-		// Client socket
+		// Socket
 		this->_socketFd = rhs._socketFd;
 		this->_socketAddress = rhs._socketAddress;
 		this->_socketAddrLen = rhs._socketAddrLen;
-		// Client request
+		// Request
 		this->_requestStr << rhs._requestStr.str();
 		this->_requestPars = rhs._requestPars;
 		this->_method = rhs._method;
