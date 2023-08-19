@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:33:19 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/19 13:57:25 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/19 14:09:01 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -394,16 +394,12 @@ void Connection::deleteRequest(Client& client)
 void Connection::executeCGI(Client &client, Location *location)
 {
 	Cgi cgi(client, location);
-
 	char **av = cgi.getArgs();
 	char **env = cgi.getEnv();
-
-	int cgiInput[2];
-	int cgiOutput[2];
+	int pipeCGI[2];
 
 	signal(SIGINT, SIG_IGN);
-
-	if (pipe(cgiInput) == -1 || pipe(cgiOutput) == -1) {
+	if (pipe(pipeCGI) == -1) {
 		this->_httpResponse.sendError(client, 500);
 		cgi.exit(av, env);
 		return ;
@@ -413,17 +409,15 @@ void Connection::executeCGI(Client &client, Location *location)
 	if (pid == -1) {
 		this->_httpResponse.sendError(client, 500);
 		cgi.exit(av, env);
+		close(pipeCGI[0]);
+		close(pipeCGI[1]);
 		return ;
 	}
 	else if (pid == 0) {
-		close(cgiInput[1]);
-		close(cgiOutput[0]);
-
-		dup2(cgiInput[0], STDIN_FILENO);
-		dup2(cgiOutput[1], STDOUT_FILENO);
+		close(pipeCGI[0]);
+		dup2(pipeCGI[1], STDOUT_FILENO);
 
 		signal(SIGINT, SIG_DFL);
-
 		if (execve(av[0], av, env) == -1) {
 			printError("execve() failed");
 			this->_httpResponse.sendError(client, 500);
@@ -432,20 +426,10 @@ void Connection::executeCGI(Client &client, Location *location)
 		}
 	}
 	else {
-		close(cgiInput[0]);
-		close(cgiOutput[1]);
-
-		ssize_t bytesWritten = write(cgiInput[1], client._requestStr.str().c_str(), client._requestStr.str().length());
-		if (bytesWritten <= 0) {
-			this->_httpResponse.sendError(client, 500);
-			cgi.exit(av, env);
-			return ;
-		}
-		close(cgiInput[1]);
-
+		close(pipeCGI[1]);
 		char buffer[1024];
 		ssize_t readBytes;
-		while ((readBytes = read(cgiOutput[0], buffer, sizeof(buffer)))) {
+		while ((readBytes = read(pipeCGI[0], buffer, sizeof(buffer)))) {
 			if (readBytes <= 0) {
 				this->_httpResponse.sendError(client, 500);
 				cgi.exit(av, env);
@@ -453,11 +437,10 @@ void Connection::executeCGI(Client &client, Location *location)
 			}
 			client._bodyResp.append(buffer, readBytes);
 		}
-		close(cgiOutput[0]);
+		close(pipeCGI[0]);
 
 		int status;
 		waitpid(pid, &status, 0);
-
 		if (WIFEXITED(status)) {
 			int exitStatus = WEXITSTATUS(status);
 			if (exitStatus == 0) {
