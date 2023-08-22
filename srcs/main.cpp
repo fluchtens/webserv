@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 18:19:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/08 13:32:14 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/22 19:13:38 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 WebServ ws;
 
-int main(int ac, char **av, char **env)
+int main(int ac, char **av)
 {
 	std::string cfgFilePath;
 	if (!isValidInputArgs(ac, av, cfgFilePath)) {
@@ -42,7 +42,6 @@ int main(int ac, char **av, char **env)
 
 	signal(SIGINT, signalHandler);
 	signal(SIGQUIT, SIG_IGN);
-	ws.env = env;
 
 	try {
 		for (int i = 0; i < serverBlockCount; i++) {

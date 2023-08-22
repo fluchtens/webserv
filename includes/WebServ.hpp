@@ -6,7 +6,7 @@
 /*   By: fluchten <fluchten@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 07:56:39 by fluchten          #+#    #+#             */
-/*   Updated: 2023/08/01 09:16:01 by fluchten         ###   ########.fr       */
+/*   Updated: 2023/08/22 19:13:50 by fluchten         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ struct WebServ
 	std::vector<Parser *> configs;
 	std::vector<Server *> servers;
 	Connection *connection;
-	char **env;
 };
 
 #endif
