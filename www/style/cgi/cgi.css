@@ -1,97 +1,105 @@
+/* -------------------------------------------------------------------------- */
+/*                                    GET                                     */
+/* -------------------------------------------------------------------------- */
+
 .cgi_get {
-	max-width: 600px;
-	margin: 50px auto;
-	padding: 20px;
-	background-color: #d9dae2;
-	border-radius: 5px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border-radius: 0.5rem;
+  background-color: #1e293b;
 }
 
 .cgi_get h1 {
-	color: #333;
-	font-family: "Ubuntu", sans-serif;
-	font-size: 35px;
-	text-align: center;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  text-align: center;
+  color: #e2e8f0;
 }
 
 .cgi_get form {
-	display: flex;
-	flex-direction: column;
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-.cgi_get label {
-	color: #555;
-	font-family: "Ubuntu", sans-serif;
-	margin-bottom: 10px;
-	font-weight: bold;
+.cgi_get form label {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  color: #e2e8f0;
 }
 
-.cgi_get input[type="text"] {
-	font-family: "Ubuntu", sans-serif;
-	padding: 5px;
-	margin-bottom: 10px;
+.cgi_get form input[type="text"] {
+  padding: 0.5rem 1rem;
+  outline: none;
+  border: none;
+  border-radius: 0.25rem;
+  background: #374151;
 }
 
-.cgi_get input[type="submit"] {
-	background-color: #8c49e3;
-	color: #fff;
-	font-family: "Ubuntu", sans-serif;
-	border: none;
-	padding: 10px 20px;
-	border-radius: 5px;
-	cursor: pointer;
-	transition: background-color 0.2s ease;
+.cgi_get form input[type="submit"] {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+  background: #13a5e9;
+  color: white;
+  transition: background 0.3s ease;
+  cursor: pointer;
 }
 
 .cgi_get input[type="submit"]:hover {
-	background-color: #44406d;
+  background: #38bdf8;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                   POST                                     */
+/* -------------------------------------------------------------------------- */
+
 .cgi_post {
-	max-width: 600px;
-	margin: 50px auto;
-	padding: 20px;
-	background-color: #d9dae2;
-	border-radius: 5px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border-radius: 0.5rem;
+  background-color: #1e293b;
 }
 
 .cgi_post h1 {
-	color: #333;
-	font-family: "Ubuntu", sans-serif;
-	font-size: 35px;
-	text-align: center;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  text-align: center;
+  color: #e2e8f0;
 }
 
 .cgi_post form {
-	display: flex;
-	flex-direction: column;
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-.cgi_post label {
-	color: #555;
-	font-family: "Ubuntu", sans-serif;
-	margin-bottom: 10px;
-	font-weight: bold;
+.cgi_post form label {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+  color: #e2e8f0;
 }
 
-.cgi_post input[type="text"] {
-	font-family: "Ubuntu", sans-serif;
-	padding: 5px;
-	margin-bottom: 10px;
+.cgi_post form input[type="submit"] {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+  background: #13a5e9;
+  color: white;
+  transition: background 0.3s ease;
+  cursor: pointer;
 }
 
-.cgi_post input[type="submit"] {
-	background-color: #8c49e3;
-	color: #fff;
-	font-family: "Ubuntu", sans-serif;
-	border: none;
-	padding: 10px 20px;
-	border-radius: 5px;
-	cursor: pointer;
-	transition: background-color 0.2s ease;
-}
-
-.cgi_post input[type="submit"]:hover {
-	background-color: #44406d;
+.cgi_post form input[type="submit"]:hover {
+  background: #38bdf8;
 }

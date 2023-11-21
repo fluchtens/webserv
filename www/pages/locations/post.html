@@ -1,44 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="../../style/style.css">
-	<link rel="stylesheet" href="../../style/locations/post.css">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;400&family=Ubuntu:wght@300&display=swap" rel="stylesheet">
-	<title>Post - WebServ</title>
-</head>
-<body>
-	<header>
-		<div class="nav_bar">
-			<div class="nav_bar_content">
-				<img class="nav_bar_logo" src="https://profile.intra.42.fr/assets/42_logo-7dfc9110a5319a308863b96bda33cea995046d1731cebb735e41b16255106c12.svg">
-				<p class="nav_bar_title">WebServ</p>
-			</div>
-			<nav class="nav_bar_elements">
-				<a href="../index.html">Home</a>
-				<a href="/pages/team.html">Team</a>
-				<a href="https://github.com/fluchtens/42-webserv">GitHub</a>
-			</nav>
-		</div>
-	</header>
-
-	<main>
-		<div class="upload">
-			<h1>Post Method</h1>
-			<form action="/post" method="post" enctype="multipart/form-data">
-				<label for="file">Select a file to send :</label>
-				<input type="file" name="file" id="file"><br>
-				<input type="submit" value="Send">
-			</form>
-		</div>
-	</main>
-
-	<footer>
-		<div class="footer"></div>
-	</footer>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../style/style.css" />
+    <link rel="stylesheet" href="../../style/locations/post.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Post - WebServ</title>
+  </head>
+  <body>
+    <header>
+      <div class="header_container">
+        <a class="header_title" href="../../index.html">WebServ</a>
+        <nav class="header_nav">
+          <a href="../../index.html">Home</a>
+          <a href="../../pages/team.html">Team</a>
+          <a href="https://github.com/fluchtens/42-webserv">GitHub</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="upload">
+        <h1>Post Method</h1>
+        <form action="/post" method="post" enctype="multipart/form-data">
+          <label for="file">Select a file to send :</label>
+          <input type="file" name="file" id="file" /><br />
+          <input type="submit" value="Send" />
+        </form>
+      </div>
+    </main>
+    <footer>
+      <div class="footer"></div>
+    </footer>
+  </body>
 </html>

@@ -1,31 +1,37 @@
-/* dark-theme.css */
+:root {
+  color-scheme: dark;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    margin: 20px;
-    background-color: rgb(30, 30, 30);
-    color: rgba(255, 255, 255, 0.8);
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  margin: 20px;
+  background-color: rgb(30, 30, 30);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 table {
-    border-collapse: collapse;
-    width: 100%;
+  border-collapse: collapse;
+  width: 100%;
 }
 
-table, th, td {
-    border: 1px solid rgba(255, 255, 255, 0.5);
+table,
+th,
+td {
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-th, td {
-    padding: 10px;
-    text-align: center;
+th,
+td {
+  padding: 10px;
+  text-align: center;
 }
 
 td {
-    background-color: rgb(30, 30, 30);
-    border-radius: 5px;
+  background-color: rgb(30, 30, 30);
+  border-radius: 5px;
 }
 
 a {
-    color: rgb(45, 152, 219);
+  color: rgb(45, 152, 219);
 }

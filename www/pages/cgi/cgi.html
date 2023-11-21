@@ -1,56 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="../../style/style.css">
-	<link rel="stylesheet" href="../../style/cgi/cgi.css">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100;400&family=Ubuntu:wght@300&display=swap" rel="stylesheet">
-	<title>CGI GET - WebServ</title>
-</head>
-<body>
-	<header>
-		<div class="nav_bar">
-			<div class="nav_bar_content">
-				<img class="nav_bar_logo" src="https://profile.intra.42.fr/assets/42_logo-7dfc9110a5319a308863b96bda33cea995046d1731cebb735e41b16255106c12.svg">
-				<p class="nav_bar_title">WebServ</p>
-			</div>
-			<nav class="nav_bar_elements">
-				<a href="../index.html">Home</a>
-				<a href="/pages/team.html">Team</a>
-				<a href="https://github.com/fluchtens/42-webserv">GitHub</a>
-			</nav>
-		</div>
-	</header>
-
-	<main>
-		<div class="cgi_get">
-			<h1>CGI GET</h1>
-			<form action="/cgi_weather" method="get">
-				<label for="city">Enter the name of a city to obtain its weather forecast from a python script:</label>
-				<input type="text" name="city"><br>
-				<input type="submit" value="Start"><br>
-			</form>
-			<form action="/cgi_42_api" method="get">
-				<label for="login">Enter the name of a 19 campus user to obtain a leaderboard of the people he has corrected from a python script:</label>
-				<input type="text" name="login"><br>
-				<input type="submit" value="Start">
-			</form>
-		</div>
-		<div class="cgi_post">
-			<h1>CGI POST</h1>
-			<form action="/cgi_server_infos" method="post">
-				<label for="login">Getting server information from a php script:</label><br>
-				<input type="submit" value="Start">
-			</form>
-		</div>
-	</main>
-
-	<footer>
-		<div class="footer"></div>
-	</footer>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../style/style.css" />
+    <link rel="stylesheet" href="../../style/cgi/cgi.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <title>CGI GET - WebServ</title>
+  </head>
+  <body>
+    <header>
+      <div class="header_container">
+        <a class="header_title" href="../../index.html">WebServ</a>
+        <nav class="header_nav">
+          <a href="../../index.html">Home</a>
+          <a href="../../pages/team.html">Team</a>
+          <a href="https://github.com/fluchtens/42-webserv">GitHub</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="cgi_get">
+        <h1>CGI GET</h1>
+        <form action="/cgi_weather" method="get">
+          <label for="city"
+            >Enter the name of a city to obtain its weather forecast from a
+            python script:</label
+          >
+          <input type="text" name="city" />
+          <input type="submit" value="Start" />
+        </form>
+        <form action="/cgi_42_api" method="get">
+          <label for="login"
+            >Enter the name of a 19 campus user to obtain a leaderboard of the
+            people he has corrected from a python script:</label
+          >
+          <input type="text" name="login" />
+          <input type="submit" value="Start" />
+        </form>
+      </div>
+      <div class="cgi_post">
+        <h1>CGI POST</h1>
+        <form action="/cgi_server_infos" method="post">
+          <label for="login"
+            >Getting server information from a php script:</label
+          >
+          <input type="submit" value="Start" />
+        </form>
+      </div>
+    </main>
+  </body>
 </html>
