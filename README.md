@@ -8,4 +8,4 @@ HTTP server written from scratch in C++98.
 ### Usage:
 ```./webserv config/file.conf```
 
-![screenshot01](https://i.imgur.com/qY9ZijD.png)
+![screenshot01](https://i.imgur.com/EcCyeyN.png)
