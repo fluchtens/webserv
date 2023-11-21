@@ -1,5 +1,5 @@
 # webserv
-HTTP server written from scratch in C++98.
+Basic HTTP server written from scratch in C++98 that implements POST, GET and DELETE methods and integrated CGI for dynamic pages.
 
 ### Installation :
 - Clone the repository.
